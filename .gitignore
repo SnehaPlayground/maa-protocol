@@ -1,0 +1,51 @@
+# Secrets and private files
+.env
+client_secret.json
+blog_key.md
+CONTACTS_PRIVATE.md
+tmp_contacts.json
+
+# Internal app folders
+.openclaw/
+.clawhub/
+
+# Generated and transient folders
+logs/
+tmp/
+voice/
+archive/
+archives/
+blog-assets/
+blog-drafts/
+drafts/
+emails/
+outbox_2026-03-27/
+outgoing/
+reports/
+research/
+
+# Transcript and generated output files
+*.srt
+*.tsv
+*.vtt
+
+# Logs
+*.log
+
+# Generated timestamp files
+2026-*.json
+2026-*.txt
+file_*.json
+file_*.txt
+file_*.srt
+file_*.tsv
+file_*.vtt
+
+# Optional private/local items
+Sneha_profile.jpg
+Partha_WatchList.md
+communication-log.md
+daily_research_output.html
+daily_research_v2.html
+draft_blog_finstable_ipc_2026-03-30.md
+send_log_2026-03-27.json
