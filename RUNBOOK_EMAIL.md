@@ -98,3 +98,29 @@ If an email thread clearly needs Partha attention:
 - summarize it concisely
 - state why it matters
 - await direction before taking higher-risk action
+
+EMAIL TRIAGE CATEGORIES
+
+1. FYI only
+2. Low-risk reply allowed
+3. Needs Partha approval
+4. Needs research or draft only
+
+LOW-RISK REPLIES
+
+Allowed without approval:
+- thank you replies
+- acknowledgements
+- received, will check
+- request for documents
+- meeting confirmations with no material downside
+- simple follow-up reminders with no commitment
+
+NOT LOW-RISK
+
+Requires approval:
+- investment advice
+- financial recommendation
+- commitment on behalf of Primeidea
+- client research distribution
+- anything involving money, returns, suitability, or allocation
