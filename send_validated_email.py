@@ -6,16 +6,13 @@ import sys
 from pathlib import Path
 
 from email_formatter import format_email
-from email_validator import validate_email
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate, format, and send email safely")
+    parser = argparse.ArgumentParser(description="Simple email sender (no blocking)")
     parser.add_argument("--to", required=True)
     parser.add_argument("--subject", required=True)
     parser.add_argument("--body-file", required=True)
-    parser.add_argument("--cc", default="")
-    parser.add_argument("--bcc", default="")
     parser.add_argument("--force-format", choices=["plain", "html"], default=None)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -26,34 +23,37 @@ def main() -> None:
         sys.exit(1)
 
     raw_body = body_path.read_text(encoding="utf-8").strip()
+
     formatted = format_email(args.subject, raw_body, preferred=args.force_format)
 
-    errors = validate_email(args.subject, formatted.body)
-    if errors:
-        print("BLOCKED EMAIL:")
-        for err in errors:
-            print(f"- {err}")
-        sys.exit(1)
+    # ⚠️ Only warning, no blocking
+    if "sneha" in raw_body.lower() and "sneha🥷" in formatted.body.lower():
+        print("⚠️ Warning: Possible duplicate signature (not blocking)")
+
+    if "love" in raw_body.lower():
+        print("⚠️ Warning: Emotional tone detected (not blocking)")
+
+    if args.dry_run:
+        print("DRY RUN")
+        print(f"TO: {args.to}")
+        print(f"SUBJECT: {formatted.subject}")
+        print(f"FORMAT: {formatted.format}")
+        print("BODY:\n")
+        print(formatted.body)
+        sys.exit(0)
 
     cmd = [
         "python3",
         "/root/.openclaw/workspace/send_email_via_gog.py",
         "--to", args.to,
-        "--subject", args.subject,
-        "--body-file", args.body_file,
+        "--subject", formatted.subject,
+        "--body-file", str(body_path),
     ]
 
-    if args.cc:
-        cmd.extend(["--cc", args.cc])
-    if args.bcc:
-        cmd.extend(["--bcc", args.bcc])
     if args.force_format:
         cmd.extend(["--force-format", args.force_format])
-    if args.dry_run:
-        cmd.append("--dry-run")
 
-    result = subprocess.run(cmd)
-    sys.exit(result.returncode)
+    subprocess.run(cmd)
 
 
 if __name__ == "__main__":

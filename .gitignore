@@ -52,3 +52,21 @@ send_log_2026-03-27.json
 
 agents/**/state/
 thread-state.json
+
+__pycache__/
+*.pyc
+
+tmp/
+tmp_email_drafts/
+email_pipeline_output/
+email_drafts/
+
+*.log
+logs/
+
+*.html
+
+email_inbox_snapshot.txt
+email_pipeline_state.json
+
+.env
