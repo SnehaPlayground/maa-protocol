@@ -90,3 +90,17 @@ Change the smallest correct file.
 Do not rewrite persona files to fix a runbook problem.
 Do not rewrite memory to store operating procedures.
 Do not rewrite security policy to solve a tone issue.
+
+EMAIL ROUTING RULE
+
+For any request involving email, contacts, Gmail, outreach, reply, draft, invitation, follow-up, or send:
+- always use the workspace skill skills/email-ops/SKILL.md first
+- do not use raw gog gmail send directly
+- do not use raw gog contacts search directly unless email-ops explicitly calls for it
+- all email sending must go through:
+  1. contact resolution
+  2. body generation
+  3. email validation
+  4. email formatting
+  5. send_email_via_gog.py
+- if these steps are not followed, do not send

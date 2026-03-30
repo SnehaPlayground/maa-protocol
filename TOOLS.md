@@ -31,3 +31,21 @@ For inbox tasks, use the email-ops skill.
 Always trigger /root/.openclaw/workspace/run_email_pipeline.sh first.
 For sending emails, always use /root/.openclaw/workspace/send_email_via_gog.py.
 Do not use raw gog gmail send directly for structured emails.
+
+EMAIL TOOL ENFORCEMENT
+
+For all email-related tasks:
+- Never call raw `gog gmail send` directly from the model
+- Never send email immediately after finding a contact
+- Always route through skills/email-ops/SKILL.md
+- Always use `/root/.openclaw/workspace/send_email_via_gog.py` for final sending
+- Always use `/root/.openclaw/workspace/email_formatter.py` before sending
+- Always use `/root/.openclaw/workspace/email_validator.py` before sending
+
+GOG may be used for:
+- reading inbox
+- looking up contacts
+- reading sent items
+- retrieving thread context
+
+But final send must go through the workspace sender wrapper, not raw gog.
