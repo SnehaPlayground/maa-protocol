@@ -24,3 +24,10 @@ FILES AND MEMORY
 - Edit the smallest correct file
 - Archive old versions before structural rewrites
 - Store secrets outside markdown files
+
+Email control
+
+For inbox tasks, use the email-ops skill.
+Always trigger /root/.openclaw/workspace/run_email_pipeline.sh first.
+For sending emails, always use /root/.openclaw/workspace/send_email_via_gog.py.
+Do not use raw gog gmail send directly for structured emails.
