@@ -49,3 +49,6 @@ daily_research_output.html
 daily_research_v2.html
 draft_blog_finstable_ipc_2026-03-30.md
 send_log_2026-03-27.json
+
+agents/**/state/
+thread-state.json

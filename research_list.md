@@ -1,0 +1,6 @@
+partha.shah@gmail.com, 
+Team Primeidea info@primeidea.in, 
+Rrajal Shah rrajal@gmail.com, 
+Mayank Patel mayankpatelca@gmail.com,
+Pratik Shah pratik2pris@gmail.com,
+Gaurav Janiyani gauravjaniyani@gmail.com,
