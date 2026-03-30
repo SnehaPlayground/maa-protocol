@@ -1,0 +1,39 @@
+#!/bin/bash
+
+echo "Running Sneha safety checks..."
+
+staged_files=$(git diff --cached --name-only)
+
+if [ -z "$staged_files" ]; then
+  echo "No staged files. Skipping checks."
+  exit 0
+fi
+
+blocked_paths='(^|/)(client_secret\.json|CONTACTS_PRIVATE\.md|blog_key\.md|thread-state\.json|\.env)$'
+
+for f in $staged_files; do
+  if echo "$f" | grep -Eq "$blocked_paths"; then
+    echo "Blocked: sensitive/runtime file staged -> $f"
+    exit 1
+  fi
+done
+
+for f in $staged_files; do
+  if [ ! -f "$f" ]; then
+    continue
+  fi
+
+  case "$f" in
+    .githooks/*)
+      continue
+      ;;
+  esac
+
+  if grep -Eqi 'GOG_KEYRING_PASSWORD|BEGIN[[:space:]]+PRIVATE[[:space:]]+KEY' "$f"; then
+    echo "Blocked: possible secret found inside -> $f"
+    exit 1
+  fi
+done
+
+echo "Safety checks passed."
+exit 0
