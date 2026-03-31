@@ -70,3 +70,5 @@ email_inbox_snapshot.txt
 email_pipeline_state.json
 
 .env
+.daily_research_sent_*
+test_email_body.txt

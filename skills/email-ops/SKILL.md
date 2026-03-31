@@ -6,12 +6,12 @@ Use the local workspace email pipeline to check Gmail, classify emails, prepare 
 
 Files
 
-- /root/.openclaw/workspace/email_pipeline.py
-- /root/.openclaw/workspace/run_email_pipeline.sh
-- /root/.openclaw/workspace/email_pipeline_output/latest_summary.txt
-- /root/.openclaw/workspace/email_pipeline_output/latest_email_actions.json
-- /root/.openclaw/workspace/email_formatter.py
-- /root/.openclaw/workspace/send_email_via_gog.py
+- /root/.openclaw/workspace/ops/email/email_pipeline.py
+- /root/.openclaw/workspace/ops/email/run_email_pipeline.sh
+- /root/.openclaw/workspace/data/email/email_pipeline_output/latest_summary.txt
+- /root/.openclaw/workspace/data/email/email_pipeline_output/latest_email_actions.json
+- /root/.openclaw/workspace/ops/email/email_formatter.py
+- /root/.openclaw/workspace/ops/email/send_email_via_gog.py
 
 Rules
 
@@ -44,10 +44,10 @@ Needs approval
 
 Typical workflow
 
-1. Run /root/.openclaw/workspace/run_email_pipeline.sh
+1. Run /root/.openclaw/workspace/ops/email/run_email_pipeline.sh
 2. Read latest_summary.txt
 3. If user asks for details, read latest_email_actions.json
-4. If user approves a low-risk send, use send_email_via_gog.py
+4. If user approves a low-risk send, use send_email_via_gog.py at /root/.openclaw/workspace/ops/email/send_email_via_gog.py
 5. Log and summarize what was done
 
 Name etiquette
@@ -84,7 +84,7 @@ For any email task, follow this order:
 2. Draft body only
 3. Validate body
 4. Format body
-5. Send using /root/.openclaw/workspace/send_email_via_gog.py
+5. Send using /root/.openclaw/workspace/ops/email/send_email_via_gog.py
 6. Log action
 
 HARD BAN
