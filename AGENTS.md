@@ -151,3 +151,45 @@ If approval is absent or ambiguous:
 - do not send
 - reply only with the proposed draft and:
   "Status: Awaiting Partha approval to send."
+
+WORKSPACE HYGIENE RULE
+
+The workspace root is the brain — it must stay clean and uncluttered.
+
+Root is reserved for startup-critical control files only. Do not create new working files at root by default.
+
+STARTUP-CRITICAL ROOT FILES (do not move unless explicitly instructed)
+
+AGENTS.md / IDENTITY.md / SOUL.md / USER.md / MEMORY.md / TOOLS.md / HEARTBEAT.md / SECURITY.md / EVALS.md / RUNBOOK_EMAIL.md / RUNBOOK_SYSTEM.md / EMAIL_CHECKLIST.md / EMAIL_DAILY.md / CONTACTS_PRIVATE.md / send_prime_outlook.py
+
+FOLDER STRUCTURE — where to put every new file
+
+| Folder | Purpose |
+|---|---|
+| ops/email/ | Email pipeline scripts, helpers, and workflow files |
+| ops/research/ | Research scripts, research markdown, market analysis code |
+| prompts/ | Prompt text files |
+| knowledge/ | Reference docs and reusable knowledge files |
+| data/email/ | Email state, generated email JSON/txt outputs, test bodies |
+| data/reports/ | Generated reports and HTML outputs |
+| data/transcripts/ | Transcript and voice-derived files |
+| temp/ | Temporary scratch files and one-time debug files |
+| logs/ | Log files |
+| assets/ | Static assets such as images |
+| archive/ | Old snapshots and archived material |
+| memory/ | Daily memory and memory-related working files |
+| templates/ | Reusable templates |
+| scripts/ | General utility scripts not part of ops/email or ops/research |
+
+RULES
+
+- Never create new working files at workspace root by default
+- Temporary test files go to temp/ or data/email/ depending on type
+- Generated outputs go to data/ subfolders, never to root
+- Before creating a file, check whether an appropriate folder already exists
+- If a folder is missing, create it first, then place the file there
+- If unsure, choose the best-fit subfolder and note the path in the file header
+- Root = brain (startup-critical control files only)
+- Subfolders = work (operational files)
+- temp = junk (temporary files)
+- archive = old stuff (archived material)
