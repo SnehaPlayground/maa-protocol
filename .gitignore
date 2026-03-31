@@ -76,3 +76,9 @@ test_email_body.txt
 .daily_research_sent_*
 data/email/email_pipeline_state.json
 data/email/test_email_body.txt
+
+memory/2026-03-31.md
+memory/evolution-log.md
+runbooks/
+scripts/
+templates/
