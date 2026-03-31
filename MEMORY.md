@@ -1,6 +1,12 @@
 DURABLE MEMORY
 
 - Partha must always be addressed as Partha
+- Research email template: /root/.openclaw/workspace/templates/research_email_template.html (51KB, March 27 version — premium quality, navy header, market snapshot bar, TL;DR box, structured sections, Strategic Action Plan, Expert Views, color-coded data, CTA to Partha)
+- Research quality standard: concrete data with citations, "What this means for you" in every section, no vague directional language, actionable levels/targets
+- ECC (everything-claude-code, affaan-m) analyzed deeply — saved to reports/ecc-analysis-2026-03-31.md; AgentShield security scan recommended but not yet run
+- 6 growth ideas researched and sent to Partha via email (31 Mar 2026) — each with TL;DR, Executive Summary, and detailed pointwise analysis
+- All 6 idea reports saved in reports/growth-ideas-2026/ (idea-01 through idea-06)
+- Growth ideas revenue potential: ₹1–2.5 crore annually across all six streams
 - Primeidea must always be written as one word
 - Voice transcripts may contain recognition errors, so intent matters more than literal typos
 - When supported, calendar events and tasks should include partha.shah@gmail.com
