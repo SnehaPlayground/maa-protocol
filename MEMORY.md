@@ -2,6 +2,11 @@ DURABLE MEMORY
 
 - Partha must always be addressed as Partha
 - Research email template: /root/.openclaw/workspace/templates/research_email_template.html (51KB, March 27 version — premium quality, navy header, market snapshot bar, TL;DR box, structured sections, Strategic Action Plan, Expert Views, color-coded data, CTA to Partha)
+- **Recommendation labels** (mandatory in all reports): Installed — Awaiting Production Approval | Ready for Pilot | Needs More Validation | Ready for Removal Approval | Reject
+- **Proof levels** (mandatory alongside every label): Not yet tested with clients | Tested internally only | Tested on live workflow | Client-validated
+- **PDF is now the default delivery format** for all research reports and growth evolution emails — generate HTML first, convert to PDF via weasyprint, attach to email (not inline HTML body)
+- **PDF report template**: `/root/.openclaw/workspace/scripts/build_pdf_report.py` — Python script that takes markdown content, converts to HTML with the approved Primeidea card-style layout, embeds logo as 40×40px watermark in upper-left of every page via CSS `@top-left`, and outputs PDF via weasyprint. Always use this script for all PDF report generation.
+- **4 AM Growth Evolution Report** is the approved formatting standard for all future growth/revenue reports — card-based layout, TL;DR + Executive Summary + Detailed Recommendations (with Hypothesis/Validation/Evidence/ROI/Confidence/Approval/Next Step/Label/Proof Level) + Action Section. Do not deviate from this structure.
 - Research quality standard: concrete data with citations, "What this means for you" in every section, no vague directional language, actionable levels/targets
 - ECC (everything-claude-code, affaan-m) analyzed deeply — saved to reports/ecc-analysis-2026-03-31.md; AgentShield security scan recommended but not yet run
 - 6 growth ideas researched and sent to Partha via email (31 Mar 2026) — each with TL;DR, Executive Summary, and detailed pointwise analysis

@@ -104,3 +104,50 @@ For any request involving email, contacts, Gmail, outreach, reply, draft, invita
   4. email formatting
   5. send_email_via_gog.py
 - if these steps are not followed, do not send
+
+## Revenue Referral Engine Priority
+
+For all B2B growth, referral generation, lead sourcing, partner outreach, graduate sourcing, college outreach, and meeting-generation work:
+- first read `skills/revenue-intelligence/SKILL.md`
+- then read `skills/revenue-intelligence/RULES.md`
+- then review sales logs in `/sales/`
+- keep Partha in the loop in confusing or sensitive situations
+
+## Non-Negotiable Email Execution Rule
+
+Default mode for all outbound emails is DRAFT ONLY.
+
+Sneha must never send an outbound email unless one of these is true:
+1. Partha has explicitly approved the exact draft or clearly instructed SEND NOW, or
+2. The email is a routine courtesy action already allowed by standing rules:
+   - simple thank-you
+   - acknowledgment of receipt/resolution
+   - request for supporting documents
+   - simple low-risk follow-up with no meaningful downside
+
+Mandatory pre-send classification:
+- routine_courtesy
+- business_professional
+- research_advice_suitability
+- Primeidea_commitment
+
+If classification is anything other than routine_courtesy:
+- prepare draft
+- show Partha the exact draft
+- wait for explicit approval
+- only then send
+
+For research, advice, suitability, fund-related, or any email committing Primeidea:
+- always draft first
+- always require explicit Partha approval
+- never auto-send
+
+Required approval tokens:
+- APPROVE TO SEND
+- SEND NOW
+- APPROVED
+
+If approval is absent or ambiguous:
+- do not send
+- reply only with the proposed draft and:
+  "Status: Awaiting Partha approval to send."
