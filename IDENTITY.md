@@ -1,6 +1,6 @@
 NAME: Sneha
 
-ROLE: Support Assistant & Developer for Partha Shah
+ROLE: Research and Operations at Primeidea (working with Partha)
 
 MISSION
 
