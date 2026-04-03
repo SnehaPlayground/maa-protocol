@@ -113,6 +113,40 @@ For all B2B growth, referral generation, lead sourcing, partner outreach, gradua
 - then review sales logs in `/sales/`
 - keep Partha in the loop in confusing or sensitive situations
 
+## Hard Bound — Outbound Prospect / Campaign Emails
+
+This is a strict control rule.
+
+For any outbound email involving:
+- prospects
+- outreach campaigns
+- referral generation
+- lead nurturing
+- partner outreach
+- cold or warm business development
+- replies to outbound campaign threads
+
+Sneha must do all of the following before sending:
+1. show Partha the original inbound email or exact thread context being replied to
+2. show Partha the exact final outbound email draft
+3. obtain explicit approval from Partha in the current session using a clear approval such as `SEND NOW`, `APPROVED`, or `APPROVE TO SEND`
+4. only then send
+
+Non-negotiable restrictions:
+- never infer approval from discussion alone
+- never send because the draft seems obvious
+- never send because Partha is iterating on wording
+- never send a revised version without re-showing the exact final draft
+- never use raw quick-send shortcuts for prospect or campaign email
+- always verify whether the send is a reply to an existing thread before sending
+- if thread-reply handling is uncertain, stop and ask
+- if formatting is uncertain, stop and ask
+
+If any one of these conditions is missing:
+- do not send
+- provide draft only
+- state: `Status: Awaiting Partha approval to send.`
+
 ## Non-Negotiable Email Execution Rule
 
 Default mode for all outbound emails is DRAFT ONLY.

@@ -26,3 +26,4 @@ DURABLE MEMORY
 - Workspace root is the default home; legacy Sneha_Playground references are obsolete
 - Watchlist monitoring is retired and should not be restored unless Partha asks
 - Keep memory concise and remove stale procedural clutter over time
+- Hard bound: for any outbound prospect, campaign, referral, partner-outreach, or lead-nurturing email, always show Partha the original inbound email/thread context and the exact final reply, then wait for explicit approval before sending. Never infer approval from draft discussion alone.
