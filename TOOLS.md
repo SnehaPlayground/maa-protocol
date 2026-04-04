@@ -36,10 +36,12 @@ EMAIL TOOL ENFORCEMENT
 
 For all email-related tasks:
 - Never call raw `gog gmail send` directly from the model
+- Never call raw `gog email send` directly from the model
 - Never send email immediately after finding a contact
 - Always route through skills/email-ops/SKILL.md
 - Always use `/root/.openclaw/workspace/ops/email/send_email_via_gog.py` for final sending
 - Always use `/root/.openclaw/workspace/ops/email/email_formatter.py` before sending
+- For prospect, campaign, referral, partner-outreach, or lead-nurturing email: always show the original thread and exact final draft to Partha before send
 
 GOG may be used for:
 - reading inbox

@@ -12,7 +12,8 @@ DEFAULT EMAIL WORKFLOW
 4. Classify the action as low-risk, review-required, or approval-required
 5. Draft the smallest correct response
 6. Apply CC, signature, and attachment rules
-7. Log sent actions where applicable
+7. Verify sent item formatting, recipient, CC, and thread continuity before confirming success
+8. Log sent actions where applicable
 
 APPROVAL BOUNDARY
 
@@ -31,6 +32,7 @@ Pre-authorized low-risk actions:
 - Simple scheduling coordination with no material downside
 - Basic follow-up reminders with no new commitment
 
+Exception: prospect, campaign, referral, partner-outreach, and lead-nurturing emails are never covered by low-risk auto-send. Show Partha the original thread and exact final draft first.
 CC RULES
 
 For client-facing, professional, or externally significant emails sent from sneha.primeidea@gmail.com:
@@ -77,8 +79,10 @@ Do not add investment ideas or disclaimer unless the content actually contains r
 
 SIGNATURE RULE
 
-Use:
-Sneha🥷 | https://Primeidea.in
+Default external business signature:
+Sneha | Primeidea
+
+Use a more branded footer only when the specific email template or report format requires it.
 
 LOGGING
 
@@ -91,6 +95,8 @@ bcc
 subject
 action taken
 brief summary
+approval basis
+thread id when available
 
 ESCALATION
 

@@ -91,6 +91,14 @@ Do not rewrite persona files to fix a runbook problem.
 Do not rewrite memory to store operating procedures.
 Do not rewrite security policy to solve a tone issue.
 
+PRE-DEPLOY DUPLICATION RULE
+
+Before creating, adding, installing, or deploying any new skill, duplicate system, workflow, prompt system, or operating idea:
+- first scan the existing workspace/system for duplication, overlap, conflict, stale versions, and deployment risk
+- prefer fixing or consolidating an existing system over creating a parallel one
+- do not introduce a second active system for the same job unless Partha explicitly asks for it
+- if a duplicate or conflict is found, report it before deployment
+
 EMAIL ROUTING RULE
 
 For any request involving email, contacts, Gmail, outreach, reply, draft, invitation, follow-up, or send:
@@ -194,7 +202,7 @@ Root is reserved for startup-critical control files only. Do not create new work
 
 STARTUP-CRITICAL ROOT FILES (do not move unless explicitly instructed)
 
-AGENTS.md / IDENTITY.md / SOUL.md / USER.md / MEMORY.md / TOOLS.md / HEARTBEAT.md / SECURITY.md / EVALS.md / RUNBOOK_EMAIL.md / RUNBOOK_SYSTEM.md / EMAIL_CHECKLIST.md / EMAIL_DAILY.md / CONTACTS_PRIVATE.md / send_prime_outlook.py
+AGENTS.md / IDENTITY.md / SOUL.md / USER.md / MEMORY.md / TOOLS.md / HEARTBEAT.md / SECURITY.md / EVALS.md / RUNBOOK_EMAIL.md / RUNBOOK_SYSTEM.md / EMAIL_CHECKLIST.md / EMAIL_DAILY.md / CONTACTS_PRIVATE.md
 
 FOLDER STRUCTURE — where to put every new file
 
