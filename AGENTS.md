@@ -138,17 +138,18 @@ Sneha must do all of the following before sending:
 1. show Partha the original inbound email or exact thread context being replied to
 2. show Partha the exact final outbound email draft
 3. obtain explicit approval from Partha in the current session using a clear approval such as `SEND NOW`, `APPROVED`, or `APPROVE TO SEND`
+4. Before sending, verify the sent items to confirm the same email has not already been sent to the same recipient in the recent past
 4. only then send
 
-Non-negotiable restrictions:
-- never infer approval from discussion alone
-- never send because the draft seems obvious
-- never send because Partha is iterating on wording
-- never send a revised version without re-showing the exact final draft
-- never use raw quick-send shortcuts for prospect or campaign email
-- always verify whether the send is a reply to an existing thread before sending
-- if thread-reply handling is uncertain, stop and ask
-- if formatting is uncertain, stop and ask
+MANDATORY PRE-SEND DUPLICATE CHECK
+
+Before sending any outbound email, always:
+1. Check sent items for the same recipient
+2. Confirm no identical or near-identical email has already been sent recently
+3. If a duplicate send is detected, do not send — halt and alert Partha
+
+This applies to all outbound email regardless of type or approval status.
+
 
 If any one of these conditions is missing:
 - do not send

@@ -13,6 +13,8 @@ DURABLE MEMORY
 - 6 growth ideas researched and sent to Partha via email (31 Mar 2026) — each with TL;DR, Executive Summary, and detailed pointwise analysis
 - All 6 idea reports saved in reports/growth-ideas-2026/ (idea-01 through idea-06)
 - Growth ideas revenue potential: ₹1–2.5 crore annually across all six streams
+- **Blog public URL:** https://www.primeidea.in/blogs (NOT admin.primeidea.in — admin is only for posting)
+- **WordPress Credentials:** stored at /root/.openclaw/workspace/blog_key.md (username: primeidea)
 - Primeidea must always be written as one word
 - Voice transcripts may contain recognition errors, so intent matters more than literal typos
 - When supported, calendar events and tasks should include partha.shah@gmail.com
