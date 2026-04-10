@@ -5,7 +5,7 @@ DURABLE MEMORY
 - **Recommendation labels** (mandatory in all reports): Installed — Awaiting Production Approval | Ready for Pilot | Needs More Validation | Ready for Removal Approval | Reject
 - **Default model**: minimax-m2.7:cloud — always keep this as the only/default Ollama model; remove any other Ollama models (GLM-5, Qwen, etc.) if added
 - **Proof levels** (mandatory alongside every label): Not yet tested with clients | Tested internally only | Tested on live workflow | Client-validated
-- **Voice note pipeline**: `node /usr/lib/node_modules/openclaw/node_modules/node-edge-tts/bin.js` with voice `en-IN-NeerjaNeural`. No API key needed. When Partha sends a voice note, always respond with a voice note using this pipeline, then send via message tool with `asVoice: true`. All morning reports must also generate a voice note using this pipeline. Wrapper script: `/root/.openclaw/workspace/scripts/voice_edge.js`. Output: WAV/MP3 to `/root/.openclaw/workspace/data/reports/voice_note_YYYY-MM-DD.wav`.
+- **Voice note pipeline**: `node /usr/lib/node_modules/openclaw/node_modules/node-edge-tts/bin.js` with voice `en-IN-NeerjaNeural`. No API key needed. When Partha sends a voice note, always respond with a voice note using this pipeline, then send via message tool with `asVoice: true`. Wrapper script: `/root/.openclaw/workspace/scripts/voice_edge.js`. Output: WAV/MP3 to `/root/.openclaw/workspace/data/reports/voice_note_YYYY-MM-DD.wav`.
 - **PDF is now the default delivery format** for all research reports and growth evolution emails — generate HTML first, convert to PDF via weasyprint, attach to email (not inline HTML body)
 - **PDF report template**: `/root/.openclaw/workspace/scripts/build_pdf_report.py` — Python script that takes markdown content, converts to HTML with the approved Primeidea card-style layout, embeds logo as 40×40px watermark in upper-left of every page via CSS `@top-left`, and outputs PDF via weasyprint. Always use this script for all PDF report generation.
 - **4 AM Growth Evolution Report** is the approved formatting standard for all future growth/revenue reports — card-based layout, TL;DR + Executive Summary + Detailed Recommendations (with Hypothesis/Validation/Evidence/ROI/Confidence/Approval/Next Step/Label/Proof Level) + Action Section. Do not deviate from this structure.
@@ -19,7 +19,6 @@ DURABLE MEMORY
 - Primeidea must always be written as one word
 - Voice transcripts may contain recognition errors, so intent matters more than literal typos
 - When supported, calendar events and tasks should include partha.shah@gmail.com
-- Use Ji in client salutations when respectful honorifics are needed
 - Never recommend Direct mutual fund plans to Partha; recommend Regular plans only
 - For WordPress posting, ask Partha to choose the featured image before upload
 - For Primeidea WordPress posts, choose exactly one approved category
