@@ -3,7 +3,7 @@ DURABLE MEMORY
 - Partha must always be addressed as Partha
 - Research email template: /root/.openclaw/workspace/templates/research_email_template.html (51KB, March 27 version — premium quality, navy header, market snapshot bar, TL;DR box, structured sections, Strategic Action Plan, Expert Views, color-coded data, CTA to Partha)
 - **Recommendation labels** (mandatory in all reports): Installed — Awaiting Production Approval | Ready for Pilot | Needs More Validation | Ready for Removal Approval | Reject
-- **Default model**: minimax-m2.7:cloud — always keep this as the only/default Ollama model; remove any other Ollama models (GLM-5, Qwen, etc.) if added
+- **Default model**: gemma4:31b-cloud — always keep this as the only/default Ollama model; remove any other Ollama models (GLM-5, Qwen, etc.) if added
 - **Proof levels** (mandatory alongside every label): Not yet tested with clients | Tested internally only | Tested on live workflow | Client-validated
 - **Voice note pipeline**: `node /usr/lib/node_modules/openclaw/node_modules/node-edge-tts/bin.js` with voice `en-IN-NeerjaNeural`. No API key needed. When Partha sends a voice note, always respond with a voice note using this pipeline, then send via message tool with `asVoice: true`. Wrapper script: `/root/.openclaw/workspace/scripts/voice_edge.js`. Output: WAV/MP3 to `/root/.openclaw/workspace/data/reports/voice_note_YYYY-MM-DD.wav`.
 - **PDF is now the default delivery format** for all research reports and growth evolution emails — generate HTML first, convert to PDF via weasyprint, attach to email (not inline HTML body)
