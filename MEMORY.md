@@ -15,6 +15,15 @@ DURABLE MEMORY
 - All 6 idea reports saved in reports/growth-ideas-2026/ (idea-01 through idea-06)
 - Growth ideas revenue potential: ₹1–2.5 crore annually across all six streams
 - **Blog public URL:** https://www.primeidea.in/blogs (NOT admin.primeidea.in — admin is only for posting)
+- **WordPress Blog Post Image Rules** (mandatory for every post):
+  - Source images: small thumbnails (250px wide, border-radius:8px), centered, NOT grouped together
+  - Each image placed at a different section of the article (not clustered in one place)
+  - Each image links to full-resolution version opening in a new tab: `<a href="FULL_URL" target="_blank"><img src="THUMB_URL" style="width:250px; border-radius:8px;" /></a>`
+  - No "Source Articles" label or caption text for source images
+  - No "Featured Image" label anywhere in the post body
+  - Featured image uploaded separately via featured_media field, not embedded in content
+  - Text wraps naturally around images; use clear:both before new sections if needed
+  - Aim for good UX: images enhance reading, not disrupt it
 - **WordPress Credentials:** stored at /root/.openclaw/workspace/blog_key.md (username: primeidea)
 - Primeidea must always be written as one word
 - Voice transcripts may contain recognition errors, so intent matters more than literal typos
