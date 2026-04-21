@@ -344,6 +344,7 @@ def cmd_usage(operator_id: str, client_id: str | None = None, since_hours: int =
     pending = 0
     status_counts = {}
     task_types = {}
+    failure_reasons: dict[str, int] = {}
     recent = []
 
     for tf in task_files:
@@ -373,6 +374,12 @@ def cmd_usage(operator_id: str, client_id: str | None = None, since_hours: int =
         elif s == "pending":
             pending += 1
 
+        # FIX: collect failure reasons inside the same loop, respecting the time cutoff
+        if s in ("exhausted", "needs_revision"):
+            reason = state.get("child_failure_reason") or state.get("last_error") or "unknown"
+            reason = reason[:60]
+            failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
+
     for cf in comp_files:
         # completion files have their own timestamp in filename — approximate
         try:
@@ -389,20 +396,6 @@ def cmd_usage(operator_id: str, client_id: str | None = None, since_hours: int =
     needs_rev = status_counts.get("needs_revision", 0)
 
     # Top failure reasons
-    failure_reasons: dict[str, int] = {}
-    for tf in task_files:
-        try:
-            state = json.loads(tf.read_text())
-        except Exception:
-            continue
-        if state.get("status") not in ("exhausted", "needs_revision"):
-            continue
-        reason = state.get("child_failure_reason") or state.get("last_error") or "unknown"
-        # Normalize
-        reason = reason[:60]
-        failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
-
-    # Top failures sorted
     top_failures = sorted(failure_reasons.items(), key=lambda x: -x[1])[:5]
 
     print(f"\n{'='*60}")

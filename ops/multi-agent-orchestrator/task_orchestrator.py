@@ -288,8 +288,17 @@ def child_output_is_usable(output: str, stderr: str = "") -> tuple[bool, str]:
     return True, "ok"
 
 
+def _tenant_ids_from_task(task: dict) -> tuple[str, str]:
+    """Extract operator_id and client_id from task state."""
+    tc = task.get("tenant_context", {}) or {}
+    return tc.get("operator_id", "") or "", tc.get("client_id", "") or ""
+
+
 def record_metric(event_type: str, label: str, **kwargs) -> bool:
-    """Best-effort observability with explicit success/failure signal."""
+    """Best-effort observability with explicit success/failure signal.
+    
+    Pass operator_id= and client_id= to scope metrics to a tenant.
+    """
     cmd = ["python3", METRICS, "record", "--type", event_type, "--label", label]
     for key, value in kwargs.items():
         if value is None:
@@ -627,9 +636,11 @@ def _run_reflection(task_id, validation, attempt):
         "correction_directive": correction,
     }
     print("[Mother Agent] Reflection " + task_id + " (attempt " + str(attempt) + "): gate=" + str(failed_gate))
+    op_id, cl_id = _tenant_ids_from_task(task)
     record_metric("reflection", "maa." + task.get("task_type","unknown") + "_validation_failure",
                   gate=str(failed_gate), attempt=attempt,
-                  issues=str(issues[:3]), agent="mother")
+                  issues=str(issues[:3]), agent="mother",
+                  operator_id=op_id, client_id=cl_id)
     # Phase 2 Step 2.5: Write to dedicated .reflection file for immutable audit trail
     reflection_file = f"{LOGS_DIR}/{task_id}.reflection"
     try:
@@ -708,8 +719,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
     harness_ok, harness_reason = _verify_harness_spec(harness, task_id)
     if not harness_ok:
         print(f"[Mother Agent] HARNESS SPEC VERIFICATION FAILED for {task_id}: {harness_reason}")
+        op_id, cl_id = _tenant_ids_from_task(task)
         record_metric("error", f"maa.{task['task_type']}_harness_verify_failed",
-                      details=harness_reason, agent="mother")
+                      details=harness_reason, agent="mother",
+                      operator_id=op_id, client_id=cl_id)
         task["status"] = "retry"
         task["updated_at"] = now_iso()
         task["child_failure_reason"] = f"harness-spec-verify-failed: {harness_reason}"
@@ -795,7 +808,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
             task["status"] = "retry"
             task["updated_at"] = now_iso()
             task["last_error"] = "subprocess-produced-no-result"
-            record_metric("error", "maa." + task["task_type"] + "_no_result", details="subprocess returned None status", agent="mother")
+            op_id, cl_id = _tenant_ids_from_task(task)
+            record_metric("error", "maa." + task["task_type"] + "_no_result",
+                          details="subprocess returned None status", agent="mother",
+                          operator_id=op_id, client_id=cl_id)
             with open(state_file, "w") as f:
                 json.dump(task, f, indent=2)
             return False
@@ -807,7 +823,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
             task["status"] = "retry"
             task["updated_at"] = now_iso()
             task["last_error"] = "subprocess-hard-timeout"
-            record_metric("error", "maa." + task["task_type"] + "_timeout", details="child hard timed out", agent="mother")
+            op_id, cl_id = _tenant_ids_from_task(task)
+            record_metric("error", "maa." + task["task_type"] + "_timeout",
+                          details="child hard timed out", agent="mother",
+                          operator_id=op_id, client_id=cl_id)
             with open(state_file, "w") as f:
                 json.dump(task, f, indent=2)
             return False
@@ -816,7 +835,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
             task["status"] = "retry"
             task["updated_at"] = now_iso()
             task["last_error"] = str(result)[:200]
-            record_metric("error", "maa." + task["task_type"] + "_spawn_error", details=str(result)[:200], agent="mother")
+            op_id, cl_id = _tenant_ids_from_task(task)
+            record_metric("error", "maa." + task["task_type"] + "_spawn_error",
+                          details=str(result)[:200], agent="mother",
+                          operator_id=op_id, client_id=cl_id)
             with open(state_file, "w") as f:
                 json.dump(task, f, indent=2)
             return False
@@ -851,8 +873,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
             if not marker_ok:
                 task["status"] = "retry"
                 task["child_failure_reason"] = "completion-marker-verify-failed: " + marker_reason
+                op_id, cl_id = _tenant_ids_from_task(task)
                 record_metric("error", "maa." + task["task_type"] + "_marker_verify_failed",
-                              details=marker_reason, agent="mother")
+                              details=marker_reason, agent="mother",
+                              operator_id=op_id, client_id=cl_id)
                 with open(state_file, "w") as f:
                     json.dump(task, f, indent=2)
                 return False
@@ -864,8 +888,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
                 task["child_failure_reason"] = (
                     "state_version mismatch: wrote " + str(sv) + ", read " + str(marker_read.get("state_version"))
                 )
+                op_id, cl_id = _tenant_ids_from_task(task)
                 record_metric("error", "maa." + task["task_type"] + "_sv_mismatch",
-                              details="wrote=" + str(sv) + " read=" + str(marker_read.get("state_version")), agent="mother")
+                              details="wrote=" + str(sv) + " read=" + str(marker_read.get("state_version")), agent="mother",
+                              operator_id=op_id, client_id=cl_id)
                 with open(state_file, "w") as f:
                     json.dump(task, f, indent=2)
                 return False
@@ -883,15 +909,19 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
             task["output_file"] = output_file
             task["state_version"] = sv
             task["child_success_at"] = now_iso()
-            record_metric("task", "maa." + task["task_type"], status="completed", agent="mother")
+            op_id, cl_id = _tenant_ids_from_task(task)
+            record_metric("task", "maa." + task["task_type"], status="completed",
+                          agent="mother", operator_id=op_id, client_id=cl_id)
         else:
             task["status"] = "retry"
             task["child_failure_reason"] = usability_reason or ("exit=" + str(result.returncode))
+            op_id, cl_id = _tenant_ids_from_task(task)
             record_metric(
                 "error",
                 "maa." + task["task_type"] + "_child_failed",
                 details=(result.stderr or usability_reason or "child returned unusable output")[:200],
                 agent="mother",
+                operator_id=op_id, client_id=cl_id,
             )
 
     except Exception as e:
@@ -899,7 +929,10 @@ def spawn_child_agent(task_id: str) -> Optional[bool]:
         task["status"] = "retry"
         task["updated_at"] = now_iso()
         task["last_error"] = str(e)[:200]
-        record_metric("error", "maa." + task["task_type"] + "_spawn_error", details=str(e)[:200], agent="mother")
+        op_id, cl_id = _tenant_ids_from_task(task)
+        record_metric("error", "maa." + task["task_type"] + "_spawn_error",
+                      details=str(e)[:200], agent="mother",
+                      operator_id=op_id, client_id=cl_id)
 
     with open(state_file, "w") as f:
         json.dump(task, f, indent=2)
@@ -1237,7 +1270,8 @@ if __name__ == "__main__":
             args.validator_prompt,
             tenant_context=raw_context,
         )
-        task_accepted(tenant, task_id, args.task_type)
+        # NOTE: task_accepted() is already called inside submit_task().
+        # Do not call it here again — that would double-log to the audit trail.
         print(f"Task ID: {task_id} [{tenant}]")
         if args.run:
             result = run_task_chain(task_id)

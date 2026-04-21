@@ -442,9 +442,18 @@ def print_summary(since_hours: Optional[int] = None, tenant_filter: Optional[str
 
     def window(items):
         if cutoff is None:
-            return items
-        return [i for i in items
-                if datetime.fromisoformat(i["timestamp"]).timestamp() >= cutoff]
+            filtered = items
+        else:
+            filtered = [i for i in items
+                        if datetime.fromisoformat(i["timestamp"]).timestamp() >= cutoff]
+        if tenant_filter:
+            parts = tenant_filter.split("/")
+            op_filter = parts[0]
+            cl_filter = parts[1] if len(parts) > 1 else None
+            def tenant_match(item):
+                return item.get("operator_id") == op_filter and                        (cl_filter is None or item.get("client_id") == cl_filter)
+            filtered = [i for i in filtered if tenant_match(i)]
+        return filtered
 
     calls = window(metrics["calls"])
     errors = window(metrics["errors"])
@@ -533,6 +542,19 @@ def export_metrics(fmt: str, output: str, tenant_filter: Optional[str] = None) -
     """
     metrics = load_metrics()
 
+    # Apply tenant filter if specified
+    if tenant_filter:
+        parts = tenant_filter.split("/")
+        op_filter = parts[0]
+        cl_filter = parts[1] if len(parts) > 1 else None
+        def tenant_match(item):
+            return item.get("operator_id") == op_filter and                    (cl_filter is None or item.get("client_id") == cl_filter)
+        filtered = {}
+        for key in ("calls", "errors", "latency", "tasks"):
+            items = metrics.get(key, [])
+            filtered[key] = [i for i in items if tenant_match(i)]
+        metrics = filtered
+
     if fmt == "json":
         with open(output, "w") as f:
             json.dump(metrics, f, indent=2)
@@ -554,7 +576,6 @@ def export_metrics(fmt: str, output: str, tenant_filter: Optional[str] = None) -
                             l["timestamp"], l.get("value_ms",""), ""])
         print(f"Exported CSV → {output}")
 
-# ─── CLI ───────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(description="Maa Protocol Observability CLI")
