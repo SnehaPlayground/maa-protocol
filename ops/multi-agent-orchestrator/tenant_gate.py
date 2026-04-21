@@ -13,7 +13,6 @@ from tenant_context import TenantContext, DEFAULT_TENANT, parse_tenant_context, 
 from tenant_paths import TenantPathResolver, TENANTS_ROOT
 
 TASKS_DIR = "/root/.openclaw/workspace/ops/multi-agent-orchestrator/tasks"
-OPERATOR_CONFIG_DIR = "/root/.openclaw/workspace/ops/multi-agent-orchestrator/config"
 
 RATE_LIMIT_WINDOW_S = 3600  # 1-hour rolling window
 
@@ -27,45 +26,110 @@ class RateLimitExceeded(Exception):
         super().__init__(f"RATE_LIMIT_EXCEEDED: {operator_id}/{client_id} — {limit} tasks per {window_s}s")
 
 
-def load_operator_config(operator_id: str) -> dict:
-    """Load operator config, return defaults if not found."""
-    default = {
+def _load_config_file(path: Path) -> dict | None:
+    """Load a JSON config file, return None if missing or invalid.
+    
+    Logs a warning on JSON decode errors. Swallows file-not-found silently.
+    """
+    if not path.exists():
+        return None
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"[TenantGate] WARNING: {path} contains invalid JSON ({e}) — ignoring, using defaults")
+        return None
+    except OSError as e:
+        print(f"[TenantGate] WARNING: could not read {path} ({e}) — ignoring, using defaults")
+        return None
+
+
+def _default_operator_config(operator_id: str) -> dict:
+    return {
         "operator_id": operator_id,
         "max_concurrent_tasks": 8,
         "max_tasks_per_hour": 200,
         "rate_limit_window_seconds": RATE_LIMIT_WINDOW_S,
         "clients": {},
     }
-    if operator_id == "default":
-        return default
-    config_path = TENANTS_ROOT / operator_id / "config" / "operator.json"
-    if not config_path.exists():
-        return default
-    try:
-        with open(config_path) as f:
-            return json.load(f)
-    except Exception:
-        return default
 
 
-def load_client_config(operator_id: str, client_id: str) -> dict:
-    """Load client config, return defaults if not found."""
-    default = {
+def _default_client_config(client_id: str) -> dict:
+    return {
         "client_id": client_id,
         "max_concurrent_tasks": 2,
         "max_tasks_per_hour": 50,
         "rate_limit_window_seconds": RATE_LIMIT_WINDOW_S,
     }
+
+
+def load_operator_config(operator_id: str) -> dict:
+    """Load operator config, merged with defaults for missing fields.
+    
+    GAP 3 FIX: Old config files may be missing new fields (e.g. max_concurrent_tasks
+    added after initial deployment). Merge with defaults so all callers get safe values,
+    never None for a field that existed before the schema was extended.
+    """
+    defaults = _default_operator_config(operator_id)
     if operator_id == "default":
-        return default
+        return defaults
+    config_path = TENANTS_ROOT / operator_id / "config" / "operator.json"
+    stored = _load_config_file(config_path)
+    if stored is None:
+        return defaults
+    # Merge: fill in any missing fields from defaults
+    merged = {**defaults, **stored}
+    # Preserve nested 'clients' dict even if old config had it as None
+    if stored.get("clients") is not None:
+        merged["clients"] = stored["clients"]
+    return merged
+
+
+def load_client_config(operator_id: str, client_id: str) -> dict:
+    """Load client config, merged with defaults for missing fields.
+    
+    GAP 3 FIX: Same as load_operator_config — older config files may be missing
+    fields added in later schema versions.
+    """
+    defaults = _default_client_config(client_id)
+    if operator_id == "default":
+        return defaults
     config_path = TENANTS_ROOT / operator_id / "clients" / client_id / "config" / "client.json"
-    if not config_path.exists():
-        return default
+    stored = _load_config_file(config_path)
+    if stored is None:
+        return defaults
+    merged = {**defaults, **stored}
+    return merged
+
+
+def save_operator_config(operator_id: str, config: dict) -> bool:
+    """Write operator config file. Returns True on success."""
+    if operator_id == "default":
+        return False  # default tenant config is not writable
+    config_path = TENANTS_ROOT / operator_id / "config" / "operator.json"
     try:
-        with open(config_path) as f:
-            return json.load(f)
-    except Exception:
-        return default
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
+        return True
+    except OSError as e:
+        print(f"[TenantGate] ERROR: could not write operator config ({e})")
+        return False
+
+
+def save_client_config(operator_id: str, client_id: str, config: dict) -> bool:
+    """Write client config file. Returns True on success."""
+    if operator_id == "default":
+        return False
+    config_path = TENANTS_ROOT / operator_id / "clients" / client_id / "config" / "client.json"
+    try:
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(config_path, "w") as f:
+            json.dump(config, f, indent=2)
+        return True
+    except OSError as e:
+        print(f"[TenantGate] ERROR: could not write client config ({e})")
+        return False
 
 
 def _rate_limit_store_path(operator_id: str, client_id: str) -> Path:
