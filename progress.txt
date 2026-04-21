@@ -1,0 +1,197 @@
+MAA PROTOCOL — COMMERCIAL DEPLOYMENT PROGRESS
+Status: PHASE 1 + 2 + 6 COMPLETE | REVIEW CLEAN
+Date: 2026-04-21
+Last Review + Fixes: 2026-04-21 21:30 IST
+
+═══════════════════════════════════════════════════════════════════════════════
+TEST SCORES (source of truth — run to verify)
+═══════════════════════════════════════════════════════════════════════════════
+
+  test_trust_fixes.py    → 60/71  (11 failures = Phase 3 features not built)
+  test_phase2_runtime.py  → 42/42 ✅
+  test_template_load.py   →  7/7  ✅
+
+  Total: 109/120
+
+  The 11 failures are all Phase 3 features (circuit breaker, queue, mother
+  self-execute) — correctly absent from the current build. These are NOT
+  regressions.
+
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 1 — SPAWNABLE CHILD-AGENT TEMPLATES         ✅ COMPLETE (prior session)
+PHASE 2 — RUNTIME HARNESS ENFORCEMENT              ✅ COMPLETE (prior session)
+═══════════════════════════════════════════════════════════════════════════════
+
+Template files (5):
+  agents/templates/researcher/v1.0.md
+  agents/templates/executor/v1.0.md
+  agents/templates/coder/v1.0.md
+  agents/templates/verifier/v1.0.md
+  agents/templates/communicator/v1.0.md
+
+Phase 2 runtime features:
+  _verify_harness_spec() — called before every child spawn
+  child_output_is_usable() — MIN_CONTENT_THRESHOLD = 200
+  _detect_loop() — 3-tuple, loop_count tracking
+  skip_child_respawn at LOOP_SAME_FAILURE_THRESHOLD = 2
+  .reflection files for all validation-failed tasks
+  write_progress_report() — logs/{task_id}.progress at spawn
+  Concurrent child tracking with stale-runner reconciliation
+
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 6 — TENANT PHASE 2 (CRUD, METRICS, USAGE)   ✅ COMPLETE (this session)
+═══════════════════════════════════════════════════════════════════════════════
+
+GAP 1 — Wire tenant enforcement into submit_task()   ✅ COMMITTED
+  - submit_task() now accepts tenant_context param
+  - Gates every task through submit_task_gate()
+  - Non-default tenants write to tenants/{op}/clients/{cl}/tasks/
+  - task_accepted() fires inside submit_task() — audit trail active for all
+  - Rate limits enforced before task is accepted
+
+GAP 2 — Audit trail for every task accept/reject       ✅ COMMITTED (in GAP 1)
+  - task_accepted() called inside submit_task()
+  - Audit entries write to tenants/{op}/audit/YYYY-MM.jsonl
+  - task_rejected() logs rate-limit and context-denied events
+
+GAP 3 — Config store improvement                       ✅ COMMITTED
+  - load_operator/client_config() now merge stored + defaults
+  - Handles incomplete schema files from older deployments
+  - save_operator_config() + save_client_config() — write to tenant path
+  - _load_config_file() with explicit JSON decode error logging
+
+GAP 4 — Tenant CRUD + Usage Report + Per-tenant Metrics ✅ COMMITTED
+  tenant_crud.py — full CLI (565 lines):
+    create-operator / get-operator / list-operators / update-operator
+    create-client / get-client / list-clients / update-client
+    deactivate-client
+    onboard — all-in-one operator + client bootstrap
+    usage <op> [<cl>] [--since N] — task summary, status breakdown,
+      error rate, top failure reasons (all filtered to time window)
+
+  Per-tenant metrics (maa_metrics.py):
+    --operator-id + --client-id flags on all record types
+    operator_id + client_id stored in every metric entry
+    --tenant filter on dashboard + summary + export
+    export now applies tenant filter (was broken — fixed in review pass)
+
+  tenant_paths.py ensure_dirs():
+    config resolves to FILE not DIR — parent.mkdir correctly used
+    stale files blocking dir creation removed automatically
+
+GAP 5 — Fix alert cooldown test                        ✅ COMMITTED
+  test_trust_fixes.py Test 4:
+    _cleanup_alert_cooldown() — isolates action state before test
+    _cleanup_maintenance_entries() — removes cross-run jsonl pollution
+    Entries now selected by scanning ALL .jsonl files, sorted by timestamp
+
+ACTION.TXT ITEMS 6.1–6.4 COMPLETED:
+  6.1 Tenant CRUD CLI ✅ (tenant_crud.py)
+  6.2 Tenant config file management ✅ (tenant_gate.py save_*_config)
+  6.3 Per-tenant metrics query ✅ (maa_metrics.py --tenant filter)
+  6.4 Tenant usage report ✅ (tenant_crud.py usage)
+
+═══════════════════════════════════════════════════════════════════════════════
+HOSTILE REVIEW PERFORMED — BUGS FOUND AND FIXED        2026-04-21 21:20 IST
+═══════════════════════════════════════════════════════════════════════════════
+
+Before declaring Phase 6 complete, a full hostile review was done.
+5 bugs found and fixed before updating this file:
+
+BUG 1: Double audit entry on CLI submit
+  Location: task_orchestrator.py CLI block (line ~1240)
+  Problem: submit_task() called task_accepted() internally, then the CLI
+           block called task_accepted() AGAIN — duplicate audit entries
+  Fix: Removed duplicate call from CLI block (submit_task() is authoritative)
+
+BUG 2: --tenant filter silently ignored in print_summary()
+  Location: maa_metrics.py print_summary()
+  Problem: tenant_filter was accepted as a parameter but never applied to
+           the window() function — summary always showed global data
+  Fix: Added tenant_match filter inside print_summary's window() function
+
+BUG 3: --tenant filter silently ignored in export_metrics()
+  Location: maa_metrics.py export_metrics()
+  Problem: tenant_filter parameter existed but was never applied — export
+           always wrote full unfiltered store
+  Fix: Added tenant-filter logic to export_metrics(), applied to all buckets
+
+BUG 4: Per-tenant metrics not wired into task_orchestrator.py
+  Location: task_orchestrator.py record_metric() calls
+  Problem: All record_metric() calls in spawn_child_agent() passed only
+           agent="mother" — operator_id and client_id were never forwarded
+  Fix: Added _tenant_ids_from_task() helper; all 10 record_metric() calls
+        in spawn_child_agent() now pass operator_id + client_id from task state
+
+BUG 5: Usage report failure reasons ignored time cutoff
+  Location: tenant_crud.py cmd_usage()
+  Problem: Two separate loops over task_files — first applied time cutoff,
+           second (for failure reasons) did NOT. Old tasks polluter report.
+  Fix: Moved failure_reasons collection inside the first loop (which respects
+        cutoff); removed redundant second loop entirely
+
+═══════════════════════════════════════════════════════════════════════════════
+FILES CREATED OR MODIFIED IN PHASE 6
+═══════════════════════════════════════════════════════════════════════════════
+
+  ops/multi-agent-orchestrator/task_orchestrator.py  (modified — GAPs 1+4)
+  ops/multi-agent-orchestrator/tenant_gate.py         (created — GAPs 1+3)
+  ops/multi-agent-orchestrator/tenant_paths.py        (created — GAPs 1+4)
+  ops/multi-agent-orchestrator/tenant_crud.py        (created — GAP 4)
+  ops/multi-agent-orchestrator/tenant_context.py      (created — GAP 1)
+  ops/observability/maa_metrics.py                   (modified — GAP 4b)
+  ops/multi-agent-orchestrator/tests/test_trust_fixes.py (modified — GAP 5)
+
+New commits on main:
+  GAP 1:  Wire tenant enforcement into submit_task()
+  GAP 3:  Improve config store
+  GAP 5:  Fix alert cooldown test
+  GAP 4:  Tenant CRUD + Usage Report + ensure_dirs fix
+  GAP 4b: Per-tenant metrics
+  Review fixes: double audit, --tenant filter (summary/export), tenant IDs
+                through record_metric, usage report time cutoff
+
+═══════════════════════════════════════════════════════════════════════════════
+OPERATIONAL GUIDANCE
+═══════════════════════════════════════════════════════════════════════════════
+
+Verify test scores:
+  python3 ops/multi-agent-orchestrator/tests/test_trust_fixes.py
+  python3 ops/multi-agent-orchestrator/tests/test_phase2_runtime.py
+
+Verify syntax after any edit:
+  python3 -m py_compile ops/multi-agent-orchestrator/task_orchestrator.py
+
+Monitor:
+  python3 ops/observability/maa_metrics.py dashboard
+  python3 ops/multi-agent-orchestrator/tenant_crud.py list-operators
+
+Onboard a new tenant:
+  python3 ops/multi-agent-orchestrator/tenant_crud.py onboard \
+    <operator_id> <client_id> "<operator_label>" "<client_label>"
+
+Tenant usage report:
+  python3 ops/multi-agent-orchestrator/tenant_crud.py usage <op> [<cl>] --since 24
+
+═══════════════════════════════════════════════════════════════════════════════
+REMAINING PHASES FROM ACTION.TXT
+═══════════════════════════════════════════════════════════════════════════════
+
+Phase 3  — Live Progress + Transport-Agnostic Delivery     NOT STARTED
+Phase 4  — Automated Pre-Deploy Gate with Alerting         NOT STARTED
+Phase 5  — Operational HTML Dashboard                      NOT STARTED
+Phase 7  — Continuous Regression Monitoring                NOT STARTED
+Phase 8  — SLA Documentation + Operator Runbook            NOT STARTED
+Phase 9  — Security, Secrets, Deployment Hardening        NOT STARTED
+Phase 10 — Access Control + RBAC                           NOT STARTED
+Phase 11 — Idempotency, Duplicate Protection, DR          NOT STARTED
+Phase 12 — Release Management, Versioning, Canary          NOT STARTED
+Phase 13 — Cost Controls, Abuse Protection                  NOT STARTED
+Phase 14 — Community Open-Source Release Readiness          NOT STARTED
+
+Current status: Phases 1, 2, 6 COMPLETE. Review-clean.
+Next actionable: Phase 3.
+
+═══════════════════════════════════════════════════════════════════════════════
+END OF PROGRESS REPORT
+═══════════════════════════════════════════════════════════════════════════════
