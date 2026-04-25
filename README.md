@@ -39,7 +39,13 @@ Detailed guides:
 - `INSTALL.md`
 - `QUICKSTART.md`
 - `FIRST_RUN.md`
+- `DEMO.md`
 - `ops/multi-agent-orchestrator/COMMUNITY_RUNBOOK.md`
+
+Helper scripts:
+- `python3 scripts/maa_setup.py`
+- `python3 scripts/maa_doctor.py`
+- `python3 scripts/maa_demo.py`
 
 ## What this repo contains
 

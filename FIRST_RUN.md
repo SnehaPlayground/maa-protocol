@@ -14,6 +14,14 @@ If this fails, Maa is not ready yet because OpenClaw is the runtime dependency.
 
 ## Step 2: create a runtime config
 
+Simplest path:
+
+```bash
+python3 scripts/maa_setup.py
+```
+
+Manual path if needed:
+
 ```bash
 mkdir -p knowledge/maa-product
 cp templates/maa-product/laptop.json knowledge/maa-product/runtime-config.json
@@ -40,6 +48,14 @@ bash scripts/pre_deploy_gate.sh
 If this fails, do not continue until the gate passes.
 
 ## Step 5: submit your first task
+
+Simplest path:
+
+```bash
+python3 scripts/maa_demo.py
+```
+
+Manual path:
 
 ```bash
 python3 ops/multi-agent-orchestrator/task_orchestrator.py submit research "test: first run validation" --run

@@ -15,7 +15,8 @@ Maa Protocol follows [Semantic Versioning](https://semver.org/). Versions follow
 
 - Reframed Maa as a self-hosted, operator-first, single-node orchestration framework
 - Removed personal branding from core Maa docs and runtime-facing config
-- Added public install and onboarding docs: `INSTALL.md`, `QUICKSTART.md`, `FIRST_RUN.md`
+- Added public install and onboarding docs: `INSTALL.md`, `QUICKSTART.md`, `FIRST_RUN.md`, `DEMO.md`
+- Added simple operator helpers: `scripts/maa_setup.py`, `scripts/maa_doctor.py`, `scripts/maa_demo.py`
 - Hardened repo boundaries around runtime debris, backups, and private/operator-specific artifacts
 - Prepared sample deployment profiles for generic public use
 

@@ -24,20 +24,25 @@ mkdir -p knowledge/maa-product
 cp templates/maa-product/laptop.json knowledge/maa-product/runtime-config.json
 ```
 
-## 4. Run the preflight checks
+## 4. Use the guided setup helper (recommended)
 
 ```bash
-python3 scripts/health_check.py
-bash scripts/pre_deploy_gate.sh
+python3 scripts/maa_setup.py
 ```
 
-## 5. Run a demo task
+## 5. Run the doctor check
 
 ```bash
-python3 ops/multi-agent-orchestrator/task_orchestrator.py submit research "Summarize the current purpose of this Maa installation" --run
+python3 scripts/maa_doctor.py
 ```
 
-## 6. Check the result
+## 6. Run a demo task
+
+```bash
+python3 scripts/maa_demo.py
+```
+
+## 7. Check the result
 
 ```bash
 python3 ops/multi-agent-orchestrator/task_orchestrator.py list --limit 5

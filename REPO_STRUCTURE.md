@@ -6,11 +6,12 @@
 - `INSTALL.md` — installation guide
 - `QUICKSTART.md` — fast-start guide
 - `FIRST_RUN.md` — first-run walkthrough
+- `DEMO.md` — guided demo flow
 - `LICENSE` — MIT license
 - `CHANGELOG.md` — release notes
 - `ops/multi-agent-orchestrator/` — Maa runtime, governance docs, and core policies
 - `ops/observability/` — metrics and observability tooling
-- `scripts/` — install, health, security, DR, and operational helpers
+- `scripts/` — install, setup, doctor, demo, health, security, DR, and operational helpers
 - `knowledge/maa-product/` — deployment and packaging support files
 - `templates/maa-product/` — sample deployment profiles
 
