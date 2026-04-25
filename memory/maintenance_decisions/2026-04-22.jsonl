@@ -1,0 +1,151 @@
+{"timestamp": "2026-04-22T00:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2010"}}
+{"timestamp": "2026-04-22T01:17:45Z", "action": "continuous_health_monitor", "outcome": "critical", "details": {"check": "state_version_integrity", "count": 1, "failures": [{"task_id": "research-1776708058-7693d9", "reason": "task state state_version (3) != marker state_version (2)", "task_state_version": 3, "marker_state_version": 2}]}}
+{"timestamp": "2026-04-22T01:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2153"}}
+{"timestamp": "2026-04-22T02:01:31Z", "action": "test_322736", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:01:31Z", "action": "test_2e3006", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:01:31Z", "action": "test_322736", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:01:31Z", "action": "test_2e3006", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:01:32Z", "action": "pre_deploy_gate", "outcome": "failed", "details": {"passed": 67, "failed": 4, "alert_sent": true}}
+{"timestamp": "2026-04-22T02:01:38Z", "action": "test_076c5a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:01:38Z", "action": "test_076c5a", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:01:40Z", "action": "test_c2e38f", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:01:40Z", "action": "test_c2e38f", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:01:42Z", "action": "test_055eee", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:01:42Z", "action": "test_055eee", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:03:58Z", "action": "test_97ac3d", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:03:58Z", "action": "test_97ac3d", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:04:07Z", "action": "test_b6e253", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:04:07Z", "action": "test_b6e253", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:05:59Z", "action": "test_3bd105", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:05:59Z", "action": "test_3bd105", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:06:00Z", "action": "test_227c93", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:06:00Z", "action": "test_227c93", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:06:17Z", "action": "test_e59a8d", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:06:17Z", "action": "test_e59a8d", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:06:17Z", "action": "test_923a09", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:06:17Z", "action": "test_923a09", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:18:56Z", "action": "test_849247", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:18:56Z", "action": "test_d59642", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:18:56Z", "action": "test_849247", "outcome": "critical", "details": {"x": 2}}
+{"timestamp": "2026-04-22T02:18:56Z", "action": "test_d59642", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:18:57Z", "action": "pre_deploy_gate", "outcome": "failed", "details": {"passed": 70, "failed": 1, "alert_sent": true}}
+{"timestamp": "2026-04-22T02:19:04Z", "action": "test_ddf566", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T02:19:04Z", "action": "test_ddf566", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T02:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2390"}}
+{"timestamp": "2026-04-22T03:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2921"}}
+{"timestamp": "2026-04-22T04:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2510"}}
+{"timestamp": "2026-04-22T05:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "1768"}}
+{"timestamp": "2026-04-22T06:30:05Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "3286"}}
+{"timestamp": "2026-04-22T07:10:39Z", "action": "test_642d8f", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:10:39Z", "action": "test_642d8f", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:23:15Z", "action": "test_26aca8", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:23:15Z", "action": "test_26aca8", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:23:15Z", "action": "test_51fc12", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:23:15Z", "action": "test_51fc12", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2574"}}
+{"timestamp": "2026-04-22T07:40:27Z", "action": "test_c672e0", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:40:27Z", "action": "test_c672e0", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:40:30Z", "action": "test_d53973", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:40:30Z", "action": "test_d53973", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:40:50Z", "action": "test_bf6cbc", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:40:50Z", "action": "test_bf6cbc", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T07:40:50Z", "action": "test_b75eb8", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T07:40:50Z", "action": "test_b75eb8", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:16:31Z", "action": "test_181b04", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:16:31Z", "action": "test_181b04", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:16:31Z", "action": "test_76d96a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:16:31Z", "action": "test_76d96a", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:18:06Z", "action": "test_f09364", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:18:06Z", "action": "test_f09364", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:18:06Z", "action": "test_5885a3", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:18:06Z", "action": "test_5885a3", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:22:08Z", "action": "test_c78e46", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:22:08Z", "action": "test_c78e46", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:22:08Z", "action": "test_7e903f", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T08:22:08Z", "action": "test_7e903f", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T08:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "3599"}}
+{"timestamp": "2026-04-22T09:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2175"}}
+{"timestamp": "2026-04-22T10:26:11Z", "action": "test_99f399", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T10:26:11Z", "action": "test_99f399", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T10:26:11Z", "action": "test_eea3b0", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T10:26:11Z", "action": "test_eea3b0", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T10:28:48Z", "action": "test_366b78", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T10:28:48Z", "action": "test_366b78", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T10:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2288"}}
+{"timestamp": "2026-04-22T11:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2034"}}
+{"timestamp": "2026-04-22T12:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "1828"}}
+{"timestamp": "2026-04-22T13:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2123"}}
+{"timestamp": "2026-04-22T14:12:08Z", "action": "test_700caa", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:12:08Z", "action": "test_700caa", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:12:08Z", "action": "test_d46055", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:12:08Z", "action": "test_d46055", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:16:11Z", "action": "test_dddfd5", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:16:11Z", "action": "test_dddfd5", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:16:12Z", "action": "test_e8d8af", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:16:12Z", "action": "test_e8d8af", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:30:05Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "3223"}}
+{"timestamp": "2026-04-22T14:30:47Z", "action": "test_b2364b", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:30:47Z", "action": "test_b2364b", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:34:11Z", "action": "test_0a189a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:34:11Z", "action": "test_0a189a", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T14:40:01Z", "action": "test_5d3368", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T14:40:01Z", "action": "test_5d3368", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T15:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "1883"}}
+{"timestamp": "2026-04-22T15:38:18Z", "action": "test_e0e486", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T15:38:18Z", "action": "test_e0e486", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T15:41:02Z", "action": "test_abb4c4", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T15:41:02Z", "action": "test_abb4c4", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T15:47:15Z", "action": "test_b465be", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T15:47:15Z", "action": "test_b465be", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:04:57Z", "action": "test_6ce917", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:04:57Z", "action": "test_6ce917", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:15:06Z", "action": "test_c99c38", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:15:06Z", "action": "test_c99c38", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:15:11Z", "action": "test_a4091a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:15:11Z", "action": "test_a4091a", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:19:24Z", "action": "test_3b2309", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:19:24Z", "action": "test_3b2309", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:19:24Z", "action": "test_3cdd72", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:19:24Z", "action": "test_3cdd72", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:21:51Z", "action": "test_da181a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:21:51Z", "action": "test_8d7168", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:21:51Z", "action": "test_da181a", "outcome": "critical", "details": {"x": 2}}
+{"timestamp": "2026-04-22T16:21:51Z", "action": "test_8d7168", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:21:52Z", "action": "pre_deploy_gate", "outcome": "failed", "details": {"passed": 71, "failed": 1, "alert_sent": true}}
+{"timestamp": "2026-04-22T16:22:09Z", "action": "test_8546e9", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:22:09Z", "action": "test_8546e9", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:23:03Z", "action": "test_a2225e", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:23:03Z", "action": "test_a2225e", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:23:07Z", "action": "test_4e6448", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:23:07Z", "action": "test_4e6448", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2754"}}
+{"timestamp": "2026-04-22T16:32:47Z", "action": "test_0448f9", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:32:47Z", "action": "test_0448f9", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:33:12Z", "action": "test_de39cf", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:33:12Z", "action": "test_de39cf", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:34:18Z", "action": "test_031972", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:34:18Z", "action": "test_031972", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:39:07Z", "action": "test_a203d4", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:39:07Z", "action": "test_a203d4", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:54:24Z", "action": "test_cbcbd4", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:54:24Z", "action": "test_cbcbd4", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T16:54:24Z", "action": "test_7754b4", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T16:54:24Z", "action": "test_7754b4", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T17:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2174"}}
+{"timestamp": "2026-04-22T18:28:45Z", "action": "test_0463e7", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T18:28:45Z", "action": "test_0463e7", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T18:30:03Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "1796"}}
+{"timestamp": "2026-04-22T18:35:47Z", "action": "test_a80720", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T18:35:47Z", "action": "test_a80720", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T19:08:25Z", "action": "test_fd3f5a", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T19:08:25Z", "action": "test_fd3f5a", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T19:08:25Z", "action": "test_ff44dd", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T19:08:25Z", "action": "test_ff44dd", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T19:08:48Z", "action": "test_51b6d6", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T19:08:48Z", "action": "test_51b6d6", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T19:12:13Z", "action": "test_549326", "outcome": "critical", "details": {"x": 1}}
+{"timestamp": "2026-04-22T19:12:13Z", "action": "test_549326", "outcome": "critical", "details": {"x": 2}, "_cooldown_suppressed": true, "_cooldown_remaining_s": 7199}
+{"timestamp": "2026-04-22T19:30:05Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "4043"}}
+{"timestamp": "2026-04-22T20:30:04Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "2897"}}
+{"timestamp": "2026-04-22T21:30:05Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "3678"}}
+{"timestamp": "2026-04-22T23:30:05Z", "action": "email_pipeline_run", "outcome": "completed", "details": {"pipeline_ok": "true", "duration_ms": "3917"}}

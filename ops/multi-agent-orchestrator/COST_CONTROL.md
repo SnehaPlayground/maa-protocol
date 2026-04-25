@@ -1,0 +1,189 @@
+<!-- Version: v1.0 -->
+<!-- Last updated: 2026-04-22 by Maa maintainer -->
+<!-- Phase: 13 of MAA Protocol Commercial Deployment Action Plan v1.2 -->
+
+# COST CONTROL — MAA Protocol Resource Governance
+==================================================
+
+## Overview
+
+This document defines per-tenant spend caps, runtime budgets, cost estimation,
+and abuse protection for the Mother Agent Orchestrator (MAA).
+
+Cost governance applies per tenant (operator + client). Every task submission
+is checked against active budgets before acceptance.
+
+---
+
+## Cost Estimation
+
+### Per-Task Cost Formula
+
+```
+estimated_cost = cost_per_minute × estimated_runtime_minutes(task_type)
+```
+
+| Task Type | Base Runtime (min) | Cost per Minute | Notes |
+|---|---|---|---|
+| `market-brief` | 8 | $0.05 | HTML + PDF output |
+| `research` | 10 | $0.05 | Multi-source research |
+| `email-draft` | 3 | $0.03 | Fast turnaround |
+| `growth-report` | 12 | $0.05 | Data-heavy |
+| `validation` | 5 | $0.03 | Quick check |
+| `coder` | 15 | $0.06 | Code + test |
+| `executor` | 10 | $0.05 | Action execution |
+| default | 5 | $0.04 | Fallback |
+
+Runtime is estimated per task_type. Actual cost is tracked post-completion
+via `maa_metrics.json` (call count × base_cost_per_call type).
+
+---
+
+## Per-Tenant Budget Configuration
+
+Each tenant config (`client.json`) defines:
+
+```json
+{
+  "client_id": "...",
+  "max_monthly_spend": 500.00,       // USD — hard cap
+  "max_daily_spend": 50.00,         // USD — daily limit
+  "max_tasks_per_day": 100,          // hard task count cap
+  "max_concurrent_tasks": 4,         // parallelism limit
+  "max_expensive_task_class_per_day": {
+    "market-brief": 5,
+    "research": 10,
+    "growth-report": 3
+  },
+  "max_runtime_minutes_per_day": 480  // 8h/day worker limit
+}
+```
+
+Operator configs (`operator.json`) define:
+
+```json
+{
+  "operator_id": "...",
+  "max_monthly_spend": 5000.00,
+  "max_concurrent_tasks": 16,
+  "cost_per_minute_override": 0.04   // optional override for cost estimation
+}
+```
+
+---
+
+## Budget Thresholds
+
+| Threshold | Action |
+|---|---|
+| task-count / runtime / class quota hit | `submit_task_gate()` raises `QuotaExceeded` |
+| repeated over-quota attempts | visible in audit + monitor-driven review |
+| spend fields present in config | runtime-enforced via `_check_spend_quotas()` |
+
+Current runtime truth:
+- `tenant_gate.py` deterministically enforces task-count, concurrency, task-class,
+  runtime-minute, daily spend, and monthly spend quotas.
+- `max_monthly_spend` and `max_daily_spend` are enforced at submission time.
+- Budget exceed actions are implemented as `reject`, `queue`, and `require_approval`.
+- `queue` persists a `queued_budget` task state for deferred execution.
+- `require_approval` persists a `waiting_approval` task state plus an approval entry.
+
+---
+
+## Runtime-Enforced Quotas (Current Truth)
+
+The current runtime enforces:
+1. `max_concurrent_tasks`
+2. `max_tasks_per_day`
+3. `max_expensive_task_class_per_day`
+4. `max_runtime_minutes_per_day`
+5. `max_daily_spend`
+6. `max_monthly_spend`
+
+Anything spend-based should be treated as planning/governance documentation until
+runtime enforcement is added.
+
+---
+
+## Emergency Override
+
+**OPERATOR role only** can temporarily raise a tenant's budget cap.
+
+```bash
+# Operator can use tenant_crud.py or direct config edit to raise caps:
+python3 /root/.openclaw/workspace/ops/multi-agent-orchestrator/tenant_crud.py \
+  update-client --operator-id OP001 --client-id CL001 \
+  --set-max-monthly-spend 1000.00
+```
+
+All override actions are logged to `ops/multi-agent-orchestrator/logs/operator_actions.log`
+with timestamp, operator_id, tenant_id, old value, new value.
+
+---
+
+## Abuse Protection
+
+### Rate and Resource Limits
+
+| Limit | Default | Self-Hoster |
+|---|---|---|
+| `max_tasks_per_day` | 100/client, 500/operator | configurable per client.json |
+| `max_concurrent_tasks` | 4/client, 16/operator | configurable |
+| `max_expensive_task_class_per_day` | per task type | configurable |
+| `max_runtime_minutes_per_day` | 480/client | configurable |
+| `rate_limit_window_seconds` | 3600 | configurable |
+
+These are enforced in `tenant_gate.py` via `_check_resource_quotas()`.
+
+### Abuse Indicators
+
+The continuous health monitor watches for:
+- Task submission rate spike > 10x normal for a tenant
+- Unusual number of failed tasks (error rate > 30%)
+- Abnormal estimated-cost spike (> 2x recent average in 1 hour)
+- Repeated `QuotaExceeded` responses for the same tenant
+
+These are monitoring indicators. They do not imply a spend-cap blocker exists in runtime.
+
+---
+
+## Self-Hoster Safe Defaults
+
+For VPS/workstation/laptop deployments:
+
+```json
+{
+  "max_monthly_spend": 100.00,
+  "max_daily_spend": 10.00,
+  "max_tasks_per_day": 50,
+  "max_concurrent_tasks": 2,
+  "max_runtime_minutes_per_day": 240
+}
+```
+
+These are the defaults when no client config exists. The operator can override
+in `client.json` or `operator.json` as needed.
+
+---
+
+## Cost Reporting
+
+Monthly cost and usage reports are generated by:
+```
+scripts/tenant_usage_governance_report.py
+```
+
+Output: `data/reports/tenant-usage-{operator}-{client}-{YYYY-MM}.csv` and `.json`
+
+---
+
+## Circuit Breaker Integration
+
+Cost budget depletion interacts with the existing circuit breaker:
+- When `max_expensive_task_class_per_day` limit is hit, `submit_task_gate()` rejects new submissions for that tenant/task-type combination via `QuotaExceeded`
+- Monthly spend cap integration is not yet implemented in runtime
+- Circuit breaker behavior described elsewhere should not be read as spend-cap enforcement
+
+---
+
+*Document version: v1.0 | Last reviewed: 2026-04-22*

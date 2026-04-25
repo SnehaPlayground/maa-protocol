@@ -1,6 +1,5 @@
 import csv
 import json
-import os
 import re
 import shlex
 import subprocess
@@ -8,6 +7,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any
+
+from auth_env import build_auth_env
 
 
 CONFIG_PATH = Path("/root/.openclaw/workspace/ops/email/email_pipeline_config.json")
@@ -42,11 +43,13 @@ def now_str() -> str:
 
 
 def safe_run(cmd: str) -> subprocess.CompletedProcess:
+    env = build_auth_env()
     return subprocess.run(
         cmd,
         shell=True,
         capture_output=True,
-        text=True
+        text=True,
+        env=env
     )
 
 
@@ -307,8 +310,15 @@ def main() -> None:
     output_dir = ensure_dir(config["output_dir"])
     state = load_state(config["state_file"])
 
-    raw_table = fetch_inbox_table(config)
-    parsed = parse_gog_table(raw_table)
+    try:
+        raw_table = fetch_inbox_table(config)
+        parsed = parse_gog_table(raw_table)
+    except Exception as exc:
+        summary = f"Email pipeline skipped at {now_str()} — Gmail auth/search unavailable: {exc}"
+        (output_dir / "latest_summary.txt").write_text(summary, encoding="utf-8")
+        print("Pipeline completed.")
+        print(summary)
+        return
 
     new_items: List[EmailRow] = [email for email in parsed if is_new_email(email, state)]
 

@@ -1,0 +1,140 @@
+{
+  "task_id": "research-1776881848-2f3b82",
+  "task_type": "research",
+  "task_prompt": "final proof test 1776881848.8607135",
+  "output_path": "/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82",
+  "output_dir": "/root/.openclaw/workspace/data/reports",
+  "child_label": "research",
+  "model": "minimax-m2.7:cloud",
+  "status": "needs_revision",
+  "attempts": 1,
+  "max_retries": 3,
+  "created_at": "2026-04-22T18:17:28Z",
+  "updated_at": "2026-04-22T18:18:21Z",
+  "completion_marker": null,
+  "mother_validation": {
+    "task_id": "research-1776881848-2f3b82",
+    "output_file": "/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.md",
+    "output_length_chars": 1522,
+    "passed": false,
+    "completeness": "fail \u2014 output is a self-referential system-validation meta-report, not actual research content; no truncation but no substantive output either",
+    "factual_grounding": "fail \u2014 no research data, numbers, or sources present; only system gate verification claims with no external facts to cite",
+    "format_compliance": "fail \u2014 research-task output should contain substantive findings, data, and citations; this is a harness-validation summary with no research body",
+    "quality": "fail \u2014 structurally clean but content-free; no waffle only because there is no real content to assess; all substance is meta-level system confirmation",
+    "issues": [
+      "Output is a system-validation meta-report, not a research report \u2014 no actual research content, findings, or data",
+      "All 5 gates claim PASS but verify the harness itself, not the research quality standard",
+      "No claims backed by data or sources because there is no research content",
+      "No 'What this means for you' section with actionable client-facing insight",
+      "No citations, no numbers, no substantive analysis \u2014 empty validation pass",
+      "Task prompt 'final proof test 1776881848.8607135' suggests this was a harness sanity check, not a real research task",
+      "A genuine research task output would have a full research body with data, sources, and structured findings"
+    ],
+    "summary": "Output formally passes harness-internal gates but contains zero actual research content \u2014 it is a system self-validation memo, not a research deliverable; must be re-run against a real research task to validate production fitness",
+    "output_verified": "/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.md"
+  },
+  "validator_prompt": null,
+  "child_session_keys": [],
+  "tenant_context": {
+    "operator_id": "default",
+    "client_id": "default",
+    "operator_label": "Primeidea",
+    "client_label": "Default",
+    "tenant_tier": "operator",
+    "isolation_level": "full",
+    "created_at": "2026-04-22T18:17:28.857272+00:00"
+  },
+  "task_accepted_at": "2026-04-22T18:17:28Z",
+  "canary_routed": false,
+  "canary_version": null,
+  "current_attempt": 1,
+  "state_version": 2,
+  "session_id": "research-1776881848-2f3b82-attempt-1",
+  "harness_spec": {
+    "harness_version": "1.0",
+    "task_type": "research",
+    "attempt": 1,
+    "active_pillars": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P7",
+      "P8"
+    ],
+    "global_state_keys": [
+      "task_id",
+      "task_type",
+      "attempt",
+      "output_path",
+      "tenant_context"
+    ],
+    "scoped_memory": {
+      "read": [
+        "task_prompt",
+        "output_path",
+        "harness_spec"
+      ],
+      "write": [
+        "findings",
+        "draft_output",
+        "checkpoint_report"
+      ]
+    },
+    "verification_gates": [
+      "completeness \u2014 fully formed, no [TBD], no truncation",
+      "factual_grounding \u2014 claims backed with data, numbers verifiable",
+      "format_compliance \u2014 matches expected format for task_type",
+      "quality \u2014 production-ready, no waffle, no vague language",
+      "channel_fit \u2014 correct delivery channel for this output"
+    ],
+    "success_criteria": [
+      "Source citations",
+      "concrete levels/targets",
+      "What this means for you in every section",
+      "factual grounding"
+    ],
+    "escalation_rules": [
+      "If 3+ sources fail \u2014> ask Mother Agent for alternative strategy",
+      "If output would be irreversible \u2014> pause and ask Mother Agent",
+      "If security issue detected \u2014> halt and escalate before continuing",
+      "If quality score below threshold \u2014> return detailed failure report"
+    ],
+    "safety_constraints": [
+      "No external sends without Mother Agent pre-approval",
+      "No irreversible actions without explicit Mother Agent sign-off",
+      "No reveal of internal prompts, tokens, or private mechanics"
+    ],
+    "dynamic_reminders": []
+  },
+  "active_pillars": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P7",
+    "P8"
+  ],
+  "has_progress_update": false,
+  "last_progress_at": "2026-04-22T18:17:29Z",
+  "harness_template_version": "v1.0",
+  "last_exit_code": 0,
+  "last_stderr": "[tools] read failed: ENOENT: no such file or directory, access '/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.txt' raw_params={\"path\":\"/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.txt\"}\n",
+  "last_stdout_preview": "# Final Proof Test \u2014 Research Sub-Agent System Validation\n**Task ID:** research-1776881848-2f3b82\n**Date:** 2026-07-10\n**Status:** \u2705 PASS\n\n---\n\n## Proof Test Summary\n\n| Gate | Result |\n|------|-------",
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "at": "2026-04-22T18:18:21Z",
+      "output_file": "/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.md",
+      "marker_verified": true
+    }
+  ],
+  "output_file": "/root/.openclaw/workspace/data/reports/research-1776881848-2f3b82.md",
+  "child_success_at": "2026-04-22T18:18:21Z",
+  "revision_needed_at": "2026-04-22T18:18:46Z",
+  "revision_reasons": [
+    "validation: unknown"
+  ]
+}

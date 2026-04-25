@@ -1,0 +1,393 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-22T16:40:54.408Z",
+  "entries": {
+    "memory:memory/2026-03-30.md:33:44": {
+      "key": "memory:memory/2026-03-30.md:33:44",
+      "path": "memory/2026-03-30.md",
+      "startLine": 33,
+      "endLine": 44,
+      "source": "memory",
+      "snippet": "- All 4 images uploaded to Google Drive: RutuRaj PlayGround folder ### Skills Updated (Quality Standards) - article-analysis SKILL.md: Added pre-delivery quality checklist, expanded Evidence Check to include claim-evidence table, confidence score, residual uncertainties, word count verification per section, format checklist - research-context SKILL.md: Added quality standard section making above mandatory for every output - MEMORY.md: Added 3 permanent lessons on quality discipline ### Pending - Blog Post ID 229: awaiting Partha's purge confirmation → then distribute to research list - Samir Shah follow-up: Wednesday 2026-04-01 at 9:00 AM IST - Duplicate research email dedup fix: pending P",
+      "recallCount": 6,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 3.113402488827705,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-07T12:04:02.166Z",
+      "lastRecalledAt": "2026-04-22T16:40:54.408Z",
+      "queryHashes": [
+        "962d599c1872",
+        "f762e4c5d226",
+        "b6acd3fc00df",
+        "5b19b5ef7b7c",
+        "894194b07236"
+      ],
+      "recallDays": [
+        "2026-04-07",
+        "2026-04-10",
+        "2026-04-14",
+        "2026-04-22"
+      ],
+      "conceptTags": [
+        "article-analysis",
+        "skill.md",
+        "pre-delivery",
+        "claim-evidence",
+        "research-context",
+        "memory.md",
+        "follow-up",
+        "all"
+      ]
+    },
+    "memory:memory/2026-04-07.md:1:5": {
+      "key": "memory:memory/2026-04-07.md:1:5",
+      "path": "memory/2026-04-07.md",
+      "startLine": 1,
+      "endLine": 5,
+      "source": "memory",
+      "snippet": "- Partha clarified the research list rule: `primeidea_trend@googlegroups.com` is a valid normal recipient in the research list and must remain there; daily research must send one separate email per recipient, never via CC. - Morning daily research incident (7 Apr 2026): duplicate sends were caused by overlapping send paths plus one path incorrectly using CC; fix direction is single-path sending with one email per research-list recipient and no CC. - Partha strongly wants immediate acknowledgement on longer tasks and does not want to ask \"Done?\" repeatedly; silent long runs should be treated as a workflow/runtime defect to prevent. - Runtime/orchestration finding from investigation: long dail",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.852491995692253,
+      "maxScore": 0.4706534832715988,
+      "firstRecalledAt": "2026-04-09T07:27:38.246Z",
+      "lastRecalledAt": "2026-04-14T14:00:56.660Z",
+      "queryHashes": [
+        "ab625454ac79",
+        "f762e4c5d226"
+      ],
+      "recallDays": [
+        "2026-04-09",
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "primeidea-trend",
+        "googlegroups.com",
+        "single-path",
+        "research-list",
+        "workflow/runtime",
+        "runtime/orchestration",
+        "partha",
+        "clarified"
+      ]
+    },
+    "memory:memory/2026-03-29.md:22:51": {
+      "key": "memory:memory/2026-03-29.md:22:51",
+      "path": "memory/2026-03-29.md",
+      "startLine": 22,
+      "endLine": 51,
+      "source": "memory",
+      "snippet": "- Cron message updated to reflect deduplication + state tracking - MEMORY.md updated with new email workflow rules. ## Protocol Update: Research Email Send Rules (16:30 IST) - Partha has mandated strict self-verification before any research email send - Key rule: Verify all content personally; fix issues independently; only contact Partha if genuinely needed - CTA must always route to Partha Shah (+91-8141027000), never to Sneha - Cron updated: 7AM weekday cron now generates → saves HTML → sends test to Sneha → alerts Partha on Telegram → awaits CONFIRM → then sends to clients - MEMORY.md updated with full research email protocol - Partha's instruction: \"improve quality of your castle\"",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.41792019605636593,
+      "maxScore": 0.41792019605636593,
+      "firstRecalledAt": "2026-04-09T12:56:59.284Z",
+      "lastRecalledAt": "2026-04-09T12:56:59.284Z",
+      "queryHashes": [
+        "045e17a56c7a"
+      ],
+      "recallDays": [
+        "2026-04-09"
+      ],
+      "conceptTags": [
+        "memory.md",
+        "self-verification",
+        "91-8141027000",
+        "cron",
+        "message",
+        "updated",
+        "reflect",
+        "deduplication"
+      ]
+    },
+    "memory:memory/2026-03-31.md:50:62": {
+      "key": "memory:memory/2026-03-31.md:50:62",
+      "path": "memory/2026-03-31.md",
+      "startLine": 50,
+      "endLine": 62,
+      "source": "memory",
+      "snippet": "5. If content unavailable after all attempts: report immediately, no guessing ### Approval Breach Log — 2 entries today - Rrajal Shah unapproved send - ICICI info@ follow-up sent with incomplete details ## Pending - Batch 2 launch (awaiting Batch 1 full review) - CA compensation language approval - ICICI RAGINIBEN ticket status from info@primeidea.in - Rajal movie commitment — pending Partha's decision - info@primeidea.in response to RAGINIBEN follow-up",
+      "recallCount": 4,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2.7902340620756148,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-10T13:04:39.354Z",
+      "lastRecalledAt": "2026-04-14T14:00:56.660Z",
+      "queryHashes": [
+        "b6acd3fc00df",
+        "5b19b5ef7b7c",
+        "8a78f4083e82",
+        "f762e4c5d226"
+      ],
+      "recallDays": [
+        "2026-04-10",
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "follow-up",
+        "primeidea.in",
+        "content",
+        "unavailable",
+        "all",
+        "attempts",
+        "report",
+        "immediately"
+      ]
+    },
+    "memory:memory/2026-03-29.md:69:96": {
+      "key": "memory:memory/2026-03-29.md:69:96",
+      "path": "memory/2026-03-29.md",
+      "startLine": 69,
+      "endLine": 96,
+      "source": "memory",
+      "snippet": "- Correction: Sent clean handoff reply (Message ID: 19d39c1e87e98494) — connect to Partha, factual context only, no advice - Contact notes updated - Lesson: \"I know enough to give a view\" ≠ \"I'm allowed to give a view\". My boundary is connect-and-warm, not advisory. Forever. - MEMORY.md to be updated with explicit boundary rule ## Error Log — Client Communication Formatting + Identity Mistakes Multiple failures across Rrajal and Archana threads: 1. Plain text email sent instead of HTML (Rrajal corrected reply) 2. \"Primeidea Research\" branding used on new lead first contact (should be Sneha) 3. \"Ma'am\" used in salutation (Archana thread) — violated Ji-only rule 4. Advisory content given whe",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-14T08:56:18.869Z",
+      "lastRecalledAt": "2026-04-14T08:56:18.869Z",
+      "queryHashes": [
+        "5843cbe18c21"
+      ],
+      "recallDays": [
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "connect-and-warm",
+        "memory.md",
+        "ji-only",
+        "correction",
+        "sent",
+        "clean",
+        "handoff",
+        "reply"
+      ]
+    },
+    "memory:memory/2026-04-05.md:26:42": {
+      "key": "memory:memory/2026-04-05.md:26:42",
+      "path": "memory/2026-04-05.md",
+      "startLine": 26,
+      "endLine": 42,
+      "source": "memory",
+      "snippet": "- 18789 recurring issue: systemd service starting with old port — needs permanent fix (openclaw.service override) - Note: Telegram remains functional ### Microsoft Agent Framework 1.0 - Evaluated: Not relevant for Primeidea near-term - Use case for enterprise multi-agent systems only ### Gemma 4 (Ollama) - Evaluated: 26B MoE and 31B Dense variants strong benchmarks - Not relevant unless local model needed ## Pending - Rudra Bhalavat: Partha decision on internship outreach - Firewall: permanent fix for openclaw-gateway port mismatch (18789 vs 3579) - SSH hardening: root login, password auth (deferred) - AgentShield scan for ECC (noted in MEMORY.md, still pending)",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 2,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-14T09:23:57.010Z",
+      "lastRecalledAt": "2026-04-14T11:50:10.701Z",
+      "queryHashes": [
+        "5b19b5ef7b7c",
+        "8a78f4083e82"
+      ],
+      "recallDays": [
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "gateway",
+        "openclaw.service",
+        "1.0",
+        "near-term",
+        "multi-agent",
+        "openclaw-gateway",
+        "memory.md",
+        "recurring"
+      ]
+    },
+    "memory:memory/archive/2026-03-28.md:10:13": {
+      "key": "memory:memory/archive/2026-03-28.md:10:13",
+      "path": "memory/archive/2026-03-28.md",
+      "startLine": 10,
+      "endLine": 13,
+      "source": "memory",
+      "snippet": "- Replied to Archana Chauhan on HDFC Balanced Advantage Fund inquiry with a research-based but suitability-cautious response: explained the fund is a dynamic asset allocation option, indicated it may suit moderate-risk 3-5 year investors, avoided a blanket yes/no recommendation, and asked for horizon/current portfolio/objective details for a sharper recommendation. Partha was CCed. - Partha clarified client-email handling rule: use name form like \"Archana Ji\" (not \"Ji Archana\"); do not ask clients follow-up questions in such replies when a directional research view can be provided; give the research view directly, but route final suitability discussion toward a meeting/connection with Partha",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-14T11:50:10.701Z",
+      "lastRecalledAt": "2026-04-14T11:50:10.701Z",
+      "queryHashes": [
+        "8a78f4083e82"
+      ],
+      "recallDays": [
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "research-based",
+        "suitability-cautious",
+        "moderate-risk",
+        "3-5",
+        "yes/no",
+        "horizon/current",
+        "portfolio/objective",
+        "client-email"
+      ]
+    },
+    "memory:memory/archive/2026-03-27.md:1:15": {
+      "key": "memory:memory/archive/2026-03-27.md:1:15",
+      "path": "memory/archive/2026-03-27.md",
+      "startLine": 1,
+      "endLine": 15,
+      "source": "memory",
+      "snippet": "- Salutation correction recorded, but superseded later the same day: final standing rule is to use only \"Ji\" and avoid gendered honorifics. - Replied to Samir Shah on 2026-03-27: acknowledged unavailability, said we will reconnect next week for a fresh appointment, invited him to ask for any specific inputs meanwhile. - Follow-up needed next week with Samir Shah to reconnect and schedule a fresh appointment. - Partha gave 100% green light to handle Samir Shah lead independently without repeated approval prompts for this lead. - Follow-up target set for Wednesday 2026-04-01 at 9:00 AM IST to reconnect with Samir Shah for a fresh appointment schedule. - Need to notify Partha once final meeting",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-14T11:50:10.701Z",
+      "lastRecalledAt": "2026-04-14T11:50:10.701Z",
+      "queryHashes": [
+        "8a78f4083e82"
+      ],
+      "recallDays": [
+        "2026-04-14"
+      ],
+      "conceptTags": [
+        "follow-up",
+        "salutation",
+        "correction",
+        "recorded",
+        "but",
+        "superseded",
+        "later",
+        "the"
+      ]
+    },
+    "memory:memory/2026-04-20.md:1:5": {
+      "key": "memory:memory/2026-04-20.md:1:5",
+      "path": "memory/2026-04-20.md",
+      "startLine": 1,
+      "endLine": 5,
+      "source": "memory",
+      "snippet": "- 2026-04-20: Partha clarified Maa Protocol must be system-wide, not skill-specific. Current state after rollout and audit: architecture is system-wide, major live workflow wiring covers email, integrated email monitor, orchestrator, self-healing, observability, market brief generation, market data fetch, and WhatsApp voice transcription, but Maa is not yet fully trustworthy across the workspace. - 2026-04-20: Maa Protocol pre-execution approval gate is mandatory for Maa work: research/deep-dive first, produce a game plan, summarize it for Partha, self-verify confidence, then wait for explicit approval before execution. - 2026-04-20: Full Maa audit verdict: Not Yet Safe to Trust. Strong arch",
+      "recallCount": 2,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.8488934278488158,
+      "maxScore": 0.42841632664203644,
+      "firstRecalledAt": "2026-04-20T16:58:01.794Z",
+      "lastRecalledAt": "2026-04-20T17:00:25.318Z",
+      "queryHashes": [
+        "aaf5d16c39f4",
+        "78d2d083e538"
+      ],
+      "recallDays": [
+        "2026-04-20"
+      ],
+      "conceptTags": [
+        "system-wide",
+        "skill-specific",
+        "self-healing",
+        "pre-execution",
+        "research/deep-dive",
+        "self-verify",
+        "partha",
+        "clarified"
+      ]
+    },
+    "memory:memory/2026-03-31.md:1:33": {
+      "key": "memory:memory/2026-03-31.md:1:33",
+      "path": "memory/2026-03-31.md",
+      "startLine": 1,
+      "endLine": 33,
+      "source": "memory",
+      "snippet": "# 2026-03-31 — Daily Log ## Revenue Referral Engine — CA Outreach ### CA List Building - 50 CAs compiled from ICAI caconnect, advisorkhoj, firm websites, LinkedIn, IndiaOnline - 42 with full contact (email + phone), 7 need lookup, 3 nearby cities - Warm business contacts: 5 identified - Full list: /root/.openclaw/workspace/contacts/ca-target-list.md ### Batch 1 — Sent 31 Mar 2026 (10 CAs) | # | Name | Email | Msg ID | Status | |---|------|-------|--------|--------| | 1 | Y M Shah | haard@ymshah.com | 19d4498448082608 | REPLY: Interested — follow-up sent | | 2 | Kanti D Ruparel | ca.kdruparel@yahoo.com | 19d4498457f8b6d2 | — | | 3 | Maunang Shah | maunang.shah@yahoo.in | 19d4498444c46eb2 |",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.43285323977470397,
+      "maxScore": 0.43285323977470397,
+      "firstRecalledAt": "2026-04-20T18:35:12.506Z",
+      "lastRecalledAt": "2026-04-20T18:35:12.506Z",
+      "queryHashes": [
+        "c1fcb280fe49"
+      ],
+      "recallDays": [
+        "2026-04-21"
+      ],
+      "conceptTags": [
+        "ymshah.com",
+        "follow-up",
+        "ca.kdruparel",
+        "yahoo.com",
+        "maunang.shah",
+        "yahoo.in",
+        "log",
+        "revenue"
+      ]
+    },
+    "memory:memory/archive/2026-03-27.md:13:20": {
+      "key": "memory:memory/archive/2026-03-27.md:13:20",
+      "path": "memory/archive/2026-03-27.md",
+      "startLine": 13,
+      "endLine": 20,
+      "source": "memory",
+      "snippet": "- Partha explicitly criticized sloppy assumptions in salutations, including incorrectly calling Rrajal \"Sir\"; avoid gendered honorific guesses entirely. - For approval/review workflows of outbound emails, show only one draft at a time unless Partha asks otherwise. - Do not show raw HTML footer code in email previews; keep previews clean and rendered as normal text. - For \"Combine\" newspaper outputs, the outbound email/blog structure must include both article analysis and investment view, including category-wise stock watchlists split into Large Cap, Mid Cap, Small Cap, and Micro Cap. - On 2026-03-27, a combined article/investment email about India power capacity expansion was sent to the res",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4293538063764572,
+      "maxScore": 0.4293538063764572,
+      "firstRecalledAt": "2026-04-20T18:35:12.506Z",
+      "lastRecalledAt": "2026-04-20T18:35:12.506Z",
+      "queryHashes": [
+        "c1fcb280fe49"
+      ],
+      "recallDays": [
+        "2026-04-21"
+      ],
+      "conceptTags": [
+        "approval/review",
+        "email/blog",
+        "category-wise",
+        "article/investment",
+        "partha",
+        "explicitly",
+        "criticized",
+        "sloppy"
+      ]
+    },
+    "memory:memory/2026-03-31.md:26:59": {
+      "key": "memory:memory/2026-03-31.md:26:59",
+      "path": "memory/2026-03-31.md",
+      "startLine": 26,
+      "endLine": 59,
+      "source": "memory",
+      "snippet": "- Haard Shah (Y M Shah & Co): \"Sure, please give me more details via email first.\" → Follow-up sent with revenue stream detail (msg 19d44cab1ae3e68b) - Remaining 9: No reply yet ## Operations — Today ### Contacts & Lists - info@primeidea.in added to Google Contacts - Vimul Solanki (solankivimul@gmail.com, +918320377785) added to Google Contacts + research list - Pratik Shah removed from research list - Research list: partha.shah@gmail.com, info@primeidea.in, Rrajal Shah, Mayank Patel, Vimul Solanki, Gaurav Janiyani ### Email Actions - Vimul Solanki intro email sent (msg 19d44eda30b01229) - Morning research PDF sent to Partha on request (msg 19d44d3acc8fbf52) - ICICI Prudential — RAGINIBEN",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4278041213750839,
+      "maxScore": 0.4278041213750839,
+      "firstRecalledAt": "2026-04-20T18:35:12.506Z",
+      "lastRecalledAt": "2026-04-20T18:35:12.506Z",
+      "queryHashes": [
+        "c1fcb280fe49"
+      ],
+      "recallDays": [
+        "2026-04-21"
+      ],
+      "conceptTags": [
+        "follow-up",
+        "primeidea.in",
+        "gmail.com",
+        "partha.shah",
+        "haard",
+        "shah",
+        "sure",
+        "please"
+      ]
+    }
+  }
+}

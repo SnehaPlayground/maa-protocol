@@ -23,9 +23,9 @@ Usage:
     python3 tenant_crud.py usage <operator_id> [<client_id>] [--since 24]
 
 Examples:
-    python3 tenant_crud.py create-operator primeidea "Primeidea Advisory"
-    python3 tenant_crud.py create-client primeidea acme "ACME Corp" --max-tasks-per-hour 50
-    python3 tenant_crud.py usage primeidea acme --since 48
+    python3 tenant_crud.py create-operator default_operator "Default Operator"
+    python3 tenant_crud.py create-client default_operator acme "ACME Corp" --max-tasks-per-hour 50
+    python3 tenant_crud.py usage default_operator acme --since 48
 """
 
 import argparse
@@ -65,9 +65,18 @@ def exit_ok(msg: str) -> None:
     print(green(msg))
 
 
+# ── RBAC helper ────────────────────────────────────────────────────────────────
+
+def _require_operator():
+    """Enforce OPERATOR role for all mutating command invocations."""
+    from access_control import assert_operator
+    assert_operator("tenant_crud.mutation")
+
+
 # ── Operator CRUD ──────────────────────────────────────────────────────────────
 
 def cmd_create_operator(operator_id: str, label: str) -> None:
+    _require_operator()
     if operator_id == "default":
         exit_err("Cannot create operator 'default' — reserved for system")
     if not operator_id or not label:
@@ -131,6 +140,7 @@ def cmd_list_operators() -> None:
 
 
 def cmd_update_operator(operator_id: str, **kwargs) -> None:
+    _require_operator()
     if operator_id == "default":
         exit_err("Cannot update operator 'default'")
     cfg = load_operator_config(operator_id)
@@ -145,6 +155,7 @@ def cmd_update_operator(operator_id: str, **kwargs) -> None:
 # ── Client CRUD ───────────────────────────────────────────────────────────────
 
 def cmd_create_client(operator_id: str, client_id: str, label: str, **kwargs) -> None:
+    _require_operator()
     if operator_id == "default":
         exit_err("Cannot add clients to operator 'default'")
     if not client_id or not label:
@@ -217,6 +228,7 @@ def cmd_list_clients(operator_id: str) -> None:
 
 
 def cmd_update_client(operator_id: str, client_id: str, **kwargs) -> None:
+    _require_operator()
     if operator_id == "default":
         exit_err("Cannot update clients under operator 'default'")
     cfg = load_client_config(operator_id, client_id)
@@ -229,6 +241,7 @@ def cmd_update_client(operator_id: str, client_id: str, **kwargs) -> None:
 
 
 def cmd_deactivate_client(operator_id: str, client_id: str) -> None:
+    _require_operator()
     cfg = load_client_config(operator_id, client_id)
     cfg["status"] = "deactivated"
     cfg["deactivated_at"] = datetime.now(UTC).isoformat()
@@ -241,6 +254,7 @@ def cmd_deactivate_client(operator_id: str, client_id: str) -> None:
 def cmd_onboard(operator_id: str, client_id: str, operator_label: str,
                 client_label: str, **kwargs) -> None:
     """Create operator (if needed) + client in one shot."""
+    _require_operator()
     # 1. Create or update operator
     op_path = TENANTS_ROOT / operator_id
     if not op_path.exists():
@@ -497,6 +511,13 @@ def main() -> None:
     usg.add_argument("client_id", nargs="?", default=None)
     usg.add_argument("--since", type=int, default=24, help="Hours to look back (default: 24)")
 
+    # Aliases
+    sub.add_parser("list-tenants", help="Alias for list-operators")
+    get_usg = sub.add_parser("get-usage", help="Alias for usage")
+    get_usg.add_argument("operator_id")
+    get_usg.add_argument("client_id", nargs="?", default=None)
+    get_usg.add_argument("--since", type=int, default=24)
+
     args = parser.parse_args()
 
     match args.cmd:
@@ -529,7 +550,20 @@ def main() -> None:
                         max_tasks_per_hour=args.max_tasks_per_hour)
         case "usage":
             cmd_usage(args.operator_id, args.client_id, args.since)
+        case "list-tenants":
+            cmd_list_operators()
+        case "get-usage":
+            cmd_usage(args.operator_id, args.client_id, args.since)
 
 
 if __name__ == "__main__":
+    # ── Phase 10 RBAC: all CLI commands require OPERATOR role ─────────────────
+    from access_control import require_operator_role
+    try:
+        require_operator_role()
+    except PermissionError as e:
+        print(f"RBAC: {e}", file=sys.stderr)
+        sys.exit(1)
+    except SystemExit:
+        raise
     main()

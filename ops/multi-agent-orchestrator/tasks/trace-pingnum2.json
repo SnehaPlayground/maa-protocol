@@ -1,0 +1,19 @@
+{
+  "task_id": "trace-pingnum2",
+  "task_type": "research",
+  "status": "retry",
+  "attempts": 1,
+  "progress_ping_sent_at_1": "2026-04-21T17:00:00Z",
+  "updated_at": "2026-04-21T17:00:00Z",
+  "progress_ping_2_sent_at_1": "2026-04-21T17:16:32Z",
+  "stale_running_detected_at": "2026-04-21T17:40:43Z",
+  "child_failure_reason": "stale running task after restart/recovery",
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "at": "2026-04-21T17:40:43Z",
+      "child_failure_reason": "stale running task after restart/recovery",
+      "status": "stale_recovered"
+    }
+  ]
+}

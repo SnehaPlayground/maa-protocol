@@ -218,7 +218,7 @@ FOLDER STRUCTURE — where to put every new file
 | knowledge/ | Reference docs and reusable knowledge files |
 | data/email/ | Email state, generated email JSON/txt outputs, test bodies |
 | data/reports/ | Generated reports and HTML outputs |
-| data/transcripts/ | Transcript and voice-derived files |
+
 | temp/ | Temporary scratch files and one-time debug files |
 | logs/ | Log files |
 | assets/ | Static assets such as images |

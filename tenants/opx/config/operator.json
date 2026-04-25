@@ -1,0 +1,1 @@
+{"operator_id": "opx", "max_concurrent_tasks": 8, "max_tasks_per_hour": 200, "max_tasks_per_day": 500, "max_expensive_task_class_per_day": {}, "max_runtime_minutes_per_day": 480, "rate_limit_window_seconds": 3600}

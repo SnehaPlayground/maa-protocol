@@ -1,10 +1,12 @@
 from pathlib import Path
 import subprocess
 
+from auth_env import build_auth_env
+
 OUTPUT_FILE = Path("/root/.openclaw/workspace/data/email/email_inbox_snapshot.txt")
 
 def run_command(cmd):
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, env=build_auth_env())
     if result.returncode != 0:
         print("Command failed:")
         print(result.stderr)

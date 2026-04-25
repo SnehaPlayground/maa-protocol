@@ -1,0 +1,6 @@
+{
+  "operator_id": "reject_phase13-full-60640",
+  "exceed_action": "reject",
+  "max_daily_spend": 50.0,
+  "max_monthly_spend": 500.0
+}

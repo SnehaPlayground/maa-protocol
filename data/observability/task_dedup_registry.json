@@ -1,0 +1,34 @@
+{
+  "task:b8467c26029484ff4437fe2127ab0e0bf5a1e789574eb3a5818aa70ea12a7a59": {
+    "task_id": "task-001",
+    "task_type": "market-brief",
+    "input_summary": "test summary",
+    "tenant_id": "default",
+    "submitted_at": "2026-04-22T16:50:30.400341+00:00",
+    "status": "running"
+  },
+  "task:97df0de19231e0d51fa65e49409de68a6040015f3eddcf97e9440884b63dbe8d": {
+    "task_id": "research-1776879770-08b4c7",
+    "task_type": "research",
+    "input_summary": "dedup test body",
+    "tenant_id": "default:default",
+    "submitted_at": "2026-04-22T17:42:50.560259+00:00",
+    "status": "pending"
+  },
+  "task:ba6358d5a9c3fb9bee993b49fe3493019f9c946c96aec78ccfc13f601353fd88": {
+    "task_id": "research-1776881848-2f3b82",
+    "task_type": "research",
+    "input_summary": "final proof test 1776881848.8607135",
+    "tenant_id": "default:default",
+    "submitted_at": "2026-04-22T18:17:28.861358+00:00",
+    "status": "pending"
+  },
+  "task:6a70124951e0d1f8a807643a7666b201d9f06bced60e62019cb0483d6e9cd91b": {
+    "task_id": "research-1776882117-805a9a",
+    "task_type": "research",
+    "input_summary": "reaudit-1776882117.683944",
+    "tenant_id": "default:default",
+    "submitted_at": "2026-04-22T18:21:57.686875+00:00",
+    "status": "pending"
+  }
+}

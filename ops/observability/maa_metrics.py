@@ -338,7 +338,7 @@ def print_dashboard(since_hours: Optional[int] = None, tenant_filter: Optional[s
         a = e.get("agent") or "unknown"
         agent_ops.setdefault(a, {"calls": 0, "tasks_completed": 0, "tasks_total": 0, "errors": 0})["errors"] += 1
 
-    lat_vals = [l["value_ms"] for l in latencies]
+    lat_vals = [l["value_ms"] for l in latencies if "value_ms" in l]
     avg_latency = sum(lat_vals) / len(lat_vals) if lat_vals else 0.0
 
     # Top agents sorted by total ops volume
@@ -464,7 +464,7 @@ def print_summary(since_hours: Optional[int] = None, tenant_filter: Optional[str
     total_errors = len(errors)
     total_tasks = len(tasks)
 
-    lat_vals = [l["value_ms"] for l in latencies]
+    lat_vals = [l["value_ms"] for l in latencies if "value_ms" in l]
     avg_latency = sum(lat_vals) / len(lat_vals) if lat_vals else 0.0
     min_lat = min(lat_vals) if lat_vals else 0
     max_lat = max(lat_vals) if lat_vals else 0

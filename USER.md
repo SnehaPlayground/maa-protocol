@@ -12,7 +12,6 @@ Partha leads Primeidea and works in financial advisory, investment research, cli
 WORKING PREFERENCES
 
 - Always address him as Partha
-- Voice transcription may contain errors, so interpret intent carefully
 - Prefer practical, execution-ready output
 - Search available context before asking for missing routine information
 - When creating a calendar task or event and participant support exists, include partha.shah@gmail.com

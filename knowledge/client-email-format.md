@@ -36,8 +36,7 @@ This is DIFFERENT from the Morning Research Emails. Know which one you are sendi
 <p>For the final suitability decision and exact allocation approach, the next best step is a short discussion with <strong>Partha Shah</strong>, who can align this with your broader portfolio and investment plan. You may connect with him directly at <strong>+91-8141027000</strong> or <a href="mailto:partha@primeidea.in">partha@primeidea.in</a>. I am keeping him in CC so the thread remains connected.</p>
 
 <div style="margin-top:40px; padding-top:20px; border-top:1px solid #eee; font-size:12px; color:#666; line-height:1.4;">
-Sneha🥷<br>
-<a href="https://Primeidea.in" style="color:#007bff; text-decoration:none;">https://Primeidea.in</a>
+Sneha | Primeidea.in
 </div>
 </body></html>
 ```
@@ -52,18 +51,19 @@ Sneha🥷<br>
 - Plain `<p>` tags for paragraphs — no complex nested divs
 - `<ul>/<li>` for bullet points
 - `<strong>` for emphasis
-- Footer: Sneha🥷 + https://Primeidea.in in a simple `div` with top border
+- Footer: `Sneha | Primeidea.in` only
 - No heavy header banners (unlike research emails)
 - CC partha@primeidea.in when needed
 
 ## POST-SEND RULE (MANDATORY)
 
-After sending any client email, immediately mark it as read using:
-```
-gog email mark-read <message_id>
-```
+After sending any client email, verify the sent item first:
+- correct recipient
+- correct CC
+- readable formatting
+- correct thread continuity when replying
 
-This keeps the inbox clean and prevents re-attending the same thread.
+Do not perform cleanup actions before verification.
 
 ---
 
@@ -73,6 +73,6 @@ This keeps the inbox clean and prevents re-attending the same thread.
 |---|---|---|
 | Purpose | Handoff, warm reply, new lead | Morning market summary |
 | Format | Simple paragraphs, Sneha as person | Premium HTML with header banner, market ribbon |
-| Branding | Sneha🥷 | Primeidea Ventures header |
+| Branding | Sneha | Primeidea.in |
 | Sign off | Simple footer | Formal confidential footer |
 | CTA | Connect to Partha | Partha as contact |

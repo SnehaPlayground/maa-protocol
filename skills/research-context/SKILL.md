@@ -5,25 +5,32 @@ description: Primary umbrella workflow for turning article screenshots, clipping
 
 # Research Context
 
-A single versatile skill for turning a source article or clipping into the right research output.
+A clean routing skill for turning a source article or clipping into one of three outcomes only:
+1. Analysis
+2. Analysis + Investment Recommendation
+3. Blog Posting
+
+## Purpose
+
+Use this skill to choose the right research workflow from one source context and return clear, high-quality writing.
+
+Apply the Humanization Filter to every output in every mode.
+
+Do not use this skill for email drafting, WhatsApp summaries, LinkedIn drafts, distribution workflows, or broad publishing packs.
 
 ## Quality Standard (Non-Negotiable)
 
-Every output from this skill must meet these standards before delivery:
+Every output from this skill must meet these standards before delivery.
+Apply the Humanization Filter before final delivery.
 
-**Every article analysis must include:**
 - Claim-to-evidence table: each key claim paired with exact quote and source location
-- Confidence score: High/Medium/Low with justification
+- Confidence score: High / Medium / Low with justification
 - Residual uncertainties: explicit notes on weak or incomplete evidence
-- Word count verification: each section within its defined limit
+- Evidence Check must be the final section of every deliverable
 
-**Evidence Check must be the final section of every deliverable.** If evidence is weak, say so. Do not inflate confidence to sound authoritative.
+Do not invent facts. Do not make unsupported claims. Do not inflate confidence.
 
-**No invented facts. No unsupported claims. No generic hedging.**
-
-When Partha provides a processed analysis (with claim-evidence tables, confidence scores, word count checks), treat that as the quality benchmark to match and exceed.
-
-## What this skill accepts
+## Accepted Inputs
 
 Use this skill for:
 - Newspaper screenshots
@@ -34,92 +41,98 @@ Use this skill for:
 - Copied article text
 - Mixed-source research notes derived from a single article context
 
-## Intake rule
+## Intake Rule
 
-When Partha shares a source item and the intended output is not already clear, ask:
+If Partha has not specified the intended output, ask:
 
 What would you like me to prepare from this research context, Partha?
-1. Article Analysis
-2. Investment Analysis
-3. Combined Research Pack
-4. LinkedIn Draft
-5. WhatsApp Summary
-6. Blog-Ready Article
-7. Email Pack
-8. Full Publishing Pack
+1. Analysis
+2. Analysis + Investment Recommendation
+3. Blog Posting
 
-If the request is already explicit, do not ask again. Route directly.
+If the request is already explicit, do not ask again.
 
-## TASK OPTIONS
+## Routing
 
-### 1. Article Analysis
-Use the article-analysis workflow only.
+### 1. Analysis
+Route to the article-analysis workflow only.
 
-Deliver: Key Takeaways, Detailed Breakdown, Evidence Check.
+Deliver:
+- Key Takeaways written in clear natural language
+- Detailed Breakdown written in simple English
+- Claim-to-Evidence Table
+- Confidence Score
+- Residual Uncertainties
+- Evidence Check
 
-### 2. Investment Analysis
-Use the investment-analysis workflow only.
+### 2. Analysis + Investment Recommendation
+Route to both article-analysis and investment-analysis workflows.
 
-Deliver: Article-triggered investment thesis, Sector and company impact mapping, Watchlists by market-cap bucket, Risk view, Mutual fund ideas.
+Deliver:
+- Article Analysis written in clear natural language
+- Investment Thesis written in simple English
+- Sector and Company Impact Mapping
+- Watchlists by market-cap bucket where relevant
+- Risk View
+- Mutual Fund or scheme-level ideas where appropriate
+- Claim-to-Evidence Table
+- Confidence Score
+- Residual Uncertainties
+- Evidence Check
 
-### 3. Combined Research Pack
-Run both article analysis and investment analysis from the same source.
+### 3. Blog Posting
+Prepare the article for blog publishing.
 
-Deliver: Article Analysis → Investment Thesis → Watchlists by market-cap bucket → LinkedIn Draft → WhatsApp Summary → Evidence Check.
+**Text Content Chronology — mandatory for every blog post:**
+1. TL;DR
+2. Key Takeaways
+3. Detailed Breakdown
+4. Conclusions
 
-### 4. LinkedIn Draft
-Create only the LinkedIn-ready version grounded in the source context.
+Deliver:
+- Blog-ready article draft written in simple, human language
+- SEO title
+- Meta description
+- Suggested slug
+- Exactly one approved WordPress category
+- Relevant tags
+- Evidence Check
 
-### 5. WhatsApp Summary
-Create only the forwardable WhatsApp summary grounded in the source context.
+Do not publish until Partha has reviewed the draft and provided the featured image.
 
-### 6. Blog-Ready Article
-Create the humanized blog package.
+## Humanization Filter
 
-Include: SEO title, Meta description, Suggested slug, Exactly one approved WordPress category, Relevant tags.
+Apply this filter to all writing created through this skill.
 
-Note: Do not include the featured image recommendation unless Partha specifically asks for it.
+Goals
+- Use simple English
+- Sound like a thoughtful human, not a machine
+- Keep the writing clear, calm, and easy to read
+- Prefer natural flow over rigid report language
 
-### 7. Email Pack
-Prepare the research email package for the research list.
+Rules
+- Use short to medium sentences
+- Use plain words instead of heavy jargon when possible
+- Explain ideas in a natural way
+- Keep transitions smooth so the writing feels connected
+- Make the meaning easy for a normal reader to follow on first read
+- Remove robotic phrasing, stiff openings, and template-heavy wording
+- Do not use unnecessary symbols such as colon, semicolon, exclamation mark, or long dash unless truly required
+- Avoid stacked bullets when a short natural paragraph works better
+- Do not sound dramatic, salesy, or artificial
+- Do not overstate confidence
+- Retest and recheck the language before final delivery until it reads naturally
 
-Rules:
-- One personalized email per recipient
-- Use simple, clear newspaper-style formatting rather than heavy newsletter formatting
-- Start with exactly one short personalized line before the analysis begins
-- Use this section order exactly:
-  1. Personalized opening line
-  2. TL;DR
-  3. Key Takeaways
-  4. Detailed Breakdown
-  5. Investment Ideas
-  6. CTA
-  7. Signature
-- If the email includes any research ideas, stock names, mutual fund ideas, or investment guidance, it must include this exact disclaimer:
-  ⚖️ DISCLAIMER: This is only for Educational purposes only. This is not recommendations. Consult your financial advisor before taking any action.
-- Attach the original source image or file for newspaper/article workflows
-- Do not inline the source image unless Partha explicitly asks
-- The CTA must direct the reader to contact Partha Shah by name and mobile number only
-- Do not include Partha's email address in the CTA unless he explicitly asks
-- Closing offer line ("If you would like, I can convert this into...") is included only when recipient is NOT Partha
+Quick self-check before final output
+- Does this sound like a real person wrote it
+- Is the English simple and clean
+- Can this be understood quickly without rereading
+- Did I remove robotic phrases and unnecessary punctuation
+- Is the tone warm, clear, and professional
 
-### 8. Full Publishing Pack
-Produce the complete downstream output suite from one source context.
+## Blog Posting Rules
 
-Default components:
-- Combined Article + Investment Analysis
-- Blog-Ready Article
-- WhatsApp Summary
-- Email Pack
-- WordPress publishing + client distribution (see full pipeline below)
-
----
-
-## BLOG PUBLISHING PIPELINE (Partha-First Review)
-
-This pipeline covers the complete lifecycle: Source → Draft → Image → Publish → Distribute.
-
-### WordPress Credentials (already configured)
+### WordPress Credentials
 - Application Password: stored in `/root/.openclaw/workspace/blog_key.md`
 - Site URL: `https://admin.primeidea.in`
 - Auth: `sneha.primeidea@gmail.com` + app password
@@ -134,204 +147,84 @@ Use exactly one:
 - Tax Planning (ID: 5)
 - Wealth Management (ID: 6)
 
----
+### Blog Workflow
 
-### PIPELINE STEPS
-
-#### STEP 1 — Process Source → Generate Draft
-- Accept source (image, PDF, text, clipping)
+#### Step 1 — Process Source
+- Accept source
 - Save original to archive location
-- Run appropriate analysis task (Article / Investment / Combined)
-- Produce: draft content + TL;DR summary + suggested slug/category/tags
-- **Send draft to Partha for review — do NOT proceed without confirmation**
+- Generate draft content with title, slug, category, and tags
+- Rewrite until the language feels human, smooth, and easy to read
+- Send draft to Partha for review
+- Do not proceed without confirmation
 
-#### STEP 2 — Receive Featured Image from Partha
-- Partha sends the featured image separately
-- Save to workspace
-- Do NOT proceed to publish without the image
+#### Step 2 — Receive Featured Image and Media
+- Wait for Partha to provide the featured image
+- If Partha sends an audio or video file, extract audio using ffmpeg before upload (video files contain audio track; extract with `-vn -acodec libmp3lame`)
+- Do not publish without the featured image
 
-#### STEP 3 — Publish to WordPress
-Upload media → Create post with featured image → Publish → obtain live URL.
+#### Step 3 — Publish to WordPress
+- Upload media (source image, featured image, AND any audio/video) using multipart form upload (`-F` flag with curl) — this bypasses ModSecurity restrictions on the REST API
+- Extract audio from video files using ffmpeg before uploading
+- Create post with full content following the mandatory chronology (TL;DR → Key Takeaways → Detailed Breakdown → Conclusions)
+- **Embed source image into the post body** as the first element after the audio/video (if any):
+  - Width: 250px
+  - Float: right with `margin:0 0 15px 20px`
+  - Border-radius: 8px
+  - Text wraps around it naturally
+  - Link to full-resolution version opening in a new tab
+- **Embed audio at the very top of the post** before any text or image:
+  - Use `<audio controls>` with style `width:100%;margin-bottom:20px;border-radius:8px;`
+  - Include exactly one `<source src="..." type="audio/mpeg">` inside
+  - **Never** include the text "Your browser does not support the audio element." inside the audio tag
+  - **Never** include a "Listen to this article" link or any other text inside the audio tag
+  - The audio element must be self-contained and clean
+  - Correct example:
+    ```html
+    <audio controls style="width:100%;margin-bottom:20px;border-radius:8px;"><source src="https://admin.primeidea.in/wp-content/uploads/YYYY/MM/filename.mp3" type="audio/mpeg"></audio>
+    ```
+- Set featured media (thumbnail image provided by Partha)
+- Publish
+- Capture live URL
 
-**Upload media:**
-```bash
-WP_CREDS=$(cat /root/.openclaw/workspace/blog_key.md | grep -E "Username|Password" | sed 's/.*: *//' | tr '\n' ':' | sed 's/:$//')
-curl -s --max-time 30 \
-  -u "$WP_CREDS" \
-  -H "Content-Disposition: attachment; filename=featured.jpg" \
-  -H "Content-Type: image/jpeg" \
-  --data-binary "@/path/to/featured.jpg" \
-  "https://admin.primeidea.in/wp-json/wp/v2/media"
-```
-Response contains `id` and `source_url`.
-
-**Create post:**
-```bash
-WP_CREDS=$(cat /root/.openclaw/workspace/blog_key.md | grep -E "Username|Password" | sed 's/.*: *//' | tr '\n' ':' | sed 's/:$//')
-curl -s --max-time 30 \
-  -u "$WP_CREDS" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "<SEO TITLE>",
-    "content": "<FULL HTML CONTENT WITH FEATURED IMAGE>",
-    "status": "publish",
-    "categories": [<CATEGORY_ID>],
-    "tags": [<TAG_ID_1>, <TAG_ID_2>],
-    "featured_media": <MEDIA_ID>,
-    "slug": "<SLUG>"
-  }' \
-  "https://admin.primeidea.in/wp-json/wp/v2/posts"
-```
-Response contains `link` (live URL).
-
-**Self-verify after publish:**
-- Visit the live URL and confirm it renders correctly
-- Confirm featured image displays properly
+#### Step 4 — Self-Verify
+- Confirm live URL works
+- Confirm featured image renders correctly
+- Confirm audio element (if added) is embedded at the top of the post and is clean — no fallback text, no "Listen to this article" link inside
+- Confirm source image is embedded in the content body — small (250px), right-floated, with text wrapping
+- Confirm content follows the mandatory chronology: TL;DR first, then Key Takeaways, then Detailed Breakdown, then Conclusions
 - Confirm content, category, and tags are correct
-- If any issue, unpublish and fix before distributing
+- Confirm the writing feels natural and not robotic
+- If any issue is found, fix before reporting completion
 
-#### STEP 4 — Draft Client Distribution Email
-Using the live blog URL and TL;DR from Step 1, draft personalized outreach emails for the research list.
+## Fixing Existing Posts with Audio
 
-**Send draft to Partha for review — wait for confirmation before proceeding to Step 5.**
+If a published post has audio issues, check for these two problems:
+1. **Fallback text** — "Your browser does not support the audio element." inside the `<audio>` tag. Remove it.
+2. **"Listen to this article" link** — an `<a>` tag with link text "Listen to this article" nested inside the `<audio>` element. Remove it.
 
-**Email format for blog distribution:**
-```html
-<html><body>
-<p>[Recipient Name] Ji,</p>
+Both problems make the theme show unwanted labels. The audio element must always be self-contained and clean.
 
-<p>You had asked about / shared interest in [topic reference] — we wrote about it here:</p>
+## Preference Override
 
-<p><a href="[BLOG URL]"><strong>[Article Headline]</strong></a></p>
-
-<p><strong>TL;DR:</strong> [2-3 sentence summary of key takeaway]</p>
-
-<p>Regards,<br>
-Sneha🥷<br>
-Primeidea Ventures<br>
-<a href="https://Primeidea.in">https://Primeidea.in</a></p>
-</body></html>
-```
-
-**Quality gates for client distribution email:**
-- [ ] Personalized opening line (references their prior interest or context if available)
-- [ ] Blog URL is correct and live
-- [ ] TL;DR accurately reflects article content
-- [ ] Subject line is compelling
-- [ ] Sneha identity, not Primeidea Research
-- [ ] No investment advice, no directional claims
-- [ ] Plain `<p>` format, simple and personal
-- [ ] Post-send verify: read sent email back confirms formatting renders correctly
-
-#### STEP 5 — Send to Research List
-- Read `research_list.md` for current recipients
-- Send one personalized email per recipient
-- Partha is already CC'd on all other client-facing and business emails; for blog/research distribution emails (one-way), CC is not required unless Partha specifically requests it
-- Send one at a time; verify each before next
-
-#### STEP 6 — Post-Send Verification (MANDATORY)
-After every distribution email:
-- Run `gog email read <message_id>` to confirm content, formatting, recipient
-- Mark as read after verification
-- If any issue, send corrected version immediately
-- Report completion to Partha only after all sends verified
-
----
-
-## QUALITY RULES (Non-Negotiable)
-
-1. **Never publish without the featured image** — Partha must provide it first
-2. **Verify live URL before distributing** — a broken link damages Primeidea credibility
-3. **TL;DR must match article content** — do not exaggerate or add unsupported claims
-4. **No investment advice in client emails** — distribute article only, no directional calls
-5. **Post-send verification is mandatory** — read every sent email back before reporting done
-6. **HTML format for all client emails** — never plain text
-7. **Partha reviews drafts first** — send draft to Partha for confirmation before publishing or distributing
-
----
-
-## PREFERENCE OVERRIDE
-
-When this skill routes into investment analysis or any investor-facing output:
+When this skill routes into investment analysis or investor-facing output:
 - Never use "Direct Plan" or "Regular Plan" — use scheme names only
-- Always maintain an India-positive, opportunity-forward tone — motivate investors to participate in India's structural growth story
-- Never recommend Direct mutual fund plans — use Regular plan framing only (already in MEMORY.md but reinforce here)
+- Maintain an India-positive, opportunity-forward tone
+- Never recommend Direct mutual fund plans
 - Keep recommendations aligned with Primeidea style and Partha's workflow rules
 
-## EMAIL GUARDRAIL
+## Delivery States
 
-Before any external email is sent, verify against the full pre-send checklist. Do not send a broken draft. Do not fake sending.
+Every run must end in one of these states:
+- Delivered in chat
+- Draft ready
+- Awaiting Partha approval
+- Blocked by missing input
 
----
+## Failure Handling
 
-## DELIVERY PATTERNS
-
-### Chat delivery
-Use in-chat delivery for summaries, LinkedIn drafts, WhatsApp summaries, and working research notes.
-
-### Email delivery
-Use personalized research emails when Partha asks for email packaging or explicitly approves sending.
-For newspaper/article research:
-- Use HTML format: `<ul>` for bullets, `<strong>` for section headers, plain text signature
-- Keep the body simple, clear, and easy to scan
-- Include exactly one brief personalized opening line before the analytical sections
-- Follow this accepted order exactly: Personalized opening line → TL;DR → Key Takeaways → Detailed Breakdown → [Investment Ideas if applicable] → CTA → Signature
-- Disclaimer is ONLY needed when stock names, mutual fund names, or investment recommendations are included — omit otherwise
-- Closing offer line ("If you would like, I can convert this into...") is included only when recipient is NOT Partha
-
-### Blog delivery
-When Partha asks for blog-ready output or publishing, prepare the full WordPress-ready package and enforce category and tag rules.
-For blog posts:
-- use the primary newspaper article image inside the blog body as the source article image
-- use the full-resolution original upload
-- display it at small visual size by default
-- wrap text properly around the image
-- make the image clickable so it opens the full high-resolution original image in a new tab
-
----
-
-## PRE-SEND REVIEW CHECKLIST
-
-### For blog publishing:
-- [ ] Featured image received from Partha
-- [ ] Content verified — no factual errors, no unsupported claims
-- [ ] Category is exactly one from approved list
-- [ ] Tags are relevant and appropriate
-- [ ] Slug is clean and descriptive
-- [ ] Live URL verified after publish
-- [ ] Featured image renders on live post
-
-### For client distribution emails:
-- [ ] Blog URL is live and correct
-- [ ] TL;DR accurately reflects article
-- [ ] Personalized opening line present
-- [ ] Email uses HTML format (simple `<p>` structure)
-- [ ] Sneha identity, not Primeidea Research
-- [ ] No investment advice, no directional claims
-- [ ] Post-send: read sent email back, confirm formatting renders
-- [ ] Marked as read after verification
-
-### For research emails (non-blog):
-- [ ] Email uses HTML format (`<ul>` bullets, `<strong>` headers, plain text signature)
-- [ ] Source image/file is attached, NOT inlined
-- [ ] Exactly one short personalized opening line before TL;DR
-- [ ] Chronology: Personalized opening → TL;DR → Key Takeaways → Detailed Breakdown → [Investment Ideas if applicable] → CTA → Signature
-- [ ] If NO investment ideas → NO disclaimer needed
-- [ ] If investment ideas ARE present → disclaimer MUST be included
-- [ ] CTA points to Partha Shah by name and mobile number only
-- [ ] Post-send: read sent email back, confirm formatting renders
-
-**If ANY check fails, revise before sending. Do not send a broken draft.**
-
----
-
-## FAILURE HANDLING
-
-- Weak OCR: ask for a clearer image.
-- Partial article: identify the missing part before analysis.
-- Missing delivery target: prepare drafts and ask for the missing detail.
-- Missing featured image: do not publish; wait for Partha to send it.
-- WordPress publish fails: retry once; if still failing, alert Partha on Telegram.
-- Broken live URL after publish: unpublish immediately, fix, republish.
-- If draft does not satisfy the pre-send review checklist: revise first.
-- Unclear task intent: show the task menu and let Partha choose.
+- Weak OCR: ask for a clearer image
+- Partial article: identify what is missing before analysis
+- Missing featured image: do not publish
+- WordPress publish fails: retry once, then alert Partha
+- Broken live URL after publish: fix before reporting done
+- Unclear task intent: ask Partha to choose one of the three modes only

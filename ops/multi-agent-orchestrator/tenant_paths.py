@@ -36,9 +36,31 @@ class TenantPathResolver:
 
     def resolve(self, resource_type: str) -> Path:
         """Get the base path for a resource type under this tenant."""
+        from urllib.parse import unquote
         if resource_type not in self.RESOURCE_TYPES:
             raise ValueError(f"Unknown resource type: {resource_type}")
-        return self._base_path(resource_type)
+        # Security check FIRST: validate tenant components before calling _base_path.
+        # This catches path traversals in operator_id/client_id before any path is built.
+        for component in (self.tenant.operator_id, self.tenant.client_id):
+            decoded = unquote(component)
+            if '..' in decoded or decoded.startswith('/') or decoded.startswith('\\'):
+                raise ValueError(
+                    f"Security violation: tenant component {component!r} "
+                    f"decodes to {decoded!r} which is a path traversal. Rejected."
+                )
+        base = self._base_path(resource_type)
+        # Validate the resolved path stays under TENANTS_ROOT.
+        # For legacy paths (default tenant), resolve() may return workspace root —
+        # in that case, resolve() already returned base which may be outside TENANTS_ROOT.
+        # Only enforce TENANTS_ROOT boundary for non-legacy (tenant-scoped) paths.
+        if not self.tenant.is_default():
+            real = base.resolve()
+            if not str(real).startswith(str(TENANTS_ROOT)):
+                raise ValueError(
+                    f"Security violation: tenant path {real} escapes TENANTS_ROOT "
+                    f"{TENANTS_ROOT}. Tenant_id may not be used for path escape."
+                )
+        return base
 
     def resolve_task_file(self, task_id: str) -> Path:
         """Get the full path for a task state file."""
@@ -119,5 +141,6 @@ class TenantPathResolver:
 
 
 def resolve_path(tenant: TenantContext, resource_type: str) -> Path:
-    """Convenience function."""
-    return TenantPathResolver(tenant).resolve(resource_type)
+    """Convenience function with path-escape protection."""
+    resolver = TenantPathResolver(tenant)
+    return resolver.resolve(resource_type)  # resolve() now does the security check

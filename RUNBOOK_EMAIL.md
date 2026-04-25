@@ -80,7 +80,7 @@ Do not add investment ideas or disclaimer unless the content actually contains r
 SIGNATURE RULE
 
 Default external business signature:
-Sneha | Primeidea
+Sneha | Primeidea.in
 
 Use a more branded footer only when the specific email template or report format requires it.
 

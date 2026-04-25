@@ -67,6 +67,7 @@ def test_orchestrator_state_truth():
     print("\n[Test 1] Orchestrator state truth — no false-pass possible")
 
     code = ORCHESTRATOR.read_text()
+    code_lines = code.splitlines()
 
     # Extract spawn_child_agent body
     s_start = code.find("def spawn_child_agent")
@@ -83,9 +84,14 @@ def test_orchestrator_state_truth():
     check("spawn_child_agent returns usable bool",
           "return usable" in spawn_body)
     check("completion_marker written before state update",
-          "completion_file = " in spawn_body)
+          "completion_file = " in spawn_body and "json.dump(completion_data, f, indent=2)" in spawn_body)
+    check("tenant-aware marker verification present",
+          "_verify_completion_marker(" in spawn_body and "task.get(\"tenant_context\")" in spawn_body)
     check("output_file tracked in state",
           "output_file" in spawn_body)
+    check("runtime VERSION constant exists as real code",
+          any(line.startswith('VERSION = ') for line in code_lines),
+          "VERSION must be a real module constant, not only doc text")
 
 
 # ─── Test 2: Loud observability failures ──────────────────────────────────────
@@ -144,6 +150,11 @@ def test_dashboard_per_agent():
     check("dashboard shows per-agent calls column (c=)", "c=" in out)
     check("dashboard shows per-agent tasks column (t=)", "t=" in out)
     check("dashboard shows clean or err/ rate", "clean" in out or "err/" in out)
+
+    canary_code = (WORKSPACE / "ops/multi-agent-orchestrator/canary_router.py").read_text()
+    check("canary router computes error rate from canary-routed tasks only",
+          "canary_routed" in canary_code,
+          "canary error rate must not be computed from all tasks system-wide")
 
 
 # ─── Test 4: Alert cooldown ───────────────────────────────────────────────────
@@ -205,7 +216,7 @@ def test_alert_cooldown():
     _cleanup_alert_cooldown(action)
     _cleanup_maintenance_entries(action)
 
-    run(["python3", str(MAINTENANCE_LOGGER), action, "critical", '{"x":1}'], check=False)
+    first = run(["python3", str(MAINTENANCE_LOGGER), action, "critical", '{"x":1}'], check=False)
 
 
     # Simulate cooldown: set timestamp to now
@@ -216,7 +227,7 @@ def test_alert_cooldown():
     tmp.rename(COOLDOWN_FILE)
 
     # Second fire should be suppressed
-    run(["python3", str(MAINTENANCE_LOGGER), action, "critical", '{"x":2}'], check=False)
+    second = run(["python3", str(MAINTENANCE_LOGGER), action, "critical", '{"x":2}'], check=False)
 
     # Read entries for our action from ALL current-day jsonl files
     # (not just latest by name — entries may cross midnight mid-test)
@@ -234,13 +245,18 @@ def test_alert_cooldown():
             except json.JSONDecodeError:
                 continue
 
-    # Find the most recent entry by timestamp (handles midnight-crossing edge case)
+    # Find whether any later entry for this action was recorded as suppressed.
+    # Sorting by second-precision timestamp is not deterministic when both writes
+    # happen within the same second, so check the full matching set instead of
+    # trusting lexical ordering of timestamps.
     if matching_entries:
-        matching_entries.sort(key=lambda x: x[1].get("timestamp", ""))
-        _, matching_entry = matching_entries[-1]  # most recent
-        suppressed = matching_entry.get("_cooldown_suppressed", False)
-        check("second critical was cooldown-suppressed", suppressed,
-              f"entry: {matching_entry.get('action')}/{matching_entry.get('outcome')}")
+        suppressed_second = any(
+            entry.get("_cooldown_suppressed", False) and entry.get("details", {}).get("x") == 2
+            for _, entry in matching_entries
+        )
+        latest_path, latest_entry = matching_entries[-1]
+        check("second critical was cooldown-suppressed", suppressed_second,
+              f"entries={len(matching_entries)} latest={latest_path.name}:{latest_entry.get('action')}/{latest_entry.get('outcome')}")
     else:
         check("second critical was cooldown-suppressed", False,
               f"no entry found for action={action}")
@@ -262,6 +278,13 @@ def test_completion_marker_truth():
     check("output_file path tracked in task state", "output_file" in spawn)
     check("attempts incremented before spawn", "attempts" in spawn and "+=" in spawn)
     check("spawn_child_agent returns usable bool", "return usable" in spawn)
+
+    exhaustion_start = code.find("# All attempts exhausted")
+    mse_call = code.find("mse_result = _mother_self_execute", exhaustion_start)
+    early_pop = code.find("_task_start_times.pop(task_id, None)", exhaustion_start, mse_call)
+    check("runtime accounting not popped before Mother self-exec",
+          early_pop == -1,
+          "_task_start_times was popped before MSE, undercounting runtime/spend")
 
 
 # ─── Test 6: Progress ping for long-running tasks ─────────────────────────────
@@ -391,6 +414,24 @@ def test_mother_self_execution():
 
 
 # ─── Test 15: Test-pollution guard ─────────────────────────────────────────
+
+def test_tenant_path_hardening():
+    print("\n[Test 16] Tenant path hardening — no brittle tenant-blind path logic")
+
+    code = ORCHESTRATOR.read_text()
+    monitor = MONITOR.read_text()
+
+    check("validation path uses resolver, not .replace('.progress', '.validation')",
+          ".replace('.progress', '.validation')" not in code)
+    check("get_task_status guards missing TENANTS_ROOT",
+          "if not TENANTS_ROOT.exists():" in code)
+    check("monitor exists at orchestrator path",
+          MONITOR.exists())
+    check("monitor running_children check initializes state_path",
+          "state_path = TASKS_DIR / f\"{task_id}.json\"" in monitor)
+    check("monitor defines TENANTS_ROOT once at top-level",
+          "TENANTS_ROOT = WORKSPACE / \"tenants\"" in monitor)
+
 
 def test_test_pollution_guard():
     print("\n[Test 15] Test-pollution guard — test.* labels skipped in metrics")

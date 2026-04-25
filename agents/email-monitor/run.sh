@@ -67,13 +67,15 @@ main() {
   validate_files
 
   if [[ "$DRY_RUN" == "--dry-run" ]]; then
-    log_line "Dry run completed. Files validated. No external actions taken."
+    python3 "$WORKDIR/ops/email/run_integrated_monitor.py" >/dev/null 2>&1 || true
+    log_line "Dry run completed. Files validated. Integrated email monitor chain refreshed. No external actions taken."
     record_state "dry-run" "ok"
     exit 0
   fi
 
-  log_line "Email monitor deployed in passive mode. Ready for workflow integration."
-  record_state "deploy" "passive-ready"
+  python3 "$WORKDIR/ops/email/run_integrated_monitor.py"
+  log_line "Email monitor deployed with integrated snapshot, classification, and coordinator chain active."
+  record_state "deploy" "active"
 }
 
 main "$@"

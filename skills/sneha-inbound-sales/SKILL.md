@@ -31,7 +31,8 @@ When replying to a first contact or new lead from the Primeidea website:
 4. Attempt Google Contact sync for a new lead.
 5. Check whether any prior reply, meeting proposal, or follow-up is still awaiting response.
 6. Draft or send only if all checks pass.
-7. If any critical check fails, halt, save draft if useful, and alert Partha.
+7. Show Partha the original inbound email context and the exact final draft before any external send unless the message is an extremely simple routine courtesy already covered by workspace rules.
+8. If any critical check fails, halt, save draft if useful, and alert Partha.
 
 ## Thread states
 
@@ -90,6 +91,9 @@ Action:
 - Do not send duplicate outreach unless the state explicitly allows it.
 - If thread state is ambiguous, halt and alert Partha.
 - If multiple drafts or versions exist, present only one best draft to Partha unless he asks otherwise.
+- If reply-thread continuity is uncertain, do not send.
+- If formatting is uncertain, do not send.
+- If the thread is an outbound prospecting, campaign, referral, or partner-outreach conversation rather than a fresh inbound lead, stop and defer to the workspace hard-bound approval rule.
 
 ## Contact and record handling
 
@@ -173,3 +177,4 @@ If any critical verification fails:
 - Do not auto-change workflow rules from outcomes.
 - Log candidate improvements for later review.
 - Require Partha's approval before promoting any new rule, template, FAQ answer, or structural workflow change.
+- This skill does not override the workspace hard-bound rule for outbound prospect, campaign, referral, partner, or lead-nurturing emails.

@@ -1,0 +1,29 @@
+{
+  "task_id": "research-1776740636-92768b",
+  "task_type": "research",
+  "task_prompt": "test research for tenant isolation verification",
+  "output_path": "/root/.openclaw/workspace/data/reports/research-1776740636-92768b",
+  "output_dir": "/root/.openclaw/workspace/data/reports",
+  "child_label": "research",
+  "status": "pending",
+  "attempts": 0,
+  "max_retries": 3,
+  "created_at": "2026-04-21T03:03:56Z",
+  "updated_at": "2026-04-21T03:03:56Z",
+  "completion_marker": null,
+  "mother_validation": null,
+  "validator_prompt": null,
+  "child_session_keys": [],
+  "harness_spec": null,
+  "harness_version": "1.0",
+  "tenant_context": {
+    "operator_id": "default",
+    "client_id": "default",
+    "operator_label": "Primeidea",
+    "client_label": "Default",
+    "tenant_tier": "operator",
+    "isolation_level": "full",
+    "created_at": "2026-04-21T03:03:56.706605+00:00"
+  },
+  "tenant_path_key": "default/default"
+}

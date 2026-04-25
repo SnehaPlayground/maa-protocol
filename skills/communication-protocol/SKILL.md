@@ -1,6 +1,6 @@
 ---
 name: communication-protocol
-description: Single unified entry point for all professional communication operations (email today, WhatsApp/SMS/Signal tomorrow): inbox triage, thread tracking, follow-up detection, sent item review, CC/BCC compliance, and outbound action. Deduplicates processing via thread-state.json. Use when reviewing mailbox activity, monitoring conversations, drafting emails, or converting email handling into repeatable operations. Handles all professional email — for sales-specific workflows, also check sneha-inbound-sales skill and route appropriately.
+description: Single unified entry point for all professional communication operations (email today, WhatsApp/SMS/Signal tomorrow): inbox triage, thread tracking, follow-up detection, sent item review, CC/BCC compliance, and outbound action. Deduplicates processing via memory/thread-state.json. Use when reviewing mailbox activity, monitoring conversations, drafting emails, or converting email handling into repeatable operations. Handles all professional email — for sales-specific workflows, also check sneha-inbound-sales skill and route appropriately.
 ---
 
 # Communication Protocol — Unified Skill
@@ -19,7 +19,7 @@ Treat the mailbox as an active working queue assigned to Sneha. This is the **si
 
 ## Deduplication Protocol (MANDATORY)
 
-Before doing anything else in each email check pass, load `~/.openclaw/workspace/thread-state.json` and compare against current mailbox state.
+Before doing anything else in each email check pass, load `~/.openclaw/workspace/memory/thread-state.json` and compare against current mailbox state.
 
 **State file format:**
 ```json
@@ -40,7 +40,7 @@ Before doing anything else in each email check pass, load `~/.openclaw/workspace
 1. If a thread has not changed since last check → skip it (no re-processing)
 2. If a thread was already escalated/drafted → do not escalate/draft again unless Partha responds
 3. If a thread has moved to a new state (e.g., new reply came in) → process only the new state change
-4. Always update `thread-state.json` after each pass with new thread states
+4. Always update `memory/thread-state.json` after each pass with new thread states
 
 **How to detect thread changes:**
 - Use `gog email search "in:inbox newer_than:2h"` to get threads modified recently
@@ -48,10 +48,10 @@ Before doing anything else in each email check pass, load `~/.openclaw/workspace
 - A thread with a newer `last_update` than our last run = changed
 
 **On each pass:**
-1. Read current state from `thread-state.json`
+1. Read current state from `memory/thread-state.json`
 2. Query recent threads from Gmail
 3. For each thread: if already processed and unchanged → skip; if new or changed → process
-4. After processing, update `thread-state.json` with new thread states
+4. After processing, update `memory/thread-state.json` with new thread states
 5. Log what was done
 
 ---
@@ -92,7 +92,7 @@ Before doing anything else in each email check pass, load `~/.openclaw/workspace
 
 ## Outbound Tracking Log
 
-Maintain `~/.openclaw/workspace/communication-log.md` for all sent emails.
+Maintain `~/.openclaw/workspace/data/email/communication-log.md` for all sent emails. This file is generated operational output and should be treated as a log, not as a policy source.
 
 **Format per entry:**
 ```
@@ -160,6 +160,8 @@ For closure cases: if resolution claimed but proof pending → waiting, not clos
 - Internal coordination emails with no external impact
 - Re-sending something already Partha-approved
 
+Exception: these standing rules do not override the hard-bound approval rule for prospect, campaign, outreach, referral, partner, or lead-nurturing email. Those always require Partha to see the original thread context and the exact final draft before send.
+
 **For everything else:** Prepare draft, confirm with Partha, wait for go-ahead.
 
 **On Telegram alerts:** Keep concise — who, what, why, recommended next action.
@@ -179,19 +181,25 @@ For closure cases: if resolution claimed but proof pending → waiting, not clos
 
 ---
 
-## Sending Email via GOG
+## Sending Email
 
-**Standard business email:**
-```bash
-gog email send --from sneha.primeidea@gmail.com --to <recipient> --cc partha@primeidea.in,partha.shah@gmail.com --subject "<subject>" --body "<body>"
-```
+All production outbound email must go through:
+`/root/.openclaw/workspace/ops/email/send_email_via_gog.py`
 
-**Routine/low-risk:**
-```bash
-gog email send --from sneha.primeidea@gmail.com --to <recipient> --cc partha@primeidea.in --subject "<subject>" --body "<body>"
-```
+Never use raw `gog email send` or raw `gog gmail send` directly for business email.
 
-**After sending:** Log to communication-log.md per format above.
+Mandatory send order:
+1. Read full original thread
+2. Show Partha the original inbound email or exact thread context when replying externally
+3. Show Partha the exact final outbound draft
+4. Wait for explicit approval when required
+5. Send only through `send_email_via_gog.py`
+6. Check sent items before sending to confirm no identical email has already been sent to this recipient recently
+7. Verify the sent item for recipient, subject, thread continuity, CC, and readable formatting
+8. Log to data/email/communication-log.md
+
+If thread continuity is uncertain, do not send.
+If formatting is uncertain, do not send.
 
 ---
 

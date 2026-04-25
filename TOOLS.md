@@ -75,7 +75,7 @@ Workspace folder guide:
 | knowledge/ | Reference docs and reusable knowledge |
 | data/email/ | Email state and generated outputs |
 | data/reports/ | Generated reports and HTML outputs |
-| data/transcripts/ | Transcript and voice files |
+| data/transcripts/ | Email thread transcripts |
 | temp/ | Temporary scratch files |
 | logs/ | Log files |
 | assets/ | Static assets |

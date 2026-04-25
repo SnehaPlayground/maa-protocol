@@ -1,0 +1,6 @@
+{
+  "client_id": "reqapp_cl_phase13-full-58339",
+  "exceed_action": "require_approval",
+  "max_daily_spend": 50.0,
+  "max_monthly_spend": 500.0
+}
