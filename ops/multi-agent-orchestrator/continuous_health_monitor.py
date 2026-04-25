@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phase 7 — Continuous Health Monitor
+Continuous Health Monitor
 ===================================
 Lightweight continuous check every 15 minutes that catches trust regressions
 before they accumulate.

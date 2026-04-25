@@ -31,9 +31,9 @@ Without OpenClaw, Maa cannot run fully.
 
 1. Clone the repository
 2. Install and verify OpenClaw
-3. Copy a deployment profile from `templates/maa-product/`
-4. Run `bash scripts/pre_deploy_gate.sh`
-5. Submit a test task through `task_orchestrator.py`
+3. Run `python3 scripts/maa_setup.py`
+4. Run `python3 scripts/maa_doctor.py`
+5. Run `python3 scripts/maa_demo.py`
 
 Detailed guides:
 - `INSTALL.md`

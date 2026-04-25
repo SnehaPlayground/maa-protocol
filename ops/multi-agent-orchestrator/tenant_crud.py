@@ -557,7 +557,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # ── Phase 10 RBAC: all CLI commands require OPERATOR role ─────────────────
+    # ── RBAC: all CLI commands require OPERATOR role ────────────────────────
     from access_control import require_operator_role
     try:
         require_operator_role()

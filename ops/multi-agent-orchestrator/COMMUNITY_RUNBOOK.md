@@ -7,7 +7,7 @@
 
 ## What Is Maa Protocol?
 
-Maa (Mother Agent Architecture) is a production-grade multi-agent orchestration system. It runs child agents with failover, enforces tenant isolation, maintains observability, and prevents end users from seeing timeout or silent failure states.
+Maa (Mother Agent Architecture) is a self-hosted multi-agent orchestration framework. It runs child agents with failover, enforces tenant isolation, maintains observability, and prevents end users from seeing timeout or silent failure states.
 
 **Key guarantees:**
 - No user-facing timeout errors — ever
@@ -49,7 +49,7 @@ python3 ops/observability/maa_metrics.py dashboard
 # 4. Submit a test task
 python3 ops/multi-agent-orchestrator/task_orchestrator.py submit \
   research \
-  "test: verify Phase 14 community install" \
+  "test: verify community install" \
   --run
 
 # 5. Watch it run
@@ -95,7 +95,7 @@ When you deploy using any sample config, these are **enabled automatically**:
 | Circuit breaker | ✅ ON | 5% error rate threshold |
 | Approval gate | ✅ ON | External actions blocked until approved |
 | Conservative concurrency | ✅ ON | Max 4 concurrent children |
-| Tenant isolation | ✅ ON | Phase 1+2 path + rate limit enforcement |
+| Tenant isolation | ✅ ON | Tenant path + rate limit enforcement |
 
 These are **disabled by default** (intentional):
 
@@ -356,4 +356,4 @@ If any of the above occurs, treat it as a **security incident** and file a bug r
 
 ---
 
-*Last updated: v1.0 — Phase 14 initial release*
+*Last updated: v1.0 — Community Release*

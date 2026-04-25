@@ -7,7 +7,7 @@ Owner: Maa operator / Mother Agent
 
 ## 1. SERVICE OVERVIEW
 
-Maa (Mother Agent) Protocol is a production-grade multi-agent orchestration system. It receives tasks from users or operators, routes them through validated child agents, enforces quality gates, and delivers finished output, or a specific honest escalation.
+Maa (Mother Agent) Protocol is a self-hosted multi-agent orchestration framework. It receives tasks from users or operators, routes them through validated child agents, enforces quality gates, and delivers finished output or an honest escalation.
 
 **Service commitment:** End users never see a timeout, a failure, or a placeholder as the final state. They receive either a validated result or a clear escalation with a next step.
 
@@ -119,7 +119,7 @@ Availability is calculated as:
 
 - **Max concurrent child agents:** 4 per operator
 - **Queue:** Overflow tasks are queued, not rejected, and processed when slots open
-- **Per-tenant rate limits:** Enforced at tenant gate (Phase 6)
+- **Per-tenant rate limits:** Enforced at tenant gate
 - **Load shedding:** Tasks exceeding per-tenant quota are rejected with `RateLimitExceeded`
 
 ---
@@ -127,7 +127,7 @@ Availability is calculated as:
 ## 10. SECURITY & ISOLATION
 
 - **Tenant isolation:** Every client tenant has isolated task paths, logs, and outputs (Option C hierarchical tenancy)
-- **Multi-client readiness:** Yes — Phase 6 CRUD + Phase 9 security hardening complete
+- **Multi-client readiness:** Yes — tenant CRUD and security hardening complete
 - **No cross-tenant data access:** Runtime-enforced via TenantPathResolver
 - **Approval gate:** All external side-effecting actions (email send, calendar write, public post) require explicit approval from the authorized human approver before execution
 

@@ -170,8 +170,8 @@ openclaw gateway start
 | `access_control.py` | v1.0 | RBAC enforcement |
 | `approval_gate.py` | v1.0 | Runtime approval |
 | `idempotency.py` | v1.0 | Dedup layer |
-| Health monitor | v1.0 | Phase 7+ |
-| Canary deploy | v1.0 | Phase 12 |
+| Health monitor | v1.0 | Community release |
+| Canary deploy | v1.0 | Community release |
 
 ---
 

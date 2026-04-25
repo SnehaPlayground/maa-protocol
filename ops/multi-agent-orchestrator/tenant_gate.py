@@ -63,7 +63,7 @@ class SpendBudgetExhausted(Exception):
         )
 
 
-# ── Cost Estimation (Phase 13) ────────────────────────────────────────────────
+# ── Cost Estimation ────────────────────────────────────────────────────────
 
 BASE_COST_PER_MINUTE = {
     "market-brief": 0.05,
@@ -528,7 +528,7 @@ def _check_resource_quotas(tenant: TenantContext, task_type: str) -> None:
             runtime_limit_min, runtime_used_min,
         )
 
-    # ── Phase 13: spend caps (daily + monthly) ─────────────────────────────────
+    # ── Spend caps ────────────────────────────────────────────────────────
     cost_per_min_override = cl_cfg.get("cost_per_minute_override") or op_cfg.get("cost_per_minute_override")
     estimated_cost = estimate_task_cost(task_type, None, cost_per_min_override)
     blocked, action, limit_name, limit_value, current_value = _check_spend_quotas(tenant, task_type, estimated_cost)
@@ -560,7 +560,7 @@ def submit_task_gate(task_prompt: str, task_type: str,
     
     1. Validates tenant context
     2. Checks rate limits
-    3. Checks resource quotas (Phase 13: tasks, runtime, spend)
+    3. Checks resource quotas
     4. Returns TenantContext for the task
     
     Raises:
@@ -579,7 +579,7 @@ def submit_task_gate(task_prompt: str, task_type: str,
     if not tenant.is_default():
         check_rate_limits(tenant)
 
-    # Step 3: check resource quotas (Phase 13: tasks, runtime, concurrent, spend)
+    # Step 3: check resource quotas
     if not tenant.is_default():
         try:
             _check_resource_quotas(tenant, task_type)

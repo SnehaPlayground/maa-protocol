@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Maa Protocol — HTML Dashboard Builder
-Phase 5: Operational HTML Dashboard
 
 Reads from: data/observability/maa_metrics.json
            logs/pre_deploy_gate_latest.json

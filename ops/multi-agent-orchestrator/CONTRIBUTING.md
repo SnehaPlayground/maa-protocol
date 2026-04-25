@@ -3,6 +3,45 @@
 
 ---
 
+## How to Contribute
+
+### Types of Contributions
+
+**🐛 Bug reports** — Report issues with clear steps to reproduce. See the Bug Reports section below.
+
+**📝 Documentation** — Improve docs, fix typos, add examples, or write guides.
+
+
+**💡 Ideas** — Share feature requests that solve real problems. Describe the problem and the expected behavior.
+
+
+**🧪 Testing** — Help verify existing features work as expected across different environments.
+
+**🔧 Code** — Implement new features, improve tests, or refactor existing code.
+
+### Good First Issues
+
+Look for issues tagged `good first issue` in the issue tracker. These are well-scoped, low-risk, and a good way to learn the codebase.
+
+
+### Before You Start
+
+1. Read `INSTALL.md` and `QUICKSTART.md` to understand the system
+2. Run `python3 scripts/maa_doctor.py` to verify your environment
+3. Run `bash scripts/pre_deploy_gate.sh` to confirm the system is healthy
+4. Join the community channel for questions and coordination
+
+### How Your PR Gets Merged
+
+1. Fork and create a branch: `git checkout -b fix/my-fix`
+2. Make your change with tests
+3. Run locally:
+   - `python3 -m py_compile <your_file>.py`
+   - `python3 scripts/secrets_scanner.py`
+   - `bash scripts/pre_deploy_gate.sh`
+4. Open a PR with a clear description
+5. Address review feedback
+
 ## Coding Standards
 
 ### Style
@@ -17,6 +56,7 @@
 - Classes: `PascalCase`
 - Constants: `SCREAMING_SNAKE_CASE`
 - Internal helpers: prefix with `_`
+
 
 ### File Structure
 ```
@@ -173,4 +213,4 @@ MAA Protocol has a strict no-fabrication rule. Any contribution that:
 
 ---
 
-*Last updated: v1.0 — Phase 14 initial release*
+*Last updated: v1.0 — Community Release*

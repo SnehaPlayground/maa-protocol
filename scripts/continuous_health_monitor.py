@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phase 7 — Continuous Health Monitor
+Continuous Health Monitor
 ===================================
 Lightweight continuous check every 15 minutes that catches trust regressions
 before they accumulate.
@@ -741,7 +741,7 @@ def run_health_checks() -> dict:
         check_completion_markers(),
         check_state_version_integrity(),
         check_running_children_accurate(),
-        check_spend_spike(),   # Phase 13: spend spike detection
+        check_spend_spike(),   # Spend spike detection
     ]
 
 

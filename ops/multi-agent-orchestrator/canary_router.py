@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MAA Canary Router — Phase 12 Integration
+Maa Canary Router — Deterministic canary routing for new task submissions.
 ==========================================
 Provides deterministic canary routing for new task submissions.
 10% of tasks are routed to the canary version, determined by hashing task_id.

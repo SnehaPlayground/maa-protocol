@@ -174,7 +174,7 @@ Approvals expire 2 hours after creation (`expires_at`).
 
 **Current implementation status:** expiry is enforced lazily by `approval_gate.py check`
 when a pending approval is inspected. Continuous monitor-driven expiry marking runs via
-`continuous_health_monitor.py` (Phase 7). Direct operator notification and automatic retry
+`continuous_health_monitor.py`. Direct operator notification and automatic retry
 when approval is later recorded are future enhancements, not active guarantees.
 
 ### 4.4 Block Behavior

@@ -121,9 +121,9 @@ The tenant context is:
 ```
 
 ### Migration Path
-- Phase 1: All new tenant data goes to `tenants/{operator_id}/...`
-- Phase 2: After all clients are onboarded, existing `ops/multi-agent-orchestrator/tasks/` and `data/reports/` are migrated to tenant structure
-- Phase 3: Old paths become aliases to tenant paths
+- Step 1: All new tenant data goes to `tenants/{operator_id}/...`
+- Step 2: After all clients are onboarded, existing `ops/multi-agent-orchestrator/tasks/` and `data/reports/` are migrated to tenant structure
+- Step 3: Old paths become aliases to tenant paths
 - Default operator (`default`) has `tenants/default/` as its home
 
 ---
@@ -325,26 +325,26 @@ Every significant action is logged with full tenant attribution:
 
 ---
 
-## Implementation Phases
+## Implementation Steps
 
-### Phase 1 — Core Tenant Infrastructure (this session)
+### Step 1 — Core Tenant Infrastructure
 1. `TenantContext` dataclass
 2. `TenantPathResolver` — path resolution for all resource types
 3. `TenantGate` — entry validation, rate limiting, backward-compat for `default`
 4. Tenant-aware `submit_task` path
 5. Migration of current task state to `tenants/default/` structure
 
-### Phase 2 — Metric Isolation (next session)
+### Step 2 — Metric Isolation
 6. `TenantMetricCollector` wrapping `maa_metrics.py`
 7. Per-tenant metrics store
 8. Dashboard updated to show operator/client breakdown
 
-### Phase 3 — Operator/Client Management (next session)
+### Step 3 — Operator/Client Management
 9. `OperatorConfigStore` — CRUD for operators and clients
 10. Rate limit enforcement
 11. Audit trail logging
 
-### Phase 4 — Integration & Testing (after Phase 3)
+### Step 4 — Integration & Testing
 12. End-to-end test with operator + client context
 13. Failover test: agent fails → tenant context preserved
 14. Isolation test: client A cannot see client B's data

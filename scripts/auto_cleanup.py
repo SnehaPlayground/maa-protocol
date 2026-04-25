@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Mother Agent Self-Healing — Auto Cleanup
+Auto Cleanup — Delete aged files in temp/data directories and stale task state.
 ========================================
 Deletes aged files in temp/data directories and stale task state.
 Never touches active task state files or control files.
 
-Retention policy (Phase 11):
+Retention policy:
   - Metrics, task state, and log files: deleted only if older than RETENTION_DAYS (90 days)
   - Completion markers and validation reports: NEVER deleted (audit trail, excluded regardless of age)
   - Temp dirs: deleted if older than --days threshold (default 7, allows fast cleanup of scratch)
@@ -109,7 +109,7 @@ def should_skip(path: str, days: int = 7) -> tuple[bool, str]:
     if p.name in EXCLUDE_FILES:
         return True, "control file"
 
-    # Phase 11: completion markers and validation reports are NEVER deleted
+    # Completion markers and validation reports are NEVER deleted
     if p.suffix in (".completion", ".validation"):
         return True, "marker/validation file"
 

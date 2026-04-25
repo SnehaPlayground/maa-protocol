@@ -19,6 +19,7 @@ Maa Protocol follows [Semantic Versioning](https://semver.org/). Versions follow
 - Added simple operator helpers: `scripts/maa_setup.py`, `scripts/maa_doctor.py`, `scripts/maa_demo.py`
 - Added product framing docs: `WHAT_MAA_IS_NOT.md`, `USE_CASES.md`, `COMPARISONS.md`
 - Added `examples/` as the intended boundary for operator-specific implementations
+- Added `REVIEW_RESPONSE.md` to map reviewer criticism to concrete public repo fixes
 - Hardened repo boundaries around runtime debris, backups, and private/operator-specific artifacts
 - Prepared sample deployment profiles for generic public use
 
@@ -143,7 +144,7 @@ templates/
 ### Known Constraints
 
 - Canary binary-executable isolation (separate process per variant) is not implemented; template-level isolation is used instead.
-- Multi-tenant operator/client management is available (Phase 6/10) but production multi-client deployment requires operator to configure per-client rate limits before first use.
+- Multi-tenant operator/client management is available but production multi-client deployment requires the operator to configure per-client rate limits before first use.
 - Backup restore is tested and clean; full automated restore orchestration is a future enhancement.
 
 ---
