@@ -17,6 +17,8 @@ Maa Protocol follows [Semantic Versioning](https://semver.org/). Versions follow
 - Removed personal branding from core Maa docs and runtime-facing config
 - Added public install and onboarding docs: `INSTALL.md`, `QUICKSTART.md`, `FIRST_RUN.md`, `DEMO.md`
 - Added simple operator helpers: `scripts/maa_setup.py`, `scripts/maa_doctor.py`, `scripts/maa_demo.py`
+- Added product framing docs: `WHAT_MAA_IS_NOT.md`, `USE_CASES.md`, `COMPARISONS.md`
+- Added `examples/` as the intended boundary for operator-specific implementations
 - Hardened repo boundaries around runtime debris, backups, and private/operator-specific artifacts
 - Prepared sample deployment profiles for generic public use
 

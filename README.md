@@ -40,6 +40,9 @@ Detailed guides:
 - `QUICKSTART.md`
 - `FIRST_RUN.md`
 - `DEMO.md`
+- `WHAT_MAA_IS_NOT.md`
+- `USE_CASES.md`
+- `COMPARISONS.md`
 - `ops/multi-agent-orchestrator/COMMUNITY_RUNBOOK.md`
 
 Helper scripts:
@@ -65,6 +68,8 @@ It should not contain:
 - historical task state or runtime debris
 - personal business workflows mixed into Maa core
 - private memory, transcripts, or operator-specific secrets
+
+Operator-specific or domain-specific implementations should live under `examples/` or in private repositories, not inside Maa core paths.
 
 ## License
 
