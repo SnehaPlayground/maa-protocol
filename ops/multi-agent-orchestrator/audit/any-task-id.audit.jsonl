@@ -1,1 +1,0 @@
-{"event": "permission_denied", "operation": "spawn_child_agent", "required_role": "SYSTEM", "caller_role": "CLIENT", "task_id": "any-task-id", "trace": "NoneType: None\n", "at": "2026-04-22T22:00:55.710934Z"}

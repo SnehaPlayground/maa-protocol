@@ -1,7 +1,0 @@
-# Primeidea employee routing list
-# Format: Name | normalized phone | notes
-Mitesh Desai | +918460927000 | employee
-Archana (Office) | +917016608140 | employee
-Archana (Personal) | +919328709565 | employee
-Ruturaj | +916351957027 | employee
-Rrajal | +919898061272 | ROOT ADMIN — full system access, do not restrict

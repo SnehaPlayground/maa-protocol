@@ -1,5 +1,7 @@
 # Secrets and private files
 .env
+.env.*
+*.env
 client_secret.json
 blog_key.md
 CONTACTS_PRIVATE.md
@@ -19,20 +21,36 @@ blog-assets/
 blog-drafts/
 drafts/
 emails/
-outbox_2026-03-27/
 outgoing/
 reports/
 research/
+data/
+memory/
+tenants/
+state/
+
+# Internal workspace surfaces not part of Maa Protocol OSS
+agents/
+assets/
+automaton
+prompts/
+runbooks/
+skills/
+security_review_paperclip/
+temp/
 
 # Transcript and generated output files
 *.srt
 *.tsv
 *.vtt
-
-# Logs
 *.log
+*.html
 
-# Generated timestamp files
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated timestamp and scratch files
 2026-*.json
 2026-*.txt
 file_*.json
@@ -40,6 +58,15 @@ file_*.txt
 file_*.srt
 file_*.tsv
 file_*.vtt
+.daily_research_sent_*
+
+# Task, audit, backup, and local state
+ops/multi-agent-orchestrator/tasks/*.json
+ops/multi-agent-orchestrator/audit/
+ops/multi-agent-orchestrator/archive-*/
+ops/multi-agent-orchestrator/*.backup-*
+ops/multi-agent-orchestrator/*.orig
+ops/observability/*.backup-*
 
 # Optional private/local items
 Sneha_profile.jpg
@@ -49,37 +76,6 @@ daily_research_output.html
 daily_research_v2.html
 draft_blog_finstable_ipc_2026-03-30.md
 send_log_2026-03-27.json
-
-agents/**/state/
-memory/thread-state.json
-data/email/send_audit/
-
-__pycache__/
-*.pyc
-
-tmp/
-tmp_email_drafts/
-email_pipeline_output/
-email_drafts/
-
-*.log
-logs/
-
-*.html
-
 email_inbox_snapshot.txt
 email_pipeline_state.json
-
-.env
-.daily_research_sent_*
 test_email_body.txt
-
-.daily_research_sent_*
-data/email/email_pipeline_state.json
-data/email/test_email_body.txt
-
-memory/2026-03-31.md
-memory/evolution-log.md
-runbooks/
-scripts/
-templates/

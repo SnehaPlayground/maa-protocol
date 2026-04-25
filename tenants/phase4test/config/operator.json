@@ -1,8 +1,0 @@
-{
-  "operator_id": "phase4test",
-  "label": "Phase 4 Test",
-  "max_concurrent_tasks": 8,
-  "max_tasks_per_hour": 200,
-  "rate_limit_window_seconds": 3600,
-  "clients": {}
-}

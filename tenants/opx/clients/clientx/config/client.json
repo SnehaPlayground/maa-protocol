@@ -1,1 +1,0 @@
-{"client_id": "clientx", "max_concurrent_tasks": 2, "max_tasks_per_hour": 50, "max_tasks_per_day": 100, "max_expensive_task_class_per_day": {}, "max_runtime_minutes_per_day": 480, "rate_limit_window_seconds": 3600}

@@ -1,8 +1,0 @@
-Hi Partha,
-
-Please find attached the latest `tree.txt` file.
-
-It includes the current Maa-related folder structure and dependency inventory, including the wider Maa footprint beyond the orchestrator core.
-
-Best,
-Sneha

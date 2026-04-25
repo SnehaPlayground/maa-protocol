@@ -1,8 +1,0 @@
-{
-  "operator_id": "isorev1",
-  "label": "Iso Rev 1",
-  "max_concurrent_tasks": 8,
-  "max_tasks_per_hour": 200,
-  "rate_limit_window_seconds": 3600,
-  "clients": {}
-}
