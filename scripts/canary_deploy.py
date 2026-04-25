@@ -20,7 +20,7 @@ Usage:
 CRON (optional — continuous monitoring):
   */15 * * * * python3 /root/.openclaw/workspace/scripts/canary_deploy.py check
 
-Author: Sneha (Mother Agent)
+Author: Maa maintainer
 Phase: 12 of MAA Protocol Commercial Deployment Action Plan v1.2
 """
 
@@ -228,7 +228,7 @@ def show_status() -> None:
 # ── Promote Canary ────────────────────────────────────────────────────────────
 
 def promote_canary() -> None:
-    """Promote canary version to stable — update VERSION and notify Partha."""
+    """Promote canary version to stable and notify the operator."""
     canary = _current_canary()
     if not canary:
         _log("ERROR: No canary version to promote")
@@ -259,7 +259,7 @@ def promote_canary() -> None:
 # ── Revert Canary ─────────────────────────────────────────────────────────────
 
 def revert_canary() -> None:
-    """Revert canary — restore stable version and notify Partha."""
+    """Revert canary and restore stable version, then notify the operator."""
     stable = _current_stable()
     canary = _current_canary()
 

@@ -13,14 +13,14 @@ Checks:
   e. Running children count is accurate (children in running_children.json
      actually have status=running in their task state)
 
-Critical issues → Partha alerted via openclaw message send (Telegram)
+Critical issues → operator alerted via the configured messaging channel
                  + interaction router signal file written
 Results → logs/continuous_health_monitor.json
 
 Crontab entry:
   */15 * * * * python3 /root/.openclaw/workspace/scripts/continuous_health_monitor.py
 
-Author: Sneha (Mother Agent)
+Author: Maa maintainer
 Phase: 7 of MAA Protocol Commercial Deployment Action Plan v1.2
 """
 
@@ -133,7 +133,7 @@ def _iter_tenant_state_files() -> list[Path]:
 # ── Alert delivery ────────────────────────────────────────────────────────────
 
 def _deliver_telegram_alert(check_name: str, failures: list[dict], count: int) -> bool:
-    """Send a Telegram alert to Partha via openclaw message send.
+    """Send an operator alert via openclaw message send.
 
     Returns True if sent or suppressed-by-cooldown, False on hard failure.
     """
@@ -170,12 +170,12 @@ def _deliver_telegram_alert(check_name: str, failures: list[dict], count: int) -
             file=sys.stderr,
         )
         return False
-    print(f"[CONTINUOUS MONITOR] Telegram alert sent for {check_name}", file=sys.stderr)
+    print(f"[CONTINUOUS MONITOR] Operator alert sent for {check_name}", file=sys.stderr)
     return True
 
 
 def _fire_alert(check_name: str, failures: list[dict]) -> bool:
-    """Write signal file and send Telegram alert with 2h cooldown per check.
+    """Write signal file and send operator alert with 2h cooldown per check.
 
     Returns True if an alert was fired (new or cooldown-expired),
     False if suppressed by cooldown.

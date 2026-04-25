@@ -21,7 +21,7 @@ Usage:
 CRON_TZ=Asia/Calcutta
 0 2 * * *  python3 /root/.openclaw/workspace/scripts/disaster_recovery_backup.py
 
-Author: Sneha (Mother Agent)
+Author: Maa maintainer
 Phase: 11 of MAA Protocol Commercial Deployment Action Plan v1.2
 """
 
@@ -231,23 +231,32 @@ def _create_archive(file_paths: list[Path], dest_tar: Path,
 
 
 def _send_alert(summary: str, details: list[str]) -> None:
-    """Send Telegram alert to Partha."""
+    """Send an alert to the configured operator target."""
     import subprocess as sp
     message_lines = ["🚨 MAA Disaster Recovery Backup — ALERT", summary]
     message_lines.extend(details)
     message = "\n".join(message_lines)
 
+    config_file = WORKSPACE / "knowledge" / "maa-product" / "runtime-config.json"
+    target = "telegram:6483160"
+    try:
+        if config_file.exists():
+            config = json.loads(config_file.read_text())
+            target = str(config.get("alert_target", target))
+    except Exception:
+        pass
+
     proc = sp.run(
         ["openclaw", "message", "send",
          "--channel", "telegram",
-         "--target", "telegram:6483160",
+         "--target", target,
          "--message", message],
         capture_output=True, text=True, timeout=20,
     )
     if proc.returncode != 0:
-        _log(f"Telegram alert failed: {proc.stderr}")
+        _log(f"Operator alert failed: {proc.stderr}")
     else:
-        _log("Telegram alert sent")
+        _log("Operator alert sent")
 
 
 def main():

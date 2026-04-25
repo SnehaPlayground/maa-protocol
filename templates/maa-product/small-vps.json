@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "profile": "small-vps",
+    "version": "1.0",
+    "description": "Small server deployment on a VPS with 2–4 GB RAM. Balanced concurrency and cost.",
+    "use_case": "Small team, 1–2 operators, optional multi-tenancy.",
+    "created": "2026-04-23"
+  },
+  "operator": {
+    "operator_id": "default_operator",
+    "label": "Default Operator (Small VPS)",
+    "max_concurrent_tasks": 4,
+    "max_tasks_per_hour": 100,
+    "max_tasks_per_day": 300,
+    "max_runtime_minutes_per_day": 480,
+    "max_daily_spend": 30.0,
+    "max_monthly_spend": 500.0,
+    "exceed_action": "reject",
+    "cost_per_minute_override": null,
+    "rate_limit_window_seconds": 3600
+  },
+  "client": {
+    "client_id": "default",
+    "label": "Default Workspace",
+    "max_concurrent_tasks": 4,
+    "max_tasks_per_hour": 50,
+    "max_tasks_per_day": 200,
+    "max_concurrent_tasks": 4,
+    "max_runtime_minutes_per_day": 480,
+    "max_daily_spend": 30.0,
+    "max_monthly_spend": 500.0,
+    "exceed_action": "reject",
+    "max_expensive_task_class_per_day": {
+      "market-brief": 10,
+      "research": 10,
+      "growth-report": 5
+    }
+  },
+  "defaults": {
+    "multi_tenant_mode": false,
+    "canary_routing": false,
+    "public_write_integrations": false,
+    "approval_gate_enforced": true,
+    "pre_deploy_gate_enabled": true,
+    "continuous_health_monitor": true,
+    "circuit_breaker": true,
+    "audit_logging": true
+  },
+  "runtime": {
+    "max_concurrent_children": 4,
+    "progress_ping_at_seconds": 300,
+    "child_timeout_seconds": 600,
+    "loop_same_failure_threshold": 2,
+    "circuit_error_rate_threshold_pct": 5.0
+  },
+  "notifications": {
+    "alert_target": "telegram:REPLACE_WITH_OWNER_CHAT_ID",
+    "alert_cooldown_hours": 2
+  }
+}

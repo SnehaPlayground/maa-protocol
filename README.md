@@ -1,30 +1,64 @@
 # Maa Protocol
 
-Production-grade multi-agent orchestration with validation gates, RBAC, tenant isolation, canary releases, cost controls, and self-healing.
+Maa Protocol is a self-hosted, operator-first, single-node multi-agent orchestration framework with built-in governance controls such as approval gates, tenant isolation, RBAC, idempotency, canary routing, circuit breakers, cost controls, and self-healing.
+
+## What Maa is
+
+Maa is:
+- a self-hosted orchestration layer for agentic work
+- designed for operator oversight and runtime governance
+- suitable for laptop, workstation, and small VPS deployments
+- built around validation, approval, durability, and recovery controls
+
+## What Maa is not
+
+Maa is not:
+- a managed SaaS
+- a distributed scheduler or cluster runtime
+- a Kubernetes-native orchestration platform
+- a no-dependency framework
+
+## Dependency: OpenClaw
+
+Maa depends on OpenClaw for:
+- agent session runtime
+- session and channel orchestration
+- message routing
+
+Without OpenClaw, Maa cannot run fully.
+
+## Quick start
+
+1. Clone the repository
+2. Install and verify OpenClaw
+3. Copy a deployment profile from `templates/maa-product/`
+4. Run `bash scripts/pre_deploy_gate.sh`
+5. Submit a test task through `task_orchestrator.py`
+
+Detailed guides:
+- `INSTALL.md`
+- `QUICKSTART.md`
+- `FIRST_RUN.md`
+- `ops/multi-agent-orchestrator/COMMUNITY_RUNBOOK.md`
 
 ## What this repo contains
 
 Core product surfaces:
 - `ops/multi-agent-orchestrator/` — orchestration runtime, policies, tests, and operator docs
 - `ops/observability/` — metrics store and observability tooling
-- `scripts/` — health checks, dashboard, DR, governance, cleanup, and release helpers
-- `knowledge/maa-product/` — deployment and packaging docs
-- `templates/maa-product/` — sample runtime configs
-
-## Key documents
-
-- `ops/multi-agent-orchestrator/COMMUNITY_RUNBOOK.md`
-- `ops/multi-agent-orchestrator/RELEASE_CHECKLIST.md`
-- `ops/multi-agent-orchestrator/CONTRIBUTING.md`
-- `ops/multi-agent-orchestrator/SECURITY.md`
-- `ops/multi-agent-orchestrator/DATA_PRIVACY.md`
-- `ops/multi-agent-orchestrator/VERSIONING.md`
+- `scripts/` — health checks, DR, cleanup, security, and deployment helpers
+- `knowledge/maa-product/` — runtime packaging and deployment docs
+- `templates/maa-product/` — sample deployment profiles
 
 ## Repo scope
 
-This open-source repository contains the Maa Protocol product and public documentation only.
+This public repository is intended to contain the Maa Protocol core and public-facing documentation.
 
-Internal workspace artifacts, historical task state, private memory, operational transcripts, and business-specific automation assets are intentionally excluded.
+It should not contain:
+- private workspace control files
+- historical task state or runtime debris
+- personal business workflows mixed into Maa core
+- private memory, transcripts, or operator-specific secrets
 
 ## License
 

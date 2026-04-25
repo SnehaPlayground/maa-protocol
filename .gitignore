@@ -67,10 +67,14 @@ ops/multi-agent-orchestrator/archive-*/
 ops/multi-agent-orchestrator/*.backup-*
 ops/multi-agent-orchestrator/*.orig
 ops/observability/*.backup-*
+*.backup*
+*.bak
+*.orig
+*.tmp
 
 # Optional private/local items
 Sneha_profile.jpg
-Partha_WatchList.md
+private_watchlist.md
 communication-log.md
 daily_research_output.html
 daily_research_v2.html
@@ -79,3 +83,8 @@ send_log_2026-03-27.json
 email_inbox_snapshot.txt
 email_pipeline_state.json
 test_email_body.txt
+action.txt
+Err13.txt
+output_text.txt
+progress.txt
+tree.txt

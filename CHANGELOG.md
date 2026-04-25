@@ -6,10 +6,25 @@ Maa Protocol follows [Semantic Versioning](https://semver.org/). Versions follow
 
 ---
 
-## v1.0 — Initial Production Release
+## v1.1 — Public Cleanup and Installation Pass
+
+**Released:** 2026-04-25
+**Status:** Public cleanup pass in progress
+
+### Highlights
+
+- Reframed Maa as a self-hosted, operator-first, single-node orchestration framework
+- Removed personal branding from core Maa docs and runtime-facing config
+- Added public install and onboarding docs: `INSTALL.md`, `QUICKSTART.md`, `FIRST_RUN.md`
+- Hardened repo boundaries around runtime debris, backups, and private/operator-specific artifacts
+- Prepared sample deployment profiles for generic public use
+
+---
+
+## v1.0 — Initial Public Runtime Release
 
 **Released:** 2026-04-23
-**Status:** Stable — deployment-ready
+**Status:** Initial public release
 
 ### What's New
 
@@ -32,7 +47,7 @@ Maa Protocol follows [Semantic Versioning](https://semver.org/). Versions follow
 
 ### Core Guarantees
 
-- **No user-facing timeout errors** — ever. Child-agent failures trigger automatic failover chain (Agent 1 → Agent 2 → Agent 3 → Mother self-execution → honest Partha escalation).
+- **No user-facing timeout errors** — ever. Child-agent failures trigger automatic failover chain (Agent 1 → Agent 2 → Agent 3 → Mother self-execution → honest escalation).
 - **Zero-fabrication completion validation** — all task completions verified via structured output checks and completion markers.
 - **Tenant-isolated task state and metrics** — operator/client hierarchy with isolated paths, rate limits, and audit trails.
 - **Operator-controlled external action approvals** — every send-email, calendar-write, web-post checked against `approval_state.json` at runtime.

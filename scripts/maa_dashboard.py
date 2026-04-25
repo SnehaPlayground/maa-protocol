@@ -27,7 +27,7 @@ HEALTH_SCRIPT = WORKDIR / 'scripts/health_check.py'
 RUNNING_CHILDREN = WORKDIR / 'ops/multi-agent-orchestrator/logs/running_children.json'
 OUTPUT = WORKDIR / 'data/reports/maa_dashboard.html'
 
-# ── Colors — Primeidea palette ──────────────────────────────────────────────────
+# ── Colors — Maa default palette ──────────────────────────────────────────────────
 NAVY      = '#0d2137'
 DARK_BLUE = '#1a3a5c'
 MID_BLUE  = '#2d6a9f'
@@ -195,7 +195,7 @@ def build_topbar(gate, uptime_hrs_str):
     return f"""<div style="background:{NAVY};color:{WHITE};padding:16px 24px;display:flex;justify-content:space-between;align-items:center;font-family:'Segoe UI',system-ui,sans-serif;">
   <div>
     <div style="font-size:18px;font-weight:600;letter-spacing:0.3px;">Maa Protocol — Operations Dashboard</div>
-    <div style="font-size:12px;color:{MID_GRAY};margin-top:2px;">Primeidea Workspace</div>
+    <div style="font-size:12px;color:{MID_GRAY};margin-top:2px;">Maa Deployment</div>
   </div>
   <div style="text-align:right;">
     <div style="font-size:13px;font-weight:600;">Gate: {gate_label}</div>

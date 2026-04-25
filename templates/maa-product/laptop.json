@@ -1,0 +1,59 @@
+{
+  "_meta": {
+    "profile": "laptop",
+    "version": "1.0",
+    "description": "Single-user deployment on a laptop or workstation with conservative defaults.",
+    "use_case": "Personal or operator-managed use without multi-tenancy.",
+    "created": "2026-04-23"
+  },
+  "operator": {
+    "operator_id": "default_operator",
+    "label": "Default Operator (Laptop)",
+    "max_concurrent_tasks": 2,
+    "max_tasks_per_hour": 50,
+    "max_tasks_per_day": 100,
+    "max_runtime_minutes_per_day": 240,
+    "max_daily_spend": 10.0,
+    "max_monthly_spend": 100.0,
+    "exceed_action": "queue",
+    "cost_per_minute_override": null,
+    "rate_limit_window_seconds": 3600
+  },
+  "client": {
+    "client_id": "personal",
+    "label": "Personal Workspace",
+    "max_concurrent_tasks": 2,
+    "max_tasks_per_hour": 30,
+    "max_tasks_per_day": 100,
+    "max_runtime_minutes_per_day": 240,
+    "max_daily_spend": 10.0,
+    "max_monthly_spend": 100.0,
+    "exceed_action": "queue",
+    "max_expensive_task_class_per_day": {
+      "market-brief": 5,
+      "research": 5,
+      "growth-report": 2
+    }
+  },
+  "defaults": {
+    "multi_tenant_mode": false,
+    "canary_routing": false,
+    "public_write_integrations": false,
+    "approval_gate_enforced": true,
+    "pre_deploy_gate_enabled": true,
+    "continuous_health_monitor": true,
+    "circuit_breaker": true,
+    "audit_logging": true
+  },
+  "runtime": {
+    "max_concurrent_children": 2,
+    "progress_ping_at_seconds": 300,
+    "child_timeout_seconds": 600,
+    "loop_same_failure_threshold": 2,
+    "circuit_error_rate_threshold_pct": 5.0
+  },
+  "notifications": {
+    "alert_target": "telegram:REPLACE_WITH_OWNER_CHAT_ID",
+    "alert_cooldown_hours": 2
+  }
+}
