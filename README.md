@@ -2,6 +2,8 @@
 
 **Maa Protocol adds operator controls to agent workflows, without replacing your runtime.**
 
+🚀 Maa Protocol is an open-source governance layer for AI agents. It solves the frustrating problem of agent timeouts, lost state, and operational risk in production—adding approval gates, cost controls, and self-healing retries to any LangGraph app.
+
 A lightweight, self-hosted governance layer for LangGraph workflows, with an optional OpenClaw runtime path for operators who need a fuller single-node control plane.
 
 ---
