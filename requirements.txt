@@ -1,5 +1,8 @@
 # Maa Protocol public install baseline
 # Runtime dependency note: OpenClaw is required separately and is not installed from this file.
 
-# Current public repo keeps Python dependencies intentionally light.
-# Add pinned third-party dependencies here as Maa packaging matures.
+# Core package intentionally has no mandatory third-party Python runtime dependencies yet.
+# Optional install paths:
+#   pip install -e .
+#   pip install -e .[langgraph]
+#   pip install -e .[test]
