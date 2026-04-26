@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maa-protocol"
-version = "1.0.0"
-description = "Governance layer for LangGraph workflows"
+version = "0.1.0"
+description = "Lightweight governance layer for LangGraph workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -15,6 +15,7 @@ authors = [
 dependencies = []
 keywords = ["langgraph", "governance", "rbac", "approval", "canary", "tenancy"]
 classifiers = [
+  "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",

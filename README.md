@@ -1,59 +1,58 @@
 # Maa Protocol
 
-**Maa Protocol adds operator controls to agent workflows — without replacing your runtime.**
+**Maa Protocol adds operator controls to agent workflows, without replacing your runtime.**
 
-A self-hosted governance layer for LangGraph and OpenClaw-backed agentic systems. Built for single-node laptop, workstation, and small VPS deployments.
+A lightweight, self-hosted governance layer for LangGraph workflows, with an optional OpenClaw runtime path for operators who need a fuller single-node control plane.
 
 ---
 
 ## Who this is for
 
 **Maa Protocol is for you if you:**
-- are running LangGraph or OpenClaw-based multi-agent workflows
+- are running LangGraph or OpenClaw-based agent workflows
 - need approval gates, cost controls, tenant isolation, or canary routing without rebuilding your runtime
 - want self-healing, idempotency, and observability as first-class primitives
-- are building on a laptop or small VPS and cannot or do not want to adopt Kubernetes
+- are deploying on a laptop, workstation, or small VPS
 
-**Maa Protocol is NOT for you if you:**
+**Maa Protocol is not for you if you:**
 - need a distributed cluster scheduler or managed SaaS
 - want a drop-in replacement for LangGraph, CrewAI, or AutoGen
-- are looking for a battle-tested, community-backed production library today
 - need Kubernetes-native orchestration
+- require a battle-tested production platform today
 
 ---
 
-## Core Features
+## Core features
 
 | Feature | What it does |
 |---|---|
 | **Approval Gate** | Blocks high-risk actions until explicitly authorized |
-| **Tenant Isolation** | RBAC and data isolation across multiple tenants or users |
+| **Tenant Isolation** | Adds RBAC and per-tenant controls |
 | **Cost Guard** | Tracks and limits spend per tenant or operation |
-| **Canary Router** | Safely route a percentage of traffic to a new version |
-| **Circuit Breaker** | Stops cascading failures before they propagate |
+| **Canary Router** | Safely routes a percentage of traffic to a new version |
 | **Idempotency** | Prevents duplicate task execution |
-| **Self-Healing** | Automatic recovery and retry with validation |
-| **Observability** | Structured logging, metrics, and progress tracking |
+| **Self-Healing** | Retries failures with bounded recovery hooks |
+| **Observability** | Supports metrics, logs, and progress tracking |
 
 ---
 
-## Quick Start
+## Quick start
 
-### Try the package (fastest path)
+### Try the package
 
 ```bash
 pip install -e .[test]
 pytest tests/test_maa_protocol.py
 ```
 
-LangGraph full example:
+For the LangGraph example:
 
 ```bash
 pip install -e .[langgraph]
 python3 examples/langgraph_governance_full_example.py
 ```
 
-### Explore the OpenClaw runtime
+### Explore the optional runtime
 
 ```bash
 pip install openclaw
@@ -62,14 +61,14 @@ python3 scripts/maa_doctor.py
 python3 scripts/maa_demo.py
 ```
 
-See [INSTALL.md](docs/INSTALL.md) and [QUICKSTART.md](docs/QUICKSTART.md) for full setup instructions.
+See [INSTALL.md](INSTALL.md) and [QUICKSTART.md](QUICKSTART.md) for setup details.
 
 ---
 
-## Example: Governance Wrapper
+## Example: Governance wrapper
 
 ```python
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph
 from maa_protocol import (
     TenantContext, CostGuard, CanaryRouter, ApprovalGate, GovernanceWrapper
 )
@@ -87,8 +86,6 @@ governed_app = GovernanceWrapper(
     canary_router=CanaryRouter(stable_version="v1.0", canary_version="v1.1"),
     approval_gate=ApprovalGate(risk_threshold=0.7),
 )
-
-result = governed_app.invoke({"query": "your request"})
 ```
 
 See [examples/](examples/) for more.
@@ -97,27 +94,26 @@ See [examples/](examples/) for more.
 
 ## Project structure
 
-```
-maa_protocol/         ← Lightweight Python governance package (primary)
-examples/            ← Runnable examples (package + LangGraph)
-tests/               ← Package tests
-docs/                ← Documentation
-runtime/             ← OpenClaw runtime (secondary path)
-  openclaw-runtime/  ← Full operator runtime with scripts and policies
+```text
+maa_protocol/         primary lightweight governance package
+examples/             runnable examples
+tests/                package tests
+docs/                 supporting documentation
+runtime/              optional OpenClaw runtime
 ```
 
-The **package path** is the recommended entry point. The **runtime path** is for operators running the full OpenClaw backend.
+The **package path** is the recommended entry point. The **runtime path** is optional and more opinionated.
 
 ---
 
 ## Current maturity
 
-Maa Protocol is an **early-stage v1 prototype**.
+Maa Protocol is an **early-stage prototype with production-oriented goals**.
 
-- The `maa_protocol/` package is tested and runnable
-- Examples execute and targeted checks pass
-- Approval persistence, stronger test coverage, and clearer package/runtime boundaries are still being improved
-- A proper `0.1.0` release will be tagged after the current cleanup pass
+- the `maa_protocol/` package is lightweight, tested, and runnable
+- the runtime path is broader and still evolving
+- approval persistence, audit storage, stronger cost accounting, and deeper observability are still ahead
+- versioning remains pre-1.0 until those foundations are in place
 
 ---
 
@@ -125,20 +121,11 @@ Maa Protocol is an **early-stage v1 prototype**.
 
 | File | What it covers |
 |---|---|
-| [README.md](README.md) | This file |
-| [INSTALL.md](docs/INSTALL.md) | Full installation guide |
-| [QUICKSTART.md](docs/QUICKSTART.md) | 5-minute getting started |
-| [WHAT_MAA_IS_NOT.md](docs/WHAT_MAA_IS_NOT.md) | Scope boundaries |
-| [USE_CASES.md](docs/USE_CASES.md) | Common use cases |
-| [COMPARISONS.md](docs/COMPARISONS.md) | How Maa differs from alternatives |
-
-Full documentation in [docs/](docs/).
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+| [INSTALL.md](INSTALL.md) | Installation guide |
+| [QUICKSTART.md](QUICKSTART.md) | Getting started fast |
+| [docs/WHAT_MAA_IS_NOT.md](docs/WHAT_MAA_IS_NOT.md) | Scope boundaries |
+| [docs/USE_CASES.md](docs/USE_CASES.md) | Common use cases |
+| [docs/COMPARISONS.md](docs/COMPARISONS.md) | How Maa differs from alternatives |
 
 ---
 
