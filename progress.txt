@@ -1,0 +1,16 @@
+Progress Update - 2026-04-26
+
+Completed:
+- Consolidated non-essential root markdown files into docs/
+- Repositioned OpenClaw runtime into runtime/openclaw-runtime/
+- Migrated runtime config templates into runtime/openclaw-runtime/
+- Rewrote README for clearer package-first positioning and onboarding
+
+Notes:
+- .githooks and REVIEW_RESPONSE.md were already absent in the current repo state
+- Local review completed, structure is cleaner and preserves the core idea
+
+Pending:
+- Add CI workflow
+- Add issue/PR templates
+- Tag 0.1.0 after validation
