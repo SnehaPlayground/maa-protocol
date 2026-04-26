@@ -48,6 +48,7 @@ temp/
 
 # Python cache
 __pycache__/
+.pytest_cache/
 *.pyc
 
 # Generated timestamp and scratch files
