@@ -18,7 +18,7 @@
 
 ## Known limitations
 
-- SQLite is suitable for local and small deployments, not all multi-node production cases
+- SQLite is suitable for local and small deployment testing, not all shared or multi-node cases
 - Prompt-injection detection is not solved by this package alone
 - Approval UX is backend-capability dependent
 

@@ -4,7 +4,7 @@
 
 It wraps existing LangGraph applications with approval gates, cost controls, tenant isolation, canary releases, self-healing, idempotency-friendly execution patterns, and observability, without trying to replace LangGraph itself.
 
-> Status: focused, production-oriented governance package. Pre-1.0, but intentionally scoped and structured for real deployment work.
+> Status: focused governance package in active concept testing and implementation. Pre-1.0, intentionally scoped for iteration, validation, and practical integration work.
 
 ---
 
@@ -132,7 +132,7 @@ Maa Protocol is now structured as a focused governance package, but it remains p
 - deeper LangGraph-native interrupt patterns
 - richer persistence backends beyond SQLite defaults
 - broader integration test coverage against real LangGraph apps
-- benchmark publication and production usage validation
+- benchmark publication and broader real-world validation
 
 That is a healthier place to be than pretending to be a complete agent platform.
 

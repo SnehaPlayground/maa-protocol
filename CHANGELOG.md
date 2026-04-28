@@ -17,7 +17,7 @@
 
 ### Notes
 - Maa Protocol remains pre-1.0
-- the goal of this release is clarity, discipline, and production-oriented foundations, not inflated scope
+- the goal of this release is clarity, discipline, and concept-testing implementation foundations, not inflated scope
 
 ## v0.1.0
 - initial public prototype release

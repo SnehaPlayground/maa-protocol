@@ -9,4 +9,4 @@ It does not try to be:
 - a reinforcement learning toolkit
 - a hosted SaaS control plane
 
-The purpose of Maa Protocol is narrower and more useful: wrap LangGraph workflows with governance controls that teams actually need in production-oriented environments.
+The purpose of Maa Protocol is narrower and more useful: wrap LangGraph workflows with governance controls that teams can concept-test, implement, and validate without pretending the package is already a mature agent platform.
