@@ -1,24 +1,13 @@
-# Maa Protocol Use Cases
+# Use Cases
 
-## Good fits for Maa
+## Human-in-the-loop approval
+Use Maa Protocol when a workflow can draft or recommend autonomously, but execution must pause for human approval before external side effects.
 
-- operator-controlled research workflows
-- governed drafting and review pipelines
-- approval-gated outbound actions
-- single-server multi-agent orchestration
-- tenant-aware internal operations
-- deployments where validation and human oversight matter more than raw scale
+## Multi-tenant SaaS governance
+Use tenant-aware RBAC, per-tenant budgets, and audit trails when multiple customers share the same LangGraph-based backend.
 
-## Acceptable fits with customization
+## Cost-controlled experimentation
+Use CostGuard to keep agent iteration within soft and hard spending thresholds.
 
-- shared operator environments
-- internal team assistants
-- channel-integrated business assistants
-- custom report generation pipelines
-
-## Poor fits for Maa in current form
-
-- massive distributed task orchestration
-- high-throughput event streaming
-- environments that require fully managed SaaS simplicity
-- systems that cannot depend on OpenClaw runtime
+## Safe rollout
+Use CanaryRouter to expose a small portion of traffic to a new graph or prompt configuration before broader rollout.

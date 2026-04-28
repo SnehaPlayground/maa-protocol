@@ -1,133 +1,152 @@
 # Maa Protocol
 
-**Maa Protocol adds operator controls to agent workflows, without replacing your runtime.**
+**Maa Protocol is a lightweight governance and control layer for LangGraph workflows.**
 
-🚀 Maa Protocol is an open-source governance layer for AI agents. It solves the frustrating problem of agent timeouts, lost state, and operational risk in production—adding approval gates, cost controls, and self-healing retries to any LangGraph app.
+It wraps existing LangGraph applications with approval gates, cost controls, tenant isolation, canary releases, self-healing, idempotency-friendly execution patterns, and observability, without trying to replace LangGraph itself.
 
-A lightweight, self-hosted governance layer for LangGraph workflows, with an optional OpenClaw runtime path for operators who need a fuller single-node control plane.
-
----
-
-## Who this is for
-
-**Maa Protocol is for you if you:**
-- are running LangGraph or OpenClaw-based agent workflows
-- need approval gates, cost controls, tenant isolation, or canary routing without rebuilding your runtime
-- want self-healing, idempotency, and observability as first-class primitives
-- are deploying on a laptop, workstation, or small VPS
-
-**Maa Protocol is not for you if you:**
-- need a distributed cluster scheduler or managed SaaS
-- want a drop-in replacement for LangGraph, CrewAI, or AutoGen
-- need Kubernetes-native orchestration
-- require a battle-tested production platform today
+> Status: focused, production-oriented governance package. Pre-1.0, but intentionally scoped and structured for real deployment work.
 
 ---
 
-## Core features
+## Value proposition
 
-| Feature | What it does |
-|---|---|
-| **Approval Gate** | Blocks high-risk actions until explicitly authorized |
-| **Tenant Isolation** | Adds RBAC and per-tenant controls |
-| **Cost Guard** | Tracks and limits spend per tenant or operation |
-| **Canary Router** | Safely routes a percentage of traffic to a new version |
-| **Idempotency** | Prevents duplicate task execution |
-| **Self-Healing** | Retries failures with bounded recovery hooks |
-| **Observability** | Supports metrics, logs, and progress tracking |
+Maa Protocol is for teams that already like LangGraph, but need stronger operational controls before exposing agentic workflows to real users, tenants, or regulated business processes.
+
+It helps answer practical questions such as:
+- Should this action require human approval?
+- Which tenant is invoking this workflow, under what budget and permissions?
+- Should this request go to stable or canary traffic?
+- How should failures retry, degrade, or stop?
+- Where do approval decisions and audit events get stored?
 
 ---
 
-## Quick start
+## What Maa Protocol includes
 
-### Try the package
+- **GovernanceWrapper** as the primary entry point
+- **ApprovalGate** for high-risk or policy-gated actions
+- **CostGuard** for budget awareness and hard/soft spend limits
+- **TenantContext + RBAC** for tenant-aware execution and role checks
+- **CanaryRouter** for safe release routing
+- **SelfHealing** for bounded retries and circuit-breaker behavior
+- **SQLite-backed persistence by default** for approvals and audit events
+- **Structured metrics hooks** for observability integration
+
+---
+
+## What Maa Protocol is not
+
+Maa Protocol is **not**:
+- a replacement for LangGraph
+- a full multi-agent framework
+- a distributed scheduler
+- a hosted control plane
+- a research sandbox for unrelated ML features
+
+This repository is intentionally scoped to governance and operational controls.
+
+---
+
+## Quickstart
 
 ```bash
-pip install -e .[test]
-pytest tests/test_maa_protocol.py
+pip install -e .[dev]
+pytest
 ```
 
-For the LangGraph example:
-
-```bash
-pip install -e .[langgraph]
-python3 examples/langgraph_governance_full_example.py
-```
-
-### Explore the optional runtime
-
-```bash
-pip install openclaw
-python3 scripts/maa_setup.py
-python3 scripts/maa_doctor.py
-python3 scripts/maa_demo.py
-```
-
-See [INSTALL.md](INSTALL.md) and [QUICKSTART.md](QUICKSTART.md) for setup details.
-
----
-
-## Example: Governance wrapper
+### Minimal example
 
 ```python
-from langgraph.graph import StateGraph
 from maa_protocol import (
-    TenantContext, CostGuard, CanaryRouter, ApprovalGate, GovernanceWrapper
+    ApprovalGate,
+    CanaryRouter,
+    CostGuard,
+    GovernanceWrapper,
+    SQLiteBackend,
+    TenantContext,
 )
 
-class AgentState(dict):
-    pass
+class DemoApp:
+    def invoke(self, state, config=None, **kwargs):
+        return {"ok": True, "state": state, "config": config or {}}
 
-workflow = StateGraph(AgentState)
-app = workflow.compile()
+backend = SQLiteBackend()
+app = GovernanceWrapper(
+    app=DemoApp(),
+    tenant_context=TenantContext(tenant_id="tenant-a", operator_id="ops-1", client_id="client-1"),
+    cost_guard=CostGuard(default_budget_usd=100.0),
+    canary_router=CanaryRouter(stable_version="v1", canary_version="v2", traffic_split=0.1),
+    approval_gate=ApprovalGate(risk_threshold=0.8, persistence=backend),
+    persistence=backend,
+)
 
-governed_app = GovernanceWrapper(
-    app=app,
-    tenant_context=TenantContext(),
-    cost_guard=CostGuard(default_budget=50.0),
-    canary_router=CanaryRouter(stable_version="v1.0", canary_version="v1.1"),
-    approval_gate=ApprovalGate(risk_threshold=0.7),
+result = app.invoke(
+    {"messages": ["hello"]},
+    config={"user_role": "operator", "approval_id": "pre-approved-id", "cost_usd": 1.25},
 )
 ```
 
-See [examples/](examples/) for more.
+See `examples/` for fuller patterns.
 
 ---
 
-## Project structure
+## Architecture
 
-```text
-maa_protocol/         primary lightweight governance package
-examples/             runnable examples
-tests/                package tests
-docs/                 supporting documentation
-runtime/              optional OpenClaw runtime
+```mermaid
+flowchart LR
+    A[LangGraph Workflow] --> B[GovernanceWrapper]
+    B --> C[Tenant + RBAC]
+    B --> D[CostGuard]
+    B --> E[CanaryRouter]
+    B --> F[ApprovalGate]
+    B --> G[SelfHealing]
+    B --> H[Persistence]
+    B --> I[Observability]
 ```
 
-The **package path** is the recommended entry point. The **runtime path** is optional and more opinionated.
+### Package layout
+
+```text
+maa_protocol/
+├── __init__.py
+├── exceptions.py
+├── governance.py
+├── guards/
+│   ├── approval.py
+│   ├── canary.py
+│   ├── cost.py
+│   ├── self_healing.py
+│   └── tenant.py
+├── observability/
+│   └── metrics.py
+├── persistence/
+│   └── base.py
+└── utils/
+```
 
 ---
 
 ## Current maturity
 
-Maa Protocol is an **early-stage prototype with production-oriented goals**.
+Maa Protocol is now structured as a focused governance package, but it remains pre-1.0 while the following areas continue to harden:
+- deeper LangGraph-native interrupt patterns
+- richer persistence backends beyond SQLite defaults
+- broader integration test coverage against real LangGraph apps
+- benchmark publication and production usage validation
 
-- the `maa_protocol/` package is lightweight, tested, and runnable
-- the runtime path is broader and still evolving
-- approval persistence, audit storage, stronger cost accounting, and deeper observability are still ahead
-- versioning remains pre-1.0 until those foundations are in place
+That is a healthier place to be than pretending to be a complete agent platform.
 
 ---
 
 ## Documentation
 
-| File | What it covers |
-|---|---|
-| [INSTALL.md](INSTALL.md) | Installation guide |
-| [QUICKSTART.md](QUICKSTART.md) | Getting started fast |
-| [docs/WHAT_MAA_IS_NOT.md](docs/WHAT_MAA_IS_NOT.md) | Scope boundaries |
-| [docs/USE_CASES.md](docs/USE_CASES.md) | Common use cases |
-| [docs/COMPARISONS.md](docs/COMPARISONS.md) | How Maa differs from alternatives |
+- [ARCHITECTURE.md](ARCHITECTURE.md)
+- [SECURITY.md](SECURITY.md)
+- [ROADMAP.md](ROADMAP.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [docs/WHAT_MAA_IS_NOT.md](docs/WHAT_MAA_IS_NOT.md)
+- [docs/USE_CASES.md](docs/USE_CASES.md)
+- [docs/COMPARISONS.md](docs/COMPARISONS.md)
 
 ---
 

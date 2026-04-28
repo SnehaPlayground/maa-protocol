@@ -1,24 +1,6 @@
-# Examples Boundary
+# Examples
 
-This directory is for operator-specific or domain-specific examples.
-
-## Why this exists
-
-Maa core should stay generic.
-Examples are where you place:
-- business-specific operators
-- domain workflows
-- custom report systems
-- channel-specific assistants
-- organization-specific templates
-
-## Rule
-
-If a workflow assumes a specific business, audience, branding, or private operating model, it belongs in `examples/` or in a private repo, not in Maa core.
-
-## Suggested layout
-
-- `examples/operators/`
-- `examples/channels/`
-- `examples/research/`
-- `examples/internal/`
+- `approval_workflow.py` — create and satisfy an approval request
+- `cost_controlled_agent.py` — enforce soft and hard spend thresholds
+- `multi_tenant_rbac.py` — tenant-aware RBAC execution
+- `canary_release.py` — stable/canary routing pattern

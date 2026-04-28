@@ -1,3 +1,7 @@
+import asyncio
+
+import pytest
+
 from maa_protocol import (
     AccessControl,
     ApprovalGate,
@@ -7,9 +11,10 @@ from maa_protocol import (
     GovernanceWrapper,
     SelfHealing,
     SelfHealingConfig,
+    SQLiteBackend,
+    TenantAccessError,
     TenantContext,
     TenantGate,
-    TenantGateError,
 )
 
 
@@ -22,6 +27,16 @@ class FakeApp:
         }
 
 
+class AsyncFakeApp:
+    async def ainvoke(self, state, config=None, **kwargs):
+        return {
+            "state": state,
+            "config": config or {},
+            "kwargs": kwargs,
+            "async": True,
+        }
+
+
 def test_tenant_context_from_config_maps_fields_correctly():
     ctx = TenantContext.from_config(
         {
@@ -31,6 +46,8 @@ def test_tenant_context_from_config_maps_fields_correctly():
             "user_role": "analyst",
             "tenant_tier": "client",
             "isolation_level": "partial",
+            "budget_usd": 25.0,
+            "permissions": ["invoke"],
             "custom": "value",
         }
     )
@@ -41,57 +58,76 @@ def test_tenant_context_from_config_maps_fields_correctly():
     assert ctx.user_role == "analyst"
     assert ctx.tenant_tier == "client"
     assert ctx.isolation_level == "partial"
+    assert ctx.budget_usd == 25.0
+    assert ctx.permissions == {"invoke"}
     assert ctx.metadata == {"custom": "value"}
 
 
-def test_approval_gate_requires_token_for_high_risk_action():
-    gate = ApprovalGate(risk_threshold=0.7)
+def test_approval_gate_creates_persisted_request_for_high_risk_action():
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
 
-    try:
-        gate.enforce({}, {"risk_flags": ["high_risk"]})
-        assert False, "Expected approval gate to block unapproved high-risk action"
-    except ApprovalRequiredError:
-        pass
+    with pytest.raises(ApprovalRequiredError):
+        gate.enforce({"action": "send_email"}, {"risk_flags": ["high_risk"]})
 
-    result = gate.enforce({}, {"risk_flags": ["high_risk"], "approval_token": "APPROVED"})
+    rows = backend.conn.execute("SELECT COUNT(*) FROM approvals").fetchone()[0]
+    assert rows == 1
+
+
+def test_approval_gate_allows_preapproved_action():
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
+    request = gate.create_request({"action": "send_email"}, {"risk_score": 0.95, "tenant_id": "tenant-1"})
+    backend.approve(request.approval_id)
+
+    result = gate.enforce(
+        {"action": "send_email"},
+        {"risk_score": 0.95, "tenant_id": "tenant-1", "approval_id": request.approval_id},
+    )
     assert result["approved"] is True
-    assert result["needs_approval"] is True
 
 
 def test_tenant_gate_honors_zero_override_limit():
     tenant = TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client")
-    gate = TenantGate(
-        max_concurrent_tasks=5,
-        tenant_limits={"tenant-1": {"max_concurrent_tasks": 0}},
-    )
+    gate = TenantGate(max_concurrent_tasks=5, tenant_limits={"tenant-1": {"max_concurrent_tasks": 0}})
 
-    try:
+    with pytest.raises(TenantAccessError):
         gate.enforce({"_active_task_count": 0}, tenant)
-        assert False, "Expected zero override to block immediately"
-    except TenantGateError as exc:
-        assert "concurrent_limit_exceeded" in str(exc)
+
+
+def test_cost_guard_blocks_hard_limit():
+    guard = CostGuard(default_budget_usd=10.0, hard_limit_usd=5.0)
+    tenant = TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client")
+    with pytest.raises(Exception):
+        guard.enforce({"cost_usd": 6.0}, tenant)
 
 
 def test_governance_wrapper_injects_governance_metadata():
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
+    request = gate.create_request({"action": "ship_trade"}, {"risk_score": 0.9, "tenant_id": "tenant-1", "operator_id": "op"})
+    backend.approve(request.approval_id)
+
     wrapper = GovernanceWrapper(
         app=FakeApp(),
-        tenant_context=TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client"),
-        cost_guard=CostGuard(default_budget=50.0),
+        tenant_context=TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client", user_role="operator"),
+        cost_guard=CostGuard(default_budget_usd=50.0),
         canary_router=CanaryRouter(stable_version="v1", canary_version="v2", traffic_split=0.0),
-        approval_gate=ApprovalGate(risk_threshold=0.7),
+        approval_gate=gate,
         access_control=AccessControl(),
         tenant_gate=TenantGate(max_cost_per_invoke=30.0, max_concurrent_tasks=10),
+        persistence=backend,
     )
 
     result = wrapper.invoke(
-        {"messages": ["hello"], "total_cost": 10.0},
-        config={"user_role": "operator", "risk_flags": ["high_risk"], "approval_token": "APPROVED"},
+        {"messages": ["hello"], "total_cost": 10.0, "action": "ship_trade"},
+        config={"user_role": "operator", "risk_score": 0.9, "approval_id": request.approval_id, "operator_id": "op"},
     )
 
     governance = result["state"]["governance"]
-    assert set(governance.keys()) == {"tenant", "tenant_gate", "access", "cost", "canary", "approval"}
+    assert set(governance.keys()) >= {"tenant", "tenant_gate", "access", "cost", "canary", "approval", "observability"}
     assert governance["approval"]["approved"] is True
-    assert governance["cost"]["budget"] == 50.0
+    assert governance["cost"]["budget_usd"] == 50.0
 
 
 def test_self_healing_recovers_after_retries():
@@ -106,3 +142,36 @@ def test_self_healing_recovers_after_retries():
     healer = SelfHealing(SelfHealingConfig(max_attempts=3, initial_interval=0.0, max_interval=0.0))
     assert healer.invoke_with_healing(flaky) == "ok"
     assert attempts["count"] == 3
+
+
+def test_governance_wrapper_async_path():
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
+    request = gate.create_request({"action": "async_op"}, {"risk_score": 0.9, "tenant_id": "tenant-1", "operator_id": "op"})
+    backend.approve(request.approval_id)
+
+    wrapper = GovernanceWrapper(
+        app=AsyncFakeApp(),
+        tenant_context=TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client", user_role="operator"),
+        approval_gate=gate,
+        access_control=AccessControl(),
+        persistence=backend,
+    )
+
+    result = asyncio.run(
+        wrapper.ainvoke({"action": "async_op"}, config={"user_role": "operator", "risk_score": 0.9, "approval_id": request.approval_id, "operator_id": "op"})
+    )
+    assert result["async"] is True
+
+
+def test_audit_events_are_persisted():
+    backend = SQLiteBackend()
+    wrapper = GovernanceWrapper(
+        app=FakeApp(),
+        tenant_context=TenantContext(tenant_id="tenant-9", operator_id="op", client_id="client", user_role="operator"),
+        access_control=AccessControl(),
+        persistence=backend,
+    )
+    wrapper.invoke({"messages": ["hi"]}, config={"user_role": "operator"})
+    count = backend.conn.execute("SELECT COUNT(*) FROM audit_events").fetchone()[0]
+    assert count >= 1

@@ -1,30 +1,21 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Callable, Mapping
+import asyncio
+import json
+from dataclasses import dataclass, field
+from typing import Any, Mapping
 
-from .access_control import AccessControl
-from .approval_gate import ApprovalGate
-from .canary_router import CanaryRouter
-from .cost_control import CostGuard
-from .self_healing import SelfHealing, SelfHealingConfig
-from .tenant_context import TenantContext
-from .tenant_gate import TenantGate
+from .guards.approval import ApprovalGate
+from .guards.canary import CanaryRouter
+from .guards.cost import CostGuard
+from .guards.self_healing import SelfHealing
+from .guards.tenant import AccessControl, TenantContext, TenantGate
+from .observability.metrics import MetricsCollector, TimedBlock
+from .persistence.base import PersistenceBackend, SQLiteBackend
 
 
-@dataclass
+@dataclass(slots=True)
 class GovernanceWrapper:
-    """Wrap a compiled LangGraph app with governance checks and metadata.
-
-    Components are applied in this order:
-    1. TenantGate — isolation and tenant-level limits
-    2. AccessControl — RBAC checks
-    3. CostGuard — budget enforcement
-    4. CanaryRouter — version selection
-    5. ApprovalGate — human approval for risky actions
-    6. SelfHealing — retry with backoff (if enabled)
-    """
-
     app: Any
     tenant_context: TenantContext | None = None
     cost_guard: CostGuard | None = None
@@ -33,60 +24,80 @@ class GovernanceWrapper:
     access_control: AccessControl | None = None
     tenant_gate: TenantGate | None = None
     self_healing: SelfHealing | None = None
-    enable_self_healing: bool = False
+    persistence: PersistenceBackend | None = None
+    metrics: MetricsCollector = field(default_factory=MetricsCollector)
 
-    def invoke(
-        self,
-        state: Mapping[str, Any] | None = None,
-        config: Mapping[str, Any] | None = None,
-        **kwargs: Any,
-    ) -> Any:
-        state = dict(state or {})
-        config = dict(config or {}) if config is not None else {}
+    def __post_init__(self) -> None:
+        if self.persistence is None:
+            self.persistence = SQLiteBackend()
+        if self.approval_gate and self.approval_gate.persistence is None:
+            self.approval_gate.persistence = self.persistence
 
-        tenant = self._resolve_tenant(config)
+    def invoke(self, state: Mapping[str, Any] | None = None, config: Mapping[str, Any] | None = None, **kwargs: Any) -> Any:
+        def operation() -> Any:
+            with TimedBlock(self.metrics, "governance.invoke"):
+                resolved_state, resolved_config = self._prepare(state, config)
+                result = self._execute(resolved_state, resolved_config, **kwargs)
+                self._audit(resolved_state, "invoke.success", result)
+                return result
+
+        if self.self_healing:
+            return self.self_healing.invoke_with_healing(operation)
+        return operation()
+
+    async def ainvoke(self, state: Mapping[str, Any] | None = None, config: Mapping[str, Any] | None = None, **kwargs: Any) -> Any:
+        resolved_state, resolved_config = self._prepare(state, config)
+        with TimedBlock(self.metrics, "governance.ainvoke"):
+            if hasattr(self.app, "ainvoke"):
+                result = await self.app.ainvoke(resolved_state, config=resolved_config, **kwargs)
+            elif hasattr(self.app, "invoke"):
+                result = await asyncio.to_thread(self.app.invoke, resolved_state, config=resolved_config, **kwargs)
+            elif callable(self.app):
+                result = await asyncio.to_thread(self.app, resolved_state, config=resolved_config, **kwargs)
+            else:
+                raise TypeError("Wrapped app must be callable or expose invoke()/ainvoke()")
+        self._audit(resolved_state, "ainvoke.success", result)
+        return result
+
+    def _prepare(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None) -> tuple[dict[str, Any], dict[str, Any]]:
+        resolved_state = dict(state or {})
+        resolved_config = dict(config or {})
+        tenant = self._resolve_tenant(resolved_config)
         governance: dict[str, Any] = {"tenant": tenant.as_dict()}
+        resolved_state.setdefault("tenant_id", tenant.tenant_id)
+        resolved_state.setdefault("operator_id", tenant.operator_id)
 
-        # 1. TenantGate — isolation and limit enforcement
         if self.tenant_gate:
-            gate_result = self.tenant_gate.enforce(state, tenant, config)
-            governance["tenant_gate"] = gate_result
-
-        # 2. AccessControl — RBAC
+            governance["tenant_gate"] = self.tenant_gate.enforce(resolved_state, tenant, resolved_config)
         if self.access_control:
-            governance["access"] = self.access_control.enforce(config)
-
-        # 3. CostGuard — budget check
+            governance["access"] = self.access_control.enforce(resolved_config, tenant)
         if self.cost_guard:
-            governance["cost"] = self.cost_guard.enforce(state, tenant, config)
-
-        # 4. CanaryRouter — version routing
+            governance["cost"] = self.cost_guard.enforce(resolved_state, tenant, resolved_config)
         if self.canary_router:
-            route = self.canary_router.route_metadata(state, tenant, config)
-            governance["canary"] = route
-            state["agent_version"] = route["selected_version"]
-
-        # 5. ApprovalGate — human approval gate
+            governance["canary"] = self.canary_router.route_metadata(resolved_state, tenant, resolved_config)
+            resolved_state["agent_version"] = governance["canary"]["selected_version"]
         if self.approval_gate:
-            governance["approval"] = self.approval_gate.enforce(state, config)
+            governance["approval"] = self.approval_gate.enforce(resolved_state, resolved_config)
+        governance["observability"] = self.metrics.snapshot()
+        resolved_state.setdefault("governance", {}).update(governance)
+        self.metrics.increment("governance.prepared")
+        self._audit(resolved_state, "governance.prepared", governance)
+        return resolved_state, resolved_config
 
-        state.setdefault("governance", {}).update(governance)
-
-        # 6. Execute with optional self-healing
-        def _run():
-            if hasattr(self.app, "invoke"):
-                return self.app.invoke(state, config=config, **kwargs)
-            if callable(self.app):
-                return self.app(state, config=config, **kwargs)
-            raise TypeError("Wrapped app must be callable or expose invoke()")
-
-        if self.enable_self_healing or self.self_healing:
-            healer = self.self_healing or SelfHealing()
-            return healer.invoke_with_healing(_run)
-
-        return _run()
+    def _execute(self, state: dict[str, Any], config: dict[str, Any], **kwargs: Any) -> Any:
+        if hasattr(self.app, "invoke"):
+            return self.app.invoke(state, config=config, **kwargs)
+        if callable(self.app):
+            return self.app(state, config=config, **kwargs)
+        raise TypeError("Wrapped app must be callable or expose invoke()")
 
     def _resolve_tenant(self, config: Mapping[str, Any]) -> TenantContext:
         if self.tenant_context and self.tenant_context.tenant_id != "default":
             return self.tenant_context
         return TenantContext.from_config(config)
+
+    def _audit(self, state: Mapping[str, Any], event_type: str, payload: Any) -> None:
+        if not self.persistence:
+            return
+        tenant_id = str(state.get("governance", {}).get("tenant", {}).get("tenant_id", state.get("tenant_id", "default")))
+        self.persistence.write_audit_event(tenant_id=tenant_id, event_type=event_type, payload=json.dumps(payload, default=str))

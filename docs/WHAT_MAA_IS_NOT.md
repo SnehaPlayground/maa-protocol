@@ -1,30 +1,12 @@
-# What Maa Is Not
+# What Maa Protocol Is Not
 
-## Maa is not
+Maa Protocol is not a replacement for LangGraph.
 
-- a managed SaaS
-- a distributed cluster scheduler
-- a Kubernetes-native orchestration layer
-- a no-dependency framework
-- a drop-in replacement for Temporal, Cadence, or a full workflow engine
-- a plug-and-play product for every non-technical user without setup
+It does not try to be:
+- a multi-agent orchestration framework
+- a browser automation platform
+- a plugin marketplace
+- a reinforcement learning toolkit
+- a hosted SaaS control plane
 
-## Maa is
-
-- a self-hosted orchestration framework
-- operator-first by design
-- built for governance-heavy agent workflows
-- strong on approval gates, validation, runtime control, and recovery logic
-- practical for laptop, workstation, and VPS deployments
-
-## Why this matters
-
-The fastest way to damage trust is to oversell scope.
-
-Maa should be presented as:
-- honest
-- installable
-- understandable
-- reliable within its current deployment model
-
-Not as a universal orchestration product for every environment.
+The purpose of Maa Protocol is narrower and more useful: wrap LangGraph workflows with governance controls that teams actually need in production-oriented environments.
