@@ -57,17 +57,6 @@ EOF
 
 fire_alert() {
     local failures_json="$1"
-    # Build human-readable failure list
-    local failure_list=""
-    # shellcheck disable=SC2086
-    echo "$failures_json" | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-lines = []
-for f in data:
-    lines.append(f'  - [{f[\"test\"]}] {f[\"reason\"]}')
-print('\n'.join(lines))
-" > "$ALERT_PAYLOAD" 2>/dev/null || echo "" > "$ALERT_PAYLOAD"
 
     # Write structured alert for the supervising interaction surface
     cat > "$ALERT_PAYLOAD" <<EOF

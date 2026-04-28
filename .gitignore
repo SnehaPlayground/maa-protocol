@@ -89,3 +89,22 @@ Err13.txt
 output_text.txt
 progress.txt
 tree.txt
+
+# MAA local/private controls and research artifacts
+AGENTS.md
+EVALS.md
+HEARTBEAT.md
+IDENTITY.md
+MEMORY.md
+SECURITY.md
+SOUL.md
+TOOLS.md
+USER.md
+knowledge/maa-product/runtime-config.json
+knowledge/maa_action.txt
+knowledge/know_ruf.txt
+knowledge/know_ruf_contents.txt
+knowledge/know_ruf_repo_index.txt
+maa_protocol/marketplace/listings/
+ops/email/
+pre_deploy_gate.sh

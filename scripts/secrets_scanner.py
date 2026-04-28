@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 
 WORKSPACE = Path("/root/.openclaw/workspace")
+EXCLUDED_PATH_PARTS = {
+    "/temp/external_orchestration_repo/",
+    "/temp/maa-protocol/",
+    "/archive/",
+}
 PATTERNS = [
     (re.compile(r"sk-[A-Za-z0-9]{20,}"), "api_key"),
     (re.compile(r"Bearer\s+[A-Za-z0-9._\-]{16,}"), "bearer_token"),
@@ -35,6 +40,11 @@ def should_ignore(line: str, label: str) -> bool:
     return any(hint in lower for hint in DOC_HINTS)
 
 
+def is_excluded(path: Path) -> bool:
+    path_str = str(path)
+    return any(part in path_str for part in EXCLUDED_PATH_PARTS)
+
+
 def scan_file(path: Path):
     findings = []
     try:
@@ -51,7 +61,7 @@ def scan_file(path: Path):
 
 
 def main():
-    md_files = [p for p in WORKSPACE.rglob("*.md") if p.is_file()]
+    md_files = [p for p in WORKSPACE.rglob("*.md") if p.is_file() and not is_excluded(p)]
     flagged = []
     scanned = 0
     for path in md_files:

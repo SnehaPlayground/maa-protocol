@@ -1,28 +1,27 @@
-"""Public LangGraph-facing governance API for Maa Protocol."""
+"""MAA capability layer."""
 
-from .tenant_context import TenantContext
-from .cost_control import CostGuard
-from .canary_router import CanaryRouter
+from .access_control import AccessControl, AccessDeniedError
 from .approval_gate import ApprovalGate, ApprovalRequiredError
-from .access_control import AccessControl
+from .canary_router import CanaryRouter
+from .cost_control import CostGuard, BudgetExceededError
 from .governance import GovernanceWrapper
-from .tenant_gate import TenantGate, TenantGateError
 from .self_healing import SelfHealing, SelfHealingConfig, SelfHealingError
+from .tenant_context import TenantContext
+from .tenant_gate import TenantGate, TenantGateError
 
 __all__ = [
-    # Core
-    "TenantContext",
-    "GovernanceWrapper",
-    # Governance components
-    "CostGuard",
-    "CanaryRouter",
     "AccessControl",
+    "AccessDeniedError",
     "ApprovalGate",
     "ApprovalRequiredError",
-    "TenantGate",
-    "TenantGateError",
-    # Self-healing
+    "CanaryRouter",
+    "CostGuard",
+    "BudgetExceededError",
+    "GovernanceWrapper",
     "SelfHealing",
     "SelfHealingConfig",
     "SelfHealingError",
+    "TenantContext",
+    "TenantGate",
+    "TenantGateError",
 ]

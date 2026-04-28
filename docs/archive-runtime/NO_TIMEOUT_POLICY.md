@@ -1,10 +1,10 @@
-<!-- Version: v1.0 -->
+<!-- Version: v2.0 -->
 # Mother Agent — Operational Directives
 
-## This File: Binding Agreement
+## Binding Agreement
 
 These are not suggestions. These are binding rules for the Mother Agent.
-Every child agent operates under these same rules.
+Every child agent and cluster operates under these same rules.
 
 ---
 
@@ -60,8 +60,9 @@ The user never sees "failed" — only the final successful output or a specific 
 
 ## RULE 4: Progress Updates
 
-For any task expected to run over 10 minutes:
+For any task expected to run over 5 minutes:
 - Send a brief update: "Still working on it — will be ready in a few more minutes"
+- For tasks expected over 10 minutes: second update at 10-minute mark
 - Do not go silent and make the operator wonder if it's broken
 
 ---
@@ -83,11 +84,10 @@ If something genuinely cannot be completed, tell the operator specifically:
 
 ## RULE 6: Text-First Operating Model
 
-The Maa product operates in a text-first mode by default.
-
-- No WhatsApp voice pipeline is part of the active Maa runtime
+The MAA product operates in a text-first mode by default.
+- No WhatsApp voice pipeline is part of the active MAA runtime
 - No voice-specific execution route should be treated as production coverage
-- If a future business deployment needs audio, it must be designed and approved as a separate capability, not assumed as part of the Maa core
+- If a future business deployment needs audio, it must be designed and approved as a separate capability
 
 ---
 
@@ -105,26 +105,71 @@ The Mother Agent must not leave behind orphaned processes, stale session files, 
 
 ## RULE 8: Concurrent Task Management
 
-- Max 4 child agents running simultaneously
-- If a new task arrives and 4 are running, queue it (don't block the channel)
-- Each task has its own TaskFlow and failover chain — failures don't cascade across tasks
+- Max 4 child agents running simultaneously (load shedding with FIFO queue)
+- Per-task-type circuit breaker: if error rate >5% in rolling 1-hour window, that task type pauses spawning
+- Each task has its own failover chain — failures don't cascade across tasks
 - Heavy tasks always run as child agents — never block the main session
 
 ---
 
-## RULE 9: Proactive Health Monitoring
+## RULE 9: Cluster Anti-Drift (Mandatory for Multi-Agent Tasks)
 
-Maa Protocol must maintain itself between tasks, not only react when something breaks.
+For any task that spawns multiple agents:
+- Topology: hierarchical (prevents drift via central coordination)
+- Max agents: 6-8 (smaller team = less drift surface)
+- Strategy: specialized (clear roles, no overlap)
+- Consensus: raft (leader maintains authoritative state)
+- Frequent checkpoints via post-task hooks
+
+Anti-drift is not optional for coding/complex tasks.
+
+---
+
+## RULE 10: Pre-Task Self-Healing
 
 Before every heavy task or child-agent burst:
-1. Run a health check (`scripts/health_check.py`)
-2. If disk usage is 75–84.9% → log warning, proceed
-3. If disk usage is 85–89.9% → run `scripts/auto_cleanup.py`, then proceed
-4. If disk usage is 90%+ after cleanup → pause new heavy tasks, log `critical`, and alert the operator
+1. Run `python3 scripts/health_check.py --json`
+2. If disk < 75% → proceed normally
+3. If disk 75-84.9% → log warning, proceed
+4. If disk 85-89.9% → run `scripts/auto_cleanup.py`, then proceed
+5. If disk ≥ 90% → pause new heavy tasks, log critical, alert operator immediately
 
 Every maintenance action must be recorded to `memory/maintenance_decisions/` via `scripts/maintenance_logger.py`.
 
-The full operating contract lives in: `ops/multi-agent-orchestrator/SELF_HEALING_POLICY.md`
+---
+
+## RULE 11: Pattern Memory
+
+After every task completion:
+- Store successful harness configuration to `memory/patterns/{task_type}/successful/`
+- Archive older successful patterns (never delete) — prior learnings are preserved
+- On new task: semantic search in `memory/patterns/` for similar past tasks
+- Score >0.7 → reuse that harness. Score 0.5-0.7 → adapt. Score <0.5 → fresh build
+
+---
+
+## RULE 12: Hooks Lifecycle Compliance
+
+MAA maintains hooks at these lifecycle points:
+- pre-edit, post-edit, pre-command, post-command, pre-task, post-task
+- session-start, session-end, session-restore
+- route, explain, pretrain, build-agents, transfer
+
+Every hook fires at the correct trigger. No hooks are skipped or stubbed.
+
+---
+
+## RULE 13: 3-Tier Task Routing
+
+Before spawning a child agent, classify task complexity:
+
+| Tier | When | Cost |
+|---|---|---|
+| 1 | Simple transforms (var→const, add-types, etc.) | $0 |
+| 2 | Standard tasks, complexity <30% | ~$0.0002 |
+| 3 | Complex reasoning, architecture, security >30% | ~$0.015 |
+
+Tier 1 uses WASM (no LLM). Tier 2 is default model. Tier 3 requires Partha's explicit approval.
 
 ---
 
