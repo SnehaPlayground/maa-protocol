@@ -1,41 +1,34 @@
 # Maa Demo
 
-## Guided demo path
+## Minimal package demo
 
-### 1. Run setup
-
-```bash
-python3 scripts/maa_setup.py
-```
-
-### 2. Run doctor
+Run this from the repo root after `pip install -e .[dev]`:
 
 ```bash
-python3 scripts/maa_doctor.py
-```
+python - <<'PY'
+from maa_protocol import GovernanceWrapper, ApprovalGate, CostGuard, SQLiteBackend, TenantContext
 
-### 3. Run demo
+class DemoApp:
+    def invoke(self, state, config=None, **kwargs):
+        return {"ok": True, "state": state, "config": config or {}}
 
-```bash
-python3 scripts/maa_demo.py
-```
+backend = SQLiteBackend()
+app = GovernanceWrapper(
+    app=DemoApp(),
+    tenant_context=TenantContext(tenant_id="demo-tenant", operator_id="demo-operator", client_id="demo-client"),
+    cost_guard=CostGuard(default_budget_usd=50.0),
+    approval_gate=ApprovalGate(risk_threshold=0.8, persistence=backend),
+    persistence=backend,
+)
 
-## Manual demo path
-
-```bash
-python3 ops/multi-agent-orchestrator/task_orchestrator.py submit research "demo: explain this Maa deployment" --run
-```
-
-Then inspect:
-
-```bash
-python3 ops/multi-agent-orchestrator/task_orchestrator.py list --limit 5
-python3 ops/multi-agent-orchestrator/task_orchestrator.py status <task_id>
+print(app.invoke({"messages": ["demo"]}, config={"user_role": "operator", "approval_id": "demo-approval"}))
+PY
 ```
 
 ## Expected outcome
 
 A healthy demo should:
-- create a task
-- run it through Maa
-- show status or output details without path/permission failures
+- import `maa_protocol` cleanly
+- execute through `GovernanceWrapper`
+- return a result dict
+- create local persistence artifacts without path errors

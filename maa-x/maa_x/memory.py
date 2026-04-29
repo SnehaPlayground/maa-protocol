@@ -1,0 +1,46 @@
+"""Maa Protocol parity wrapper for semantic memory surfaces."""
+
+from maa_x.memory.semantic import (
+    DEFAULT_DIMS,
+    EmbeddingVector,
+    PatternMemory,
+    RetrievedPattern,
+    ReuseDecision,
+    RoutingResult,
+    SearchResult,
+    SemanticMemory,
+    SemanticRouter,
+    batch_embed,
+    build_tfidf_vocab,
+    embed_text,
+    inspect_memory,
+    score_decision,
+    search_patterns,
+    store_pattern,
+    store_pattern_cli,
+)
+from maa_x.memory.agentdb import AgentDB, MemoryEntry, SimpleHNSW, VectorIndex
+
+__all__ = [
+    "DEFAULT_DIMS",
+    "AgentDB",
+    "MemoryEntry",
+    "SimpleHNSW",
+    "VectorIndex",
+    "EmbeddingVector",
+    "PatternMemory",
+    "RetrievedPattern",
+    "ReuseDecision",
+    "RoutingResult",
+    "SearchResult",
+    "SemanticMemory",
+    "SemanticRouter",
+    "batch_embed",
+    "build_tfidf_vocab",
+    "embed_text",
+    "inspect_memory",
+    "score_decision",
+    "search_patterns",
+    "store_pattern",
+    "store_pattern_cli",
+]

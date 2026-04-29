@@ -2,42 +2,52 @@
 
 ## Public layout
 
+Core public docs:
 - `README.md` — project overview and scope
 - `INSTALL.md` — installation guide
 - `QUICKSTART.md` — fast-start guide
-- `FIRST_RUN.md` — first-run walkthrough
-- `DEMO.md` — guided demo flow
-- `LICENSE` — MIT license
+- `ARCHITECTURE.md` — design summary
+- `SECURITY.md` — security posture
+- `ROADMAP.md` — planned direction
 - `CHANGELOG.md` — release notes
-- `WHAT_MAA_IS_NOT.md` — scope and limitations
-- `USE_CASES.md` — best-fit usage guidance
-- `COMPARISONS.md` — positioning against adjacent tools
-- `ops/multi-agent-orchestrator/` — Maa runtime, governance docs, and core policies
-- `ops/observability/` — metrics and observability tooling
-- `scripts/` — install, setup, doctor, demo, health, security, DR, and operational helpers
-- `knowledge/maa-product/` — deployment and packaging support files
-- `templates/maa-product/` — sample deployment profiles
-- `examples/` — boundary for operator-specific or domain-specific examples
+- `CONTRIBUTING.md` — contributor workflow
+- `docs/FIRST_RUN.md` — first-run walkthrough
+- `docs/DEMO.md` — runnable demo
+- `docs/WHAT_MAA_IS_NOT.md` — scope boundary
+- `docs/USE_CASES.md` — best-fit usage guidance
+- `docs/COMPARISONS.md` — positioning
+
+Core package:
+- `maa_protocol/` — focused governance package
+  - `governance.py`
+  - `guards/`
+  - `persistence/`
+  - `observability/`
+  - `exceptions.py`
+
+Tests and examples:
+- `tests/` — package validation
+- `examples/` — small usage examples
+
+Related sibling package in this repo:
+- `maa-x/` — broader experimental package that extends Maa Protocol while preserving a compatibility shim
 
 ## Intended repo boundary
 
 The public repo should contain:
-- Maa core runtime
-- public deployment documentation
-- public sample profiles
-- generic operational tooling
-- public tests and validation helpers
+- Maa Protocol core runtime
+- honest public documentation
+- public examples and tests
+- clearly separated experimental work
 
-## Not included in the public repo
+## Not included in the public core package
 
-The public repo should exclude:
-- private workspace control files
-- memory and transcript history
-- live task state and audit artifacts
-- generated outputs and local runtime debris
-- one-off backups, scratch files, and local experiments
-- operator-specific business workflows mixed into Maa core
+The public core package should not depend on:
+- private operator memory
+- local transcripts and generated artifacts
+- one-off business workflows
+- unrelated orchestration systems mixed into `maa_protocol/`
 
 ## Publishing rule
 
-If a file exists to support a private operator workflow rather than external Maa users, it should be excluded from core, moved to examples, or kept private.
+If something is experimental or broader than the Maa Protocol scope, keep it clearly separated, for example under `maa-x/`, rather than blurring the core package boundary.

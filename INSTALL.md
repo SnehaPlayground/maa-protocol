@@ -1,23 +1,14 @@
 # Install Maa Protocol
 
-Maa Protocol is a self-hosted, operator-first, single-node multi-agent orchestration framework.
+Maa Protocol is a lightweight governance layer for LangGraph workflows.
 
-## Before you start
+## Requirements
 
-You need:
-- Linux or macOS
 - Python 3.10+
 - Git
-- OpenClaw installed and working
+- Linux or macOS recommended
 
-## What OpenClaw does
-
-Maa Protocol depends on OpenClaw for:
-- agent session runtime
-- channel/message routing
-- session orchestration
-
-Without OpenClaw, Maa cannot run fully.
+OpenClaw is **not required** for the focused governance package in this repo.
 
 ## 1. Clone the repository
 
@@ -26,93 +17,65 @@ git clone https://github.com/SnehaPlayground/maa-protocol.git
 cd maa-protocol
 ```
 
-## 2. Verify Python
+## 2. Create a virtual environment
 
 ```bash
-python3 --version
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-Expected: Python 3.10 or newer.
-
-## 3. Verify OpenClaw
+## 3. Install Maa Protocol
 
 ```bash
-openclaw status
+pip install -e .[dev]
 ```
 
-If OpenClaw is not installed or not configured, stop here and install/configure it first.
-
-## 4. Choose a deployment profile
-
-Available profiles:
-- `templates/maa-product/laptop.json`
-- `templates/maa-product/small-vps.json`
-- `templates/maa-product/single-tenant.json`
-- `templates/maa-product/community-server.json`
-
-Recommended:
-- laptop or personal workstation → `laptop.json`
-- small server or VPS → `small-vps.json`
-- one operator, one business deployment → `single-tenant.json`
-- multi-tenant community server → `community-server.json`
-
-## 5. Copy a profile to runtime config
+## 4. Run checks
 
 ```bash
-mkdir -p knowledge/maa-product
-cp templates/maa-product/laptop.json knowledge/maa-product/runtime-config.json
+ruff check .
+mypy maa_protocol
+pytest
 ```
 
-Replace `laptop.json` with the profile you want.
-
-## 6. Edit the runtime config
-
-At minimum, update:
-- operator label
-- alert target
-- any spend/runtime limits you want to override
-
-## 7. Run the health and setup checks
+## 5. Run a minimal example
 
 ```bash
-python3 scripts/health_check.py
-python3 ops/observability/maa_metrics.py dashboard
-bash scripts/pre_deploy_gate.sh
+python - <<'PY'
+from maa_protocol import GovernanceWrapper, ApprovalGate, CostGuard, TenantContext, SQLiteBackend
+
+class DemoApp:
+    def invoke(self, state, config=None, **kwargs):
+        return {"ok": True, "state": state}
+
+backend = SQLiteBackend()
+app = GovernanceWrapper(
+    app=DemoApp(),
+    tenant_context=TenantContext(tenant_id="tenant-a", operator_id="ops-1", client_id="client-1"),
+    cost_guard=CostGuard(default_budget_usd=100.0),
+    approval_gate=ApprovalGate(risk_threshold=0.8, persistence=backend),
+    persistence=backend,
+)
+print(app.invoke({"messages": ["hello"]}, config={"user_role": "operator", "approval_id": "pre-approved-id"}))
+PY
 ```
 
-Expected:
-- health check completes
-- dashboard renders
-- pre-deploy gate passes
+## Optional: review Maa-X
 
-## 8. Submit a test task
+This repository also contains `maa-x/`, an experimental sibling package that extends Maa Protocol with broader orchestration capabilities while keeping a compatibility shim.
 
-```bash
-python3 ops/multi-agent-orchestrator/task_orchestrator.py submit research "test: confirm Maa install works" --run
-```
-
-Then check status:
-
-```bash
-python3 ops/multi-agent-orchestrator/task_orchestrator.py list --limit 5
-python3 ops/multi-agent-orchestrator/task_orchestrator.py status <task_id>
-```
-
-## 9. If something fails
+## If something fails
 
 Check these first:
 
 ```bash
-python3 scripts/health_check.py
-python3 ops/observability/maa_metrics.py summary --since 1
-python3 ops/multi-agent-orchestrator/task_orchestrator.py gate-status
+python3 --version
+pip --version
+pytest -q
 ```
 
-## Current deployment model
-
-Maa is currently designed for:
-- single laptop deployment
-- single VPS deployment
-- single-node operator-managed environments
-
-It is not currently packaged as a distributed cluster runtime.
+Then review:
+- `README.md`
+- `ARCHITECTURE.md`
+- `SECURITY.md`
+- `CONTRIBUTING.md`
