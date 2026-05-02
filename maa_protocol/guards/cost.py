@@ -27,6 +27,7 @@ tenant: TenantContext (or any object with ``budget_usd`` attribute)
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any, Mapping
 
@@ -38,7 +39,10 @@ class CostValidationError(ValueError):
 
 
 def _float_or_die(value: Any, field_name: str) -> float:
-    """Convert *value* to float; raise CostValidationError on failure or negativity."""
+    """Convert *value* to float; raise CostValidationError on failure or negativity.
+
+    Also rejects NaN and Infinity to prevent arithmetic edge cases.
+    """
     if value is None:
         raise CostValidationError(f"{field_name} may not be None")
     try:
@@ -47,9 +51,13 @@ def _float_or_die(value: Any, field_name: str) -> float:
         raise CostValidationError(
             f"{field_name} must be a numeric value; got {value!r}"
         ) from exc
-    if f < 0:
+    if not (f >= 0):  # False for negative, NaN, and -inf — but True for +inf
         raise CostValidationError(
-            f"{field_name} must be non-negative; got {f}"
+            f"{field_name} must be non-negative and finite; got {f}"
+        )
+    if math.isnan(f) or math.isinf(f):
+        raise CostValidationError(
+            f"{field_name} must be finite; got {f}"
         )
     return f
 

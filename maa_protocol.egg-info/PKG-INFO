@@ -1,3 +1,49 @@
+Metadata-Version: 2.4
+Name: maa-protocol
+Version: 0.3.0
+Summary: Enterprise AI orchestration platform — governance, swarm orchestration, self-learning, and advanced capabilities
+Author: Primeidea / Maa Protocol
+License: MIT
+Keywords: langgraph,governance,rbac,approval,canary,tenancy,swarm,multi-agent,rl,reinforcement-learning
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.7
+Provides-Extra: langgraph
+Requires-Dist: langgraph>=0.2; extra == "langgraph"
+Provides-Extra: swarm
+Provides-Extra: memory
+Provides-Extra: learning
+Provides-Extra: security
+Provides-Extra: plugins
+Provides-Extra: mcp
+Provides-Extra: cli
+Requires-Dist: click>=8.0; extra == "cli"
+Requires-Dist: rich>=13.0; extra == "cli"
+Provides-Extra: sparc
+Provides-Extra: workers
+Provides-Extra: routing
+Provides-Extra: all
+Requires-Dist: numpy>=1.24; extra == "all"
+Requires-Dist: scipy>=1.10; extra == "all"
+Requires-Dist: click>=8.0; extra == "all"
+Requires-Dist: rich>=13.0; extra == "all"
+Requires-Dist: langgraph>=0.2; extra == "all"
+Provides-Extra: dev
+Requires-Dist: black>=24.0; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+Dynamic: license-file
+
 # Maa Protocol
 
 **Maa Protocol is a lightweight governance and control layer for LangGraph workflows.**
@@ -48,11 +94,6 @@ This repository is intentionally scoped to governance and operational controls.
 ---
 
 ## Quickstart
-
-> ⚠️ **Trust assumptions — read before using in production.**
-> ``cost_usd`` passed via *state* or *config* is treated as **untrusted input**.
-> The caller is responsible for computing it server-side from authoritative logs.
-> See [SECURITY.md](SECURITY.md) for full details and known limitations.
 
 ```bash
 pip install -e .[dev]

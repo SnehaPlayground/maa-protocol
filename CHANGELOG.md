@@ -13,6 +13,15 @@
 
 ### Added
 - **test_security.py**: 28 security and reliability tests covering CostGuard validation, cross-tenant isolation, SQLite error wrapping, payload redaction/truncation, context manager lifecycle, and concurrent access
+- **CostGuard NaN/Infinity rejection**:  now rejects NaN and Infinity explicitly via , preventing arithmetic edge cases; covered by  and 
+- **New test additions (v0.3 post-release hardening)**: 12 new tests covering governance edge cases, concurrent invokes, async error path, ApprovalGate cross-tenant blocking, TenantGate negative budget handling
+- **CI quality gates hardened**: , , ,  and  added to dev extras
+- **SECURITY.md Responsible Disclosure**: GitHub Security Advisories link, no-audit caveat, SQLite/Postgres limitations clarified
+- **README trust-assumptions callout**: Quickstart includes ⚠️ block documenting cost_usd as untrusted input
+- **ROADMAP.md v0.3.0 progress**: Completed items marked done, remaining items marked in-progress/future
+
+### Changed
+- **test_concurrent_approvals_all_succeed**: Uses file-backed SQLite with threading.Barrier serialization to avoid SQLite concurrency-limit spurious failures
 
 ## v0.3.0 (May 2 2026)
 

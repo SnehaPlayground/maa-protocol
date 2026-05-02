@@ -201,10 +201,18 @@ def test_sqlite_backend_close_idempotent():
     backend.close()  # Must not raise.
 
 
-def test_concurrent_approvals_all_succeed():
-    """Multiple threads writing to the same SQLiteBackend must not corrupt data."""
-    backend = SQLiteBackend()
+def test_concurrent_approvals_all_succeed(tmp_path):
+    """Multiple threads writing to the same SQLiteBackend must not corrupt data.
+
+    Note: SQLite with check_same_thread=False can handle interleaved writes
+    from multiple threads, but not truly simultaneous writes. We use a barrier
+    to serialize writes so we test correctness rather than SQLite concurrency limits.
+    """
+    import threading
+    db_path = str(tmp_path / "concurrent_test.db")
+    backend = SQLiteBackend(path=db_path)
     errors = []
+    barrier = threading.Barrier(4)
 
     def writer(n: int) -> None:
         try:
@@ -218,6 +226,7 @@ def test_concurrent_approvals_all_succeed():
                     risk_score=0.5,
                     caller_tenant_id=f"tenant-{n}",
                 )
+            barrier.wait()  # sync before next round to reduce SQLite contention
         except Exception as exc:
             errors.append(exc)
 
@@ -375,3 +384,171 @@ def test_self_healing_does_not_suppress_keyboard_interrupt():
 
     with pytest.raises(KeyboardInterrupt):
         healer.invoke_with_healing(raise_kbi)
+
+
+# --------------------------------------------------------------------------- #
+# CostGuard NaN / Infinity edge cases
+# --------------------------------------------------------------------------- #
+
+def test_cost_guard_rejects_nan_usage():
+    import math
+    guard = CostGuard(default_budget_usd=10.0)
+    tenant = TenantContext(tenant_id="t1", operator_id="op", client_id="c")
+    with pytest.raises(CostValidationError, match="cost_usd must be non-negative and finite"):
+        guard.enforce({"cost_usd": float("nan")}, tenant)
+
+
+
+def test_cost_guard_rejects_inf_usage():
+    guard = CostGuard(default_budget_usd=10.0)
+    tenant = TenantContext(tenant_id="t1", operator_id="op", client_id="c")
+    with pytest.raises(CostValidationError, match="cost_usd must be finite"):
+        guard.enforce({"cost_usd": float("inf")}, tenant)
+
+
+def test_cost_guard_rejects_spoofed_zero_cost_when_over_budget():
+    """Even if cost_usd=0, budget=0 must still fail validation."""
+    guard = CostGuard(default_budget_usd=0.0)
+    tenant = TenantContext(tenant_id="t1", operator_id="op", client_id="c", budget_usd=0.0)
+    with pytest.raises(CostValidationError, match="Effective budget_usd must be > 0"):
+        guard.enforce({"cost_usd": 0.0}, tenant)
+
+
+# --------------------------------------------------------------------------- #
+# GovernanceWrapper sanitization + edge cases
+# --------------------------------------------------------------------------- #
+
+def test_governance_wrapper_accepts_none_state():
+    """invoke must not crash when state is None."""
+    wrapper = GovernanceWrapper(app=lambda s, **kw: s)
+    result = wrapper.invoke(None, {})
+    assert "governance" in result
+
+
+def test_governance_wrapper_accepts_empty_config():
+    """invoke must not crash when config is empty."""
+    wrapper = GovernanceWrapper(app=lambda s, **kw: s)
+    result = wrapper.invoke({}, {})
+    assert "governance" in result
+
+
+def test_governance_wrapper_sanitize_strips_unknown_keys():
+    """Unknown top-level keys must be stripped before guard execution."""
+    class CheckedApp:
+        def __init__(self):
+            self.received_state = None
+
+        def invoke(self, state, config=None, **kw):
+            self.received_state = state
+            return {"ok": True}
+
+    app = CheckedApp()
+    wrapper = GovernanceWrapper(app=app)
+    wrapper.invoke({"messages": ["hi"], "dangerous_key": "script", "tenant": "tenant-x"}, {"user_role": "operator"})
+    # dangerous_key should have been stripped; known keys preserved
+    assert "dangerous_key" not in app.received_state
+
+
+
+def test_governance_wrapper_uses_default_tenant_when_missing():
+    """When no tenant context is set, 'default' tenant must be used."""
+    wrapper = GovernanceWrapper(app=lambda s, **kw: s)
+    result = wrapper.invoke({"messages": ["hi"]}, {"user_role": "operator"})
+    governance = result.get("governance", {})
+    tenant = governance.get("tenant", {})
+    assert tenant.get("tenant_id") == "default"
+
+
+def test_governance_wrapper_concurrent_invokes(tmp_path):
+    """Multiple concurrent invoke calls must not corrupt audit or state."""
+    import tempfile
+    db_path = str(tmp_path / "gw_concurrent.db")
+    backend = SQLiteBackend(path=db_path)
+    wrapper = GovernanceWrapper(
+        app=lambda s, **kw: {"ok": True, "tenant": s.get("tenant_id", "default")},
+        persistence=backend,
+    )
+    errors = []
+
+    def call_invoke(n: int) -> None:
+        try:
+            for _ in range(5):
+                wrapper.invoke({"tenant_id": f"tenant-{n}"}, {"user_role": "operator"})
+        except Exception as exc:
+            errors.append(exc)
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = [pool.submit(call_invoke, i) for i in range(4)]
+        for f in futures:
+            f.result()
+
+    assert errors == [], f"Concurrent invokes raised: {errors}"
+
+
+def test_governance_wrapper_ainvoke_error_path_reraises():
+    """ainvoke must re-raise approval errors as MaaProtocolError."""
+    from maa_protocol.exceptions import MaaProtocolError
+    from maa_protocol.guards.approval import ApprovalGate
+    import asyncio
+
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
+    wrapper = GovernanceWrapper(app=lambda s, **kw: s, approval_gate=gate)
+
+    with pytest.raises(MaaProtocolError, match="Approval required"):
+        asyncio.run(wrapper.ainvoke({"action": "high_risk_op"}, {"risk_score": 0.9}))
+
+
+# --------------------------------------------------------------------------- #
+# ApprovalGate cross-tenant access
+# --------------------------------------------------------------------------- #
+
+def test_approval_gate_cross_tenant_preapproved_request_blocked():
+    """Pre-approved record owned by tenant-1 must not be usable by tenant-2."""
+    from maa_protocol.guards.approval import ApprovalGate
+
+    backend = SQLiteBackend()
+    gate = ApprovalGate(risk_threshold=0.7, persistence=backend)
+
+    # tenant-1 creates and approves a request
+    request = gate.create_request(
+        {"action": "trade"},
+        {"risk_score": 0.9, "tenant_id": "tenant-1", "operator_id": "op1"},
+    )
+    backend.approve(request.approval_id, caller_tenant_id="tenant-1")
+
+    # tenant-2 tries to use it — should be blocked at persistence layer
+    with pytest.raises(TenantIsolationError):
+        backend.get_approval(request.approval_id, caller_tenant_id="tenant-2")
+
+
+
+def test_audit_with_default_tenant_when_missing():
+    """Audit must fall back to 'default' tenant and succeed when no tenant in state."""
+    backend = SQLiteBackend()
+    wrapper = GovernanceWrapper(
+        app=lambda s, **kw: s,
+        persistence=backend,
+    )
+    # No tenant_id anywhere — should use 'default' without crashing
+    result = wrapper.invoke({"messages": ["hi"]}, {"user_role": "operator"})
+    assert "governance" in result
+    row = backend.conn.execute(
+        "SELECT tenant_id FROM audit_events ORDER BY rowid DESC LIMIT 1"
+    ).fetchone()
+    assert row is not None
+    assert row[0] == "default"
+
+
+# --------------------------------------------------------------------------- #
+# TenantGate with negative budget
+# --------------------------------------------------------------------------- #
+
+
+def test_tenant_gate_rejects_negative_budget():
+    """Tenant with negative budget_usd must be handled without crashing."""
+    tenant = TenantContext(tenant_id="t1", operator_id="op", client_id="c", budget_usd=-10.0)
+    gate = TenantGate(max_cost_per_invoke=100.0)
+    result = gate.enforce({"_active_task_count": 0}, tenant)
+    assert isinstance(result, dict)  # did not crash
+

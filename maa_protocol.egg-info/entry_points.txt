@@ -1,0 +1,2 @@
+[console_scripts]
+maa-x = maa_protocol.cli:main

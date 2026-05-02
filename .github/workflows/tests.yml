@@ -17,6 +17,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install --upgrade pip
       - run: pip install -e .[dev]
-      - run: ruff check .
+      - run: pip install pytest-cov bandit
+      - run: ruff check maa_protocol
       - run: mypy maa_protocol
-      - run: pytest
+      - run: pytest --cov=maa_protocol --cov-report=term-missing
+      - run: bandit -r maa_protocol
