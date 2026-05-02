@@ -30,7 +30,7 @@ class GovernanceWrapper:
     def __post_init__(self) -> None:
         if self.persistence is None:
             self.persistence = SQLiteBackend()
-        if self.approval_gate and self.approval_gate.persistence is None:
+        if self.approval_gate and hasattr(self.approval_gate, "persistence") and self.approval_gate.persistence is None:
             self.approval_gate.persistence = self.persistence
 
     def invoke(self, state: Mapping[str, Any] | None = None, config: Mapping[str, Any] | None = None, **kwargs: Any) -> Any:
