@@ -6,12 +6,14 @@ from .exceptions import (
     CircuitOpenError,
     CostLimitExceededError,
     MaaProtocolError,
+    PersistenceError,
     TenantAccessError,
+    TenantIsolationError,
 )
 from .governance import GovernanceWrapper
-from .guards import AccessControl, ApprovalGate, CanaryRouter, CostGuard, SelfHealing, SelfHealingConfig, TenantContext, TenantGate
+from .guards import AccessControl, ApprovalGate, CanaryRouter, CostGuard, CostValidationError, SelfHealing, SelfHealingConfig, TenantContext, TenantGate
 from .observability import MetricsCollector, TimedBlock
-from .persistence import ApprovalRecord, AuditEvent, PostgresBackend, SQLiteBackend
+from .persistence import ApprovalRecord, AuditEvent, PersistenceError, SQLiteBackend, TenantIsolationError
 
 __all__ = [
     "AccessControl",
@@ -23,16 +25,18 @@ __all__ = [
     "CanaryRouter",
     "CircuitOpenError",
     "CostGuard",
+    "CostValidationError",
     "CostLimitExceededError",
     "GovernanceWrapper",
     "MaaProtocolError",
     "MetricsCollector",
-    "PostgresBackend",
+    "PersistenceError",
     "SelfHealing",
     "SelfHealingConfig",
     "SQLiteBackend",
     "TenantAccessError",
     "TenantContext",
     "TenantGate",
+    "TenantIsolationError",
     "TimedBlock",
 ]

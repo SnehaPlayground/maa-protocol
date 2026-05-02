@@ -68,7 +68,9 @@ class ApprovalGate:
         approved = False
         approval_id = config.get("approval_id") or state.get("approval_id")
         if approval_id and self.persistence:
-            record = self.persistence.get_approval(str(approval_id))
+            record = self.persistence.get_approval(
+                str(approval_id), caller_tenant_id=tenant_id
+            )
             approved = bool(record and record.approved and record.action_hash == request.resolved_hash())
         return {
             "needs_approval": needs_approval,

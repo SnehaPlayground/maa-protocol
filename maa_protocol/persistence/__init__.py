@@ -1,11 +1,19 @@
 """Persistence module."""
 
-from .base import ApprovalRecord, AuditEvent, PersistenceBackend, PostgresBackend, SQLiteBackend
+from .base import (
+    ApprovalRecord,
+    AuditEvent,
+    PersistenceBackend,
+    PersistenceError,
+    SQLiteBackend,
+    TenantIsolationError,
+)
 
 __all__ = [
     "ApprovalRecord",
     "AuditEvent",
     "PersistenceBackend",
-    "PostgresBackend",
+    "PersistenceError",
     "SQLiteBackend",
+    "TenantIsolationError",
 ]
