@@ -46,8 +46,8 @@ class GovernanceWrapper:
         return operation()
 
     async def ainvoke(self, state: Mapping[str, Any] | None = None, config: Mapping[str, Any] | None = None, **kwargs: Any) -> Any:
-        resolved_state, resolved_config = self._prepare(state, config)
         with TimedBlock(self.metrics, "governance.ainvoke"):
+            resolved_state, resolved_config = self._prepare(state, config)
             if hasattr(self.app, "ainvoke"):
                 result = await self.app.ainvoke(resolved_state, config=resolved_config, **kwargs)
             elif hasattr(self.app, "invoke"):
@@ -99,5 +99,14 @@ class GovernanceWrapper:
     def _audit(self, state: Mapping[str, Any], event_type: str, payload: Any) -> None:
         if not self.persistence:
             return
-        tenant_id = str(state.get("governance", {}).get("tenant", {}).get("tenant_id", state.get("tenant_id", "default")))
+        governance = state.get("governance")
+        if isinstance(governance, dict):
+            tenant = governance.get("tenant")
+            if isinstance(tenant, dict):
+                tenant_id = tenant.get("tenant_id", state.get("tenant_id", "default"))
+            else:
+                tenant_id = state.get("tenant_id", "default")
+        else:
+            tenant_id = state.get("tenant_id", "default")
+        tenant_id = str(tenant_id) if tenant_id else "default"
         self.persistence.write_audit_event(tenant_id=tenant_id, event_type=event_type, payload=json.dumps(payload, default=str))
