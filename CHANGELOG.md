@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Security & Reliability
+- **TenantIsolationError import collision fixed**: `persistence/base.py` now re-exports `TenantIsolationError` from `exceptions.py` instead of shadowing it with a local definition, eliminating the `isinstance` mismatch that caused cross-tenant isolation tests to fail
+- **Plain-text payload redaction**: `_redact_plain_text` helper added to redact `KEY=VALUE` patterns (matching `_SECRET_KEYS`) in string payloads (e.g., approval reason field); `_sanitize_payload` now applies redaction before size-capping for both JSON and plain-text inputs
+- **CostGuard budget fallback fixed**: Removed `or self.default_budget_usd` short-circuit that silently dropped explicit `budget_usd=0.0`; replaced with `_get_tenant_budget` sentinel-based helper that distinguishes "not set" from "explicitly 0" so zero budgets are correctly rejected
+- **SQLite error message pattern corrected**: Error injection tests now match actual wrapped messages (`"no such table: approvals"`, `"no such table: audit_events"`) instead of expecting the raw SQLite message
+- **Context manager test accepts AttributeError**: After `__exit__`, `backend.conn` is `None` so `AttributeError` is raised (not `sqlite3.Error`); test updated accordingly
+- **test_cost_guard_blocks_spoofed_low_cost_when_over_budget corrected**: Test now asserts `CostLimitExceededError` when cost exceeds hard limit (was previously asserting a generic Exception that would never be raised)
+- **test_cost_guard_rejects_negative_hard_limit corrected**: Test now constructs the guard directly since `__post_init__` validates `hard_limit_usd < 0` at init time
+
+### Added
+- **test_security.py**: 28 security and reliability tests covering CostGuard validation, cross-tenant isolation, SQLite error wrapping, payload redaction/truncation, context manager lifecycle, and concurrent access
+
 ## v0.3.0 (May 2 2026)
 
 ### Fixed
