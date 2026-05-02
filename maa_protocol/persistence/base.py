@@ -108,6 +108,36 @@ class SQLiteBackend:
         self.conn.commit()
         return AuditEvent(event_id=event_id, tenant_id=tenant_id, event_type=event_type, payload=payload)
 
+    def close(self) -> None:
+        self.conn.close()
 
-class PostgresBackend(SQLiteBackend):
-    """Placeholder compatibility backend until dedicated SQLAlchemy/Postgres implementation is added."""
+    def __enter__(self) -> "SQLiteBackend":
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        self.close()
+
+
+class PostgresBackend:
+    """Placeholder — raises NotImplementedError until a dedicated SQLAlchemy/Postgres implementation is added."""
+
+    def create_approval(self, tenant_id: str, action: str, action_hash: str, requested_by: str, reason: str, risk_score: float) -> ApprovalRecord:
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def approve(self, approval_id: str) -> ApprovalRecord | None:
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def get_approval(self, approval_id: str) -> ApprovalRecord | None:
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def write_audit_event(self, tenant_id: str, event_type: str, payload: str) -> AuditEvent:
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def close(self) -> None:
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def __enter__(self) -> "PostgresBackend":
+        raise NotImplementedError("PostgresBackend is not yet implemented")
+
+    def __exit__(self, *exc_info: object) -> None:
+        raise NotImplementedError("PostgresBackend is not yet implemented")

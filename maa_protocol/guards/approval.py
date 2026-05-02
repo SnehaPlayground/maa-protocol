@@ -44,7 +44,15 @@ class ApprovalGate:
         risk_score = float(config.get("risk_score", state.get("risk_score", self._default_risk(flags))))
         action = str(config.get("action", state.get("action", "governed_invoke")))
         tenant_id = str(config.get("tenant_id", state.get("tenant_id", "default")))
-        requested_by = str(config.get("operator_id", state.get("operator_id", state.get("governance", {}).get("tenant", {}).get("operator_id", "unknown"))))
+        governance = state.get("governance")
+        if isinstance(governance, dict):
+            tenant = governance.get("tenant")
+            if isinstance(tenant, dict):
+                requested_by = str(tenant.get("operator_id", "unknown"))
+            else:
+                requested_by = str(config.get("operator_id", state.get("operator_id", "unknown")))
+        else:
+            requested_by = str(config.get("operator_id", state.get("operator_id", "unknown")))
         reason = str(config.get("approval_reason", f"Approval required for {action}"))
         request = ApprovalRequest(
             tenant_id=tenant_id,

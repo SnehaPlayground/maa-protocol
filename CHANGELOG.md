@@ -3,9 +3,12 @@
 ## v0.3.0 (May 2 2026)
 
 ### Fixed
-- **Governance timing consistency**: `_prepare` is now called inside the `TimedBlock` in `ainvoke`, matching the `invoke` path so preparation time is measured consistently in metrics
+- **Governance audit timing**: `_audit` call moved inside `TimedBlock` in `ainvoke`, matching `invoke` so audit latency is measured consistently
+- **Governance timing consistency**: `_prepare` called inside `TimedBlock` in `ainvoke`; preparation time now included in governance metrics
 - **Tenant ID string safety**: `_audit` tenant extraction rewritten to avoid producing the literal string `"None"` when governance data is absent; falls back cleanly to `"default"`
 - **ApprovalPersistenceError wired**: `ApprovalGate.create_request` now raises `ApprovalPersistenceError` (not `ApprovalRequiredError`) when the persistence backend is absent; exception exported from top-level `__init__.py`
+- **Approval requested_by safety**: `assess` method replaced the deep nested `.get` chain with explicit `isinstance` guards; no `AttributeError` possible on malformed state
+- **Persistence cleanup**: `SQLiteBackend` now implements `close()`, `__enter__`, and `__exit__` for proper connection lifecycle management via context manager; `PostgresBackend` raises `NotImplementedError` on all methods instead of silently inheriting from SQLite
 
 ### Added
 - **Guard range validation**: all key guard parameters are now validated in `__post_init__` with clear `ValueError` messages:

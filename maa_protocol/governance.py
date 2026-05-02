@@ -56,7 +56,7 @@ class GovernanceWrapper:
                 result = await asyncio.to_thread(self.app, resolved_state, config=resolved_config, **kwargs)
             else:
                 raise TypeError("Wrapped app must be callable or expose invoke()/ainvoke()")
-        self._audit(resolved_state, "ainvoke.success", result)
+            self._audit(resolved_state, "ainvoke.success", result)
         return result
 
     def _prepare(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None) -> tuple[dict[str, Any], dict[str, Any]]:
