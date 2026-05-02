@@ -11,6 +11,12 @@ class CanaryRouter:
     canary_version: str = "canary"
     traffic_split: float = 0.0
 
+    def __post_init__(self) -> None:
+        if not (0.0 <= self.traffic_split <= 1.0):
+            raise ValueError(
+                f"traffic_split must be between 0.0 and 1.0, got {self.traffic_split}"
+            )
+
     def route_metadata(self, state: Mapping[str, Any] | None, tenant: Any, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
         state = dict(state or {})
         config = dict(config or {})

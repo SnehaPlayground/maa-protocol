@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from hashlib import sha256
 from typing import Any, Mapping
 
-from ..exceptions import ApprovalRequiredError
+from ..exceptions import ApprovalPersistenceError, ApprovalRequiredError
 from ..persistence.base import ApprovalRecord, PersistenceBackend
 
 
@@ -30,6 +30,12 @@ class ApprovalGate:
     persistence: PersistenceBackend | None = None
     require_approval_for: set[str] = field(default_factory=set)
     allow_interrupt_handoff: bool = True
+
+    def __post_init__(self) -> None:
+        if not (0.0 <= self.risk_threshold <= 1.0):
+            raise ValueError(
+                f"risk_threshold must be between 0.0 and 1.0, got {self.risk_threshold}"
+            )
 
     def assess(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
         state = dict(state or {})
@@ -66,7 +72,7 @@ class ApprovalGate:
 
     def create_request(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None = None) -> ApprovalRecord:
         if not self.persistence:
-            raise ApprovalRequiredError("Approval persistence backend is required to create approval requests")
+            raise ApprovalPersistenceError("Approval persistence backend is required to create approval requests")
         result = self.assess(state, config)
         request: ApprovalRequest = result["request"]
         return self.persistence.create_approval(
