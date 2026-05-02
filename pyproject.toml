@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "maa-protocol"
 version = "0.3.0"
-description = "Lightweight governance and control layer for LangGraph workflows"
+description = "Enterprise AI orchestration platform — governance, swarm orchestration, self-learning, and advanced capabilities"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -15,7 +15,7 @@ authors = [
 dependencies = [
   "pydantic>=2.7",
 ]
-keywords = ["langgraph", "governance", "rbac", "approval", "canary", "tenancy"]
+keywords = ["langgraph", "governance", "rbac", "approval", "canary", "tenancy", "swarm", "multi-agent", "rl", "reinforcement-learning"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
@@ -31,12 +31,32 @@ classifiers = [
 langgraph = [
   "langgraph>=0.2"
 ]
+swarm = []
+memory = []
+learning = []
+security = []
+plugins = []
+mcp = []
+cli = ["click>=8.0", "rich>=13.0"]
+sparc = []
+workers = []
+routing = []
+all = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "click>=8.0",
+  "rich>=13.0",
+  "langgraph>=0.2",
+]
 dev = [
   "black>=24.0",
   "mypy>=1.10",
   "pytest>=8.0",
   "ruff>=0.5",
 ]
+
+[project.scripts]
+maa-x = "maa_protocol.cli:main"
 
 [tool.setuptools]
 packages = [
@@ -45,6 +65,15 @@ packages = [
   "maa_protocol.persistence",
   "maa_protocol.observability",
   "maa_protocol.utils",
+  "maa_protocol.swarm",
+  "maa_protocol.learning",
+  "maa_protocol.security",
+  "maa_protocol.plugins",
+  "maa_protocol.mcp",
+  "maa_protocol.cli",
+  "maa_protocol.sparc",
+  "maa_protocol.workers",
+  "maa_protocol.routing",
 ]
 
 [tool.ruff]

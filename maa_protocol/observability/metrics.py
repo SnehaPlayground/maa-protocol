@@ -1,45 +1,100 @@
+"""Observability metrics with lightweight persistence and export."""
+
 from __future__ import annotations
 
-import logging
+import json
+import statistics
 import time
-from dataclasses import dataclass, field
+from contextlib import contextmanager
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
+METRICS_FILE = Path("/tmp/maa-x-metrics.json")
 
-logger = logging.getLogger("maa_protocol")
+
+@dataclass
+class MetricSnapshot:
+    counts: dict[str, int]
+    latencies: dict[str, list[float]]
+    timestamps: dict[str, float]
+
+    def summary(self) -> dict[str, Any]:
+        out: dict[str, Any] = {"counts": dict(self.counts), "latency_summary": {}}
+        for name, values in self.latencies.items():
+            if not values:
+                continue
+            out["latency_summary"][name] = {
+                "count": len(values),
+                "min": min(values),
+                "max": max(values),
+                "avg": statistics.fmean(values),
+                "p50": statistics.median(values),
+                "p95": sorted(values)[max(0, int(len(values) * 0.95) - 1)],
+            }
+        return out
 
 
-@dataclass(slots=True)
 class MetricsCollector:
-    counters: dict[str, int] = field(default_factory=dict)
-    timings_ms: dict[str, list[float]] = field(default_factory=dict)
+    def __init__(self, persist_path: str | Path | None = None) -> None:
+        self._counts: dict[str, int] = {}
+        self._latencies: dict[str, list[float]] = {}
+        self._timestamps: dict[str, float] = {}
+        self._persist_path = Path(persist_path) if persist_path else METRICS_FILE
+        self._load()
 
     def increment(self, name: str, value: int = 1) -> None:
-        self.counters[name] = self.counters.get(name, 0) + value
+        self._counts[name] = self._counts.get(name, 0) + value
+        self._timestamps[name] = time.time()
 
     def observe_ms(self, name: str, value: float) -> None:
-        self.timings_ms.setdefault(name, []).append(value)
+        self.record_latency(name, value)
 
-    def snapshot(self) -> dict[str, Any]:
-        return {
-            "counters": dict(self.counters),
-            "timings_ms": {k: list(v) for k, v in self.timings_ms.items()},
-        }
+    def record_latency(self, name: str, duration_ms: float) -> None:
+        self._latencies.setdefault(name, []).append(duration_ms)
+        self._timestamps[name] = time.time()
+
+    def snapshot(self) -> MetricSnapshot:
+        return MetricSnapshot(dict(self._counts), {k: list(v) for k, v in self._latencies.items()}, dict(self._timestamps))
+
+    @property
+    def counts(self) -> dict[str, int]:
+        return dict(self._counts)
+
+    def save(self) -> None:
+        self._persist_path.write_text(json.dumps({"counts": self._counts, "latencies": self._latencies, "timestamps": self._timestamps}, indent=2))
+
+    def _load(self) -> None:
+        if not self._persist_path.exists():
+            return
+        try:
+            data = json.loads(self._persist_path.read_text())
+            self._counts = {k: int(v) for k, v in data.get("counts", {}).items()}
+            self._latencies = {k: [float(x) for x in v] for k, v in data.get("latencies", {}).items()}
+            self._timestamps = {k: float(v) for k, v in data.get("timestamps", {}).items()}
+        except Exception:
+            pass
+
+    def export_json(self) -> dict[str, Any]:
+        snap = self.snapshot()
+        return {"counts": snap.counts, "latencies": snap.latencies, "timestamps": snap.timestamps, "summary": snap.summary()}
+
+    def dashboard(self) -> str:
+        summary = self.snapshot().summary()
+        lines = ["Maa-X Metrics Dashboard", "====================="]
+        for name, count in summary.get("counts", {}).items():
+            lines.append(f"count {name}: {count}")
+        for name, data in summary.get("latency_summary", {}).items():
+            lines.append(f"latency {name}: avg={data['avg']:.2f}ms p50={data['p50']:.2f}ms p95={data['p95']:.2f}ms")
+        return "\n".join(lines)
 
 
-class TimedBlock:
-    def __init__(self, collector: MetricsCollector, label: str) -> None:
-        self.collector = collector
-        self.label = label
-        self.started = 0.0
-
-    def __enter__(self) -> "TimedBlock":
-        self.started = time.perf_counter()
-        return self
-
-    def __exit__(self, exc_type, exc, tb) -> None:  # noqa: ANN001
-        elapsed = (time.perf_counter() - self.started) * 1000
-        self.collector.observe_ms(self.label, elapsed)
-        if exc:
-            self.collector.increment(f"{self.label}.errors")
-            logger.exception("Timed block failed", extra={"label": self.label})
+@contextmanager
+def TimedBlock(metrics: MetricsCollector, name: str):
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        duration_ms = (time.perf_counter() - start) * 1000
+        metrics.record_latency(name, duration_ms)
+        metrics.increment(name)

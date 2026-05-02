@@ -1,3 +1,5 @@
+"""Tenant isolation, RBAC access control, and tenant-level resource gates."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -22,14 +24,8 @@ class TenantContext:
     def from_config(cls, config: Mapping[str, Any] | None = None) -> "TenantContext":
         config = dict(config or {})
         known = {
-            "tenant_id",
-            "operator_id",
-            "client_id",
-            "user_role",
-            "tenant_tier",
-            "isolation_level",
-            "budget_usd",
-            "permissions",
+            "tenant_id", "operator_id", "client_id", "user_role",
+            "tenant_tier", "isolation_level", "budget_usd", "permissions",
         }
         metadata = {k: v for k, v in config.items() if k not in known}
         permissions = config.get("permissions") or []
@@ -70,7 +66,11 @@ class AccessControl:
         }
     )
 
-    def enforce(self, config: Mapping[str, Any] | None = None, tenant: TenantContext | None = None) -> dict[str, Any]:
+    def enforce(
+        self,
+        config: Mapping[str, Any] | None = None,
+        tenant: TenantContext | None = None,
+    ) -> dict[str, Any]:
         config = dict(config or {})
         role = str(config.get("user_role") or (tenant.user_role if tenant else "viewer"))
         required = str(config.get("required_permission", "invoke"))
@@ -87,7 +87,12 @@ class TenantGate:
     max_concurrent_tasks: int | None = None
     tenant_limits: dict[str, dict[str, Any]] = field(default_factory=dict)
 
-    def enforce(self, state: Mapping[str, Any] | None, tenant: TenantContext, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    def enforce(
+        self,
+        state: Mapping[str, Any] | None,
+        tenant: TenantContext,
+        config: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         state = dict(state or {})
         config = dict(config or {})
         limits = dict(self.tenant_limits.get(tenant.tenant_id, {}))

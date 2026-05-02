@@ -1,3 +1,5 @@
-from .metrics import MetricsCollector, TimedBlock
+"""Observability module."""
 
-__all__ = ["MetricsCollector", "TimedBlock"]
+from .metrics import MetricSnapshot, MetricsCollector, TimedBlock
+
+__all__ = ["MetricSnapshot", "MetricsCollector", "TimedBlock"]

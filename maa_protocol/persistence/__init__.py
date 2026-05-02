@@ -1,3 +1,5 @@
+"""Persistence module."""
+
 from .base import ApprovalRecord, AuditEvent, PersistenceBackend, PostgresBackend, SQLiteBackend
 
 __all__ = [

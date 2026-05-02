@@ -1,8 +1,8 @@
-from __future__ import annotations
+"""Custom exceptions for Maa Protocol."""
 
 
 class MaaProtocolError(Exception):
-    """Base exception for Maa Protocol."""
+    """Base exception for Maa Protocol errors."""
 
 
 class ApprovalRequiredError(MaaProtocolError):

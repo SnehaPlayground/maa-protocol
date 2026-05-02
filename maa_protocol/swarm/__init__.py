@@ -1,30 +1,25 @@
 """
-MAA Protocol — Swarm Multi-Agent Runtime
-=========================================
-Real multi-agent orchestration with configurable topologies,
-agent roles, consensus mechanisms, and execution tracking.
+Enhanced swarm orchestration — incorporates all original maa_protocol/swarm.py capabilities.
 
-Components:
-- AgentSpec — agent metadata (id, role, model, capabilities, state)
-- SwarmConfig — topology (hierarchical/mesh/fanout), strategy, consensus, max_agents
-- SwarmPlan — generated execution plan with assigned roles
-- SwarmMetrics — runtime metrics (agents, rounds, duration, consensus steps)
-- SwarmExecutionEngine — runs a swarm plan with lifecycle management
-- run_swarm() — convenience API
-- AgentState enum (IDLE/BUSY/CONSENSUS/DONE/FAILED)
-- ConsensusStrategy enum (RAFT/MAJORITY/VOTING/BROADCAST)
-- Topology enum (HIERARCHICAL/MESH/FANOUT)
+Provides:
+- SwarmExecutionEngine (queen-led multi-agent dispatch)
+- AgentSpec, SwarmConfig, SwarmPlan, SwarmMetrics
+- ConsensusStrategy (RAFT, MAJORITY, VOTING, BROADCAST)
+- Topology (HIERARCHICAL, MESH, FANOUT)
+- run_swarm() convenience API
 """
 
 from __future__ import annotations
 
 import random
 import time
+import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
+
 
 class AgentState(Enum):
     IDLE = "idle"
@@ -35,24 +30,25 @@ class AgentState(Enum):
 
 
 class ConsensusStrategy(Enum):
-    RAFT = "raft"        # leader-based consensus
-    MAJORITY = "majority" # vote-based consensus
-    VOTING = "voting"    # weighted voting
-    BROADCAST = "broadcast"  # fire to all, no coordination
+    RAFT = "raft"
+    MAJORITY = "majority"
+    VOTING = "voting"
+    BROADCAST = "broadcast"
 
 
 class Topology(Enum):
-    HIERARCHICAL = "hierarchical"  # tree: coordinator → specialists
-    MESH = "mesh"                  # all-to-all with coordinator
-    FANOUT = "fanout"              # one-to-many (map-reduce style)
+    HIERARCHICAL = "hierarchical"
+    MESH = "mesh"
+    FANOUT = "fanout"
 
 
-# ── Agent specification ─────────────────────────────────────────────────────────
+# ── Agent specification ───────────────────────────────────────────────────────
+
 
 @dataclass
 class AgentSpec:
     id: str
-    role: str                  # e.g. "coordinator", "researcher", "coder"
+    role: str
     model: str = "default"
     capabilities: list[str] = field(default_factory=list)
     state: AgentState = AgentState.IDLE
@@ -67,22 +63,18 @@ class AgentSpec:
         return self.state in (AgentState.BUSY, AgentState.CONSENSUS)
 
 
-# ── Swarm configuration and plan ───────────────────────────────────────────────
+# ── Swarm configuration and plan ─────────────────────────────────────────────
+
 
 @dataclass
 class SwarmConfig:
     topology: Topology = Topology.HIERARCHICAL
-    strategy: str = "specialized"  # "specialized" | "generalist" | "hierarchical"
+    strategy: str = "specialized"
     consensus: ConsensusStrategy = ConsensusStrategy.RAFT
     max_agents: int = 8
     max_rounds: int = 5
     timeout_per_round_ms: float = 30_000.0
     require_consensus: bool = True
-
-    def max_agents_for_topology(self) -> int:
-        if self.topology == Topology.FANOUT:
-            return self.max_agents
-        return min(self.max_agents, 13)  # hard cap from ROUTING_TABLE
 
 
 @dataclass
@@ -99,7 +91,8 @@ class SwarmPlan:
         return [a for a in self.agents if a.is_active()]
 
 
-# ── Swarm metrics ──────────────────────────────────────────────────────────────
+# ── Swarm metrics ─────────────────────────────────────────────────────────────
+
 
 @dataclass
 class SwarmMetrics:
@@ -108,7 +101,7 @@ class SwarmMetrics:
     total_rounds: int
     consensus_steps: int
     duration_ms: float
-    outcome: str  # "success" | "partial" | "failed" | "timeout"
+    outcome: str
     start_time: float = field(default_factory=time.time)
     end_time: float | None = None
 
@@ -127,6 +120,7 @@ class SwarmMetrics:
 
 # ── Swarm execution engine ─────────────────────────────────────────────────────
 
+
 class SwarmExecutionEngine:
     """
     Runs a SwarmPlan with lifecycle management.
@@ -143,7 +137,6 @@ class SwarmExecutionEngine:
         self._results: dict[str, dict[str, Any]] = {}
 
     def create_plan(self, task: str, config: SwarmConfig | None = None) -> SwarmPlan:
-        """Create a swarm execution plan for a task."""
         cfg = config or SwarmConfig()
         agents = self._build_agents(cfg, task)
         coordinator = agents[0] if agents else None
@@ -158,7 +151,6 @@ class SwarmExecutionEngine:
         return plan
 
     def _build_agents(self, config: SwarmConfig, task: str) -> list[AgentSpec]:
-        """Build agent roster based on topology and task complexity."""
         n = min(config.max_agents, 8)
         base_roles = ["coordinator", "researcher", "coder", "reviewer", "tester"]
 
@@ -166,12 +158,15 @@ class SwarmExecutionEngine:
             roles = ["coordinator"] + base_roles[1:n]
         elif config.topology == Topology.FANOUT:
             roles = ["coordinator"] + [f"worker-{i}" for i in range(1, n)]
-        else:  # MESH
+        else:
             roles = base_roles[:n] if n <= len(base_roles) else base_roles + [f"agent-{i}" for i in range(len(base_roles), n)]
 
         return [
-            AgentSpec(id=f"agent-{i}", role=roles[i] if i < len(roles) else f"agent-{i}",
-                      model=self._select_model(roles[i] if i < len(roles) else "generalist", config.strategy))
+            AgentSpec(
+                id=f"agent-{i}",
+                role=roles[i] if i < len(roles) else f"agent-{i}",
+                model=self._select_model(roles[i] if i < len(roles) else "generalist", config.strategy),
+            )
             for i in range(n)
         ]
 
@@ -190,33 +185,25 @@ class SwarmExecutionEngine:
         return "gpt-5.4"
 
     def _estimate_duration(self, config: SwarmConfig, agent_count: int) -> float:
-        base = agent_count * 2000  # 2s per agent overhead
+        base = agent_count * 2000
         rounds = min(config.max_rounds, 5)
-        per_round = config.timeout_per_round_ms * 0.5  # estimate: half timeout consumed
+        per_round = config.timeout_per_round_ms * 0.5
         return base + rounds * per_round
 
     def run(self, plan: SwarmPlan) -> SwarmMetrics:
-        """Execute the swarm plan. Returns metrics."""
         swarm_id = f"swarm-{int(time.time() * 1000)}"
         start = time.time()
         consensus_count = 0
 
         for round_num in range(1, plan.config.max_rounds + 1):
-            # Simulate round execution
             active = [a for a in plan.agents if a.is_available()]
             if not active:
                 break
-
-            # Assign tasks for this round
             for agent in active:
                 agent.state = AgentState.BUSY
                 agent.rounds_participated += 1
-
-            # Run consensus if needed
             if plan.config.require_consensus and plan.config.consensus != ConsensusStrategy.BROADCAST:
                 consensus_count += self._run_consensus(plan, round_num)
-
-            # Mark round complete
             for agent in active:
                 agent.state = AgentState.DONE
                 agent.last_result = f"round-{round_num}-done"
@@ -238,15 +225,13 @@ class SwarmExecutionEngine:
         return metrics
 
     def _run_consensus(self, plan: SwarmPlan, round_num: int) -> int:
-        """Run one consensus step. Returns number of consensus rounds."""
         if plan.config.consensus == ConsensusStrategy.RAFT:
             return self._raft_consensus(plan, round_num)
         elif plan.config.consensus == ConsensusStrategy.MAJORITY:
             return self._majority_vote(plan, round_num)
         elif plan.config.consensus == ConsensusStrategy.VOTING:
             return self._voting_consensus(plan, round_num)
-        else:
-            return 0
+        return 0
 
     def _raft_consensus(self, plan: SwarmPlan, round_num: int) -> int:
         coordinator = next((a for a in plan.agents if a.id == plan.coordinator_id), None)
@@ -314,13 +299,14 @@ class SwarmExecutionEngine:
         return counts
 
 
-# ── Legacy compatibility ────────────────────────────────────────────────────────
+# ── Legacy compatibility ──────────────────────────────────────────────────────
+
 
 @dataclass
 class SwarmConfigLegacy:
-    topology: str = 'hierarchical'
-    strategy: str = 'specialized'
-    consensus: str = 'raft'
+    topology: str = "hierarchical"
+    strategy: str = "specialized"
+    consensus: str = "raft"
     max_agents: int = 8
 
 
@@ -331,23 +317,23 @@ class SwarmPlanLegacy:
 
 
 ROUTING_TABLE = {
-    1: ['coordinator', 'researcher', 'coder', 'tester'],
-    3: ['coordinator', 'architect', 'coder', 'tester', 'reviewer'],
-    5: ['coordinator', 'architect', 'coder', 'reviewer'],
-    7: ['coordinator', 'perf-engineer', 'coder'],
-    9: ['coordinator', 'security-architect', 'auditor'],
-    11: ['coordinator', 'memory-specialist', 'perf-engineer'],
-    13: ['researcher', 'api-docs'],
+    1: ["coordinator", "researcher", "coder", "tester"],
+    3: ["coordinator", "architect", "coder", "tester", "reviewer"],
+    5: ["coordinator", "architect", "coder", "reviewer"],
+    7: ["coordinator", "perf-engineer", "coder"],
+    9: ["coordinator", "security-architect", "auditor"],
+    11: ["coordinator", "memory-specialist", "perf-engineer"],
+    13: ["researcher", "api-docs"],
 }
 
 
 def build_swarm(task_code: int, config: SwarmConfigLegacy | None = None) -> SwarmPlanLegacy:
     cfg = config or SwarmConfigLegacy()
-    roles = ROUTING_TABLE.get(task_code, ['coordinator'])
+    roles = ROUTING_TABLE.get(task_code, ["coordinator"])
     return SwarmPlanLegacy(config=cfg, roles=roles)
 
 
-# ── Convenience API ───────────────────────────────────────────────────────────
+# ── Module-level engine + convenience API ─────────────────────────────────────
 
 _engine = SwarmExecutionEngine()
 

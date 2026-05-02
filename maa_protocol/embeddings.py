@@ -1,14 +1,8 @@
-"""
-MAA Protocol — Embeddings Module
-===============================
-Re-exports from memory.py for backward compatibility.
-The real embedding system lives in maa_protocol.memory.
-"""
+"""Embeddings re-export for backward compatibility with maa_protocol."""
 
-from maa_protocol.memory import (
+from maa_x.memory import (
     embed_text,
     batch_embed,
-    EmbeddingVector,
     DEFAULT_DIMS,
     build_tfidf_vocab,
     SemanticMemory,
@@ -23,18 +17,17 @@ from maa_protocol.memory import (
 )
 
 __all__ = [
-    "embed_text",
-    "batch_embed",
-    "EmbeddingVector",
-    "DEFAULT_DIMS",
-    "build_tfidf_vocab",
-    "SemanticMemory",
-    "SemanticRouter",
-    "PatternMemory",
-    "score_decision",
-    "ReuseDecision",
-    "RoutingResult",
-    "SearchResult",
-    "RetrievedPattern",
-    "MEMORY_ROOT",
+    'embed_text',
+    'batch_embed',
+    'DEFAULT_DIMS',
+    'build_tfidf_vocab',
+    'SemanticMemory',
+    'SemanticRouter',
+    'PatternMemory',
+    'score_decision',
+    'ReuseDecision',
+    'RoutingResult',
+    'SearchResult',
+    'RetrievedPattern',
+    'MEMORY_ROOT',
 ]

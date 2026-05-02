@@ -1,3 +1,5 @@
+"""Guards module."""
+
 from .approval import ApprovalGate, ApprovalRequest
 from .canary import CanaryRouter
 from .cost import CostGuard

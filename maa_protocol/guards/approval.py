@@ -1,3 +1,5 @@
+"""Approval guard — raises ApprovalRequiredError when risk threshold is exceeded."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -31,17 +33,17 @@ class ApprovalGate:
     require_approval_for: set[str] = field(default_factory=set)
     allow_interrupt_handoff: bool = True
 
-    def __post_init__(self) -> None:
-        if not (0.0 <= self.risk_threshold <= 1.0):
-            raise ValueError(
-                f"risk_threshold must be between 0.0 and 1.0, got {self.risk_threshold}"
-            )
-
-    def assess(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    def assess(
+        self,
+        state: Mapping[str, Any] | None,
+        config: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         state = dict(state or {})
         config = dict(config or {})
         flags = self._flags(state, config)
-        risk_score = float(config.get("risk_score", state.get("risk_score", self._default_risk(flags))))
+        risk_score = float(
+            config.get("risk_score", state.get("risk_score", self._default_risk(flags)))
+        )
         action = str(config.get("action", state.get("action", "governed_invoke")))
         tenant_id = str(config.get("tenant_id", state.get("tenant_id", "default")))
         governance = state.get("governance")
@@ -78,7 +80,11 @@ class ApprovalGate:
             "request": request,
         }
 
-    def create_request(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None = None) -> ApprovalRecord:
+    def create_request(
+        self,
+        state: Mapping[str, Any] | None,
+        config: Mapping[str, Any] | None = None,
+    ) -> ApprovalRecord:
         if not self.persistence:
             raise ApprovalPersistenceError("Approval persistence backend is required to create approval requests")
         result = self.assess(state, config)
@@ -92,7 +98,11 @@ class ApprovalGate:
             risk_score=request.risk_score,
         )
 
-    def enforce(self, state: Mapping[str, Any] | None, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    def enforce(
+        self,
+        state: Mapping[str, Any] | None,
+        config: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         result = self.assess(state, config)
         if result["needs_approval"] and not result["approved"]:
             approval_record = self.create_request(state, config) if self.persistence else None
@@ -110,7 +120,7 @@ class ApprovalGate:
 
     @staticmethod
     def _flags(state: Mapping[str, Any], config: Mapping[str, Any]) -> set[str]:
-        values = set()
+        values: set[str] = set()
         for key in ("risk_flags", "action_type"):
             for source in (state.get(key), config.get(key)):
                 if not source:
