@@ -5,6 +5,7 @@ import pytest
 from maa_protocol import (
     AccessControl,
     ApprovalGate,
+    ApprovalPersistenceError,
     ApprovalRequiredError,
     CanaryRouter,
     CostGuard,
@@ -87,6 +88,12 @@ def test_approval_gate_allows_preapproved_action():
     assert result["approved"] is True
 
 
+def test_approval_gate_raises_approval_persistence_error_without_backend():
+    gate = ApprovalGate(risk_threshold=0.7)  # no persistence set
+    with pytest.raises(ApprovalPersistenceError):
+        gate.create_request({"action": "send_email"}, {"risk_score": 0.95, "tenant_id": "tenant-1"})
+
+
 def test_tenant_gate_honors_zero_override_limit():
     tenant = TenantContext(tenant_id="tenant-1", operator_id="op", client_id="client")
     gate = TenantGate(max_concurrent_tasks=5, tenant_limits={"tenant-1": {"max_concurrent_tasks": 0}})
@@ -139,7 +146,7 @@ def test_self_healing_recovers_after_retries():
             raise ValueError("boom")
         return "ok"
 
-    healer = SelfHealing(SelfHealingConfig(max_attempts=3, initial_interval=0.0, max_interval=0.0))
+    healer = SelfHealing(SelfHealingConfig(max_attempts=3, initial_interval=0.01, max_interval=0.01))
     assert healer.invoke_with_healing(flaky) == "ok"
     assert attempts["count"] == 3
 
