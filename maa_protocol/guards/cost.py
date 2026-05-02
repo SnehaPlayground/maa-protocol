@@ -12,6 +12,12 @@ class CostGuard:
     hard_limit_usd: float | None = None
     soft_limit_ratio: float = 0.8
 
+    def __post_init__(self) -> None:
+        if not (0.0 <= self.soft_limit_ratio <= 1.0):
+            raise ValueError(
+                f"soft_limit_ratio must be between 0.0 and 1.0, got {self.soft_limit_ratio}"
+            )
+
     def enforce(self, state: Mapping[str, Any] | None, tenant: Any, config: Mapping[str, Any] | None = None) -> dict[str, Any]:
         state = dict(state or {})
         config = dict(config or {})
