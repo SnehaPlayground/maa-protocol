@@ -1,70 +1,46 @@
 # Maa Protocol
 
-**Maa Protocol is a lightweight governance and control layer for LangGraph workflows.**
+**Maa Protocol is a governance layer for LangGraph workflows.**
 
-It wraps existing LangGraph applications with approval gates, cost controls, tenant isolation, canary releases, self-healing, idempotency-friendly execution patterns, and observability, without trying to replace LangGraph itself.
+It wraps existing LangGraph applications with approval gates, RBAC, tenant isolation, cost controls, canary routing, self-healing, persistence, and observability.
 
-> Status: focused governance package in active concept testing and implementation. Pre-1.0, intentionally scoped for iteration, validation, and practical integration work.
-
----
-
-## Value proposition
-
-Maa Protocol is for teams that already like LangGraph, but need stronger operational controls before exposing agentic workflows to real users, tenants, or regulated business processes.
-
-It helps answer practical questions such as:
-- Should this action require human approval?
-- Which tenant is invoking this workflow, under what budget and permissions?
-- Should this request go to stable or canary traffic?
-- How should failures retry, degrade, or stop?
-- Where do approval decisions and audit events get stored?
+> Status: pre-1.0 governance package. Expanded orchestration experiments live outside the installable governance surface.
 
 ---
 
-## What Maa Protocol includes
+## What is in scope
 
-- **GovernanceWrapper** as the primary entry point
-- **ApprovalGate** for high-risk or policy-gated actions
-- **CostGuard** for budget awareness and hard/soft spend limits
-- **TenantContext + RBAC** for tenant-aware execution and role checks
-- **CanaryRouter** for safe release routing
-- **SelfHealing** for bounded retries and circuit-breaker behavior
-- **SQLite-backed persistence by default** for approvals and audit events
-- **Structured metrics hooks** for observability integration
+- `GovernanceWrapper`
+- `ApprovalGate`
+- `CostGuard`
+- `TenantContext`, `AccessControl`, `TenantGate`
+- `CanaryRouter`
+- `SelfHealing`
+- SQLite-backed approval and audit persistence
+- Lightweight governance CLI (`maa-x`)
 
----
+## What is out of scope
 
-## What Maa Protocol is not
-
-Maa Protocol is **not**:
-- a replacement for LangGraph
-- a full multi-agent framework
-- a distributed scheduler
-- a hosted control plane
-- a research sandbox for unrelated ML features
-
-This repository is intentionally scoped to governance and operational controls.
+The governance package no longer ships the experimental swarm, RL, browser, routing, plugin, MCP, neural, or marketplace modules from the root `maa_protocol` package. Those experiments remain separated from the focused governance distribution.
 
 ---
 
 ## Quickstart
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .[dev]
 pytest
+maa-x version
+maa-x governance audit
+maa-x swarm init
 ```
 
 ### Minimal example
 
 ```python
-from maa_protocol import (
-    ApprovalGate,
-    CanaryRouter,
-    CostGuard,
-    GovernanceWrapper,
-    SQLiteBackend,
-    TenantContext,
-)
+from maa_protocol import ApprovalGate, CostGuard, GovernanceWrapper, SQLiteBackend, TenantContext
 
 class DemoApp:
     def invoke(self, state, config=None, **kwargs):
@@ -73,20 +49,19 @@ class DemoApp:
 backend = SQLiteBackend()
 app = GovernanceWrapper(
     app=DemoApp(),
-    tenant_context=TenantContext(tenant_id="tenant-a", operator_id="ops-1", client_id="client-1"),
+    tenant_context=TenantContext(
+        tenant_id="tenant-a",
+        operator_id="ops-1",
+        client_id="client-1",
+        user_role="operator",
+    ),
     cost_guard=CostGuard(default_budget_usd=100.0),
-    canary_router=CanaryRouter(stable_version="v1", canary_version="v2", traffic_split=0.1),
     approval_gate=ApprovalGate(risk_threshold=0.8, persistence=backend),
     persistence=backend,
 )
 
-result = app.invoke(
-    {"messages": ["hello"]},
-    config={"user_role": "operator", "approval_id": "pre-approved-id", "cost_usd": 1.25},
-)
+print(app.invoke({"action": "review"}, config={"user_role": "operator", "cost_usd": 1.25}))
 ```
-
-See `examples/` for fuller patterns.
 
 ---
 
@@ -95,13 +70,13 @@ See `examples/` for fuller patterns.
 ```mermaid
 flowchart LR
     A[LangGraph Workflow] --> B[GovernanceWrapper]
-    B --> C[Tenant + RBAC]
+    B --> C[TenantContext + RBAC]
     B --> D[CostGuard]
     B --> E[CanaryRouter]
     B --> F[ApprovalGate]
     B --> G[SelfHealing]
-    B --> H[Persistence]
-    B --> I[Observability]
+    B --> H[SQLiteBackend]
+    B --> I[MetricsCollector]
 ```
 
 ### Package layout
@@ -111,6 +86,8 @@ maa_protocol/
 ├── __init__.py
 ├── exceptions.py
 ├── governance.py
+├── cli/
+│   └── __init__.py
 ├── guards/
 │   ├── approval.py
 │   ├── canary.py
@@ -128,13 +105,14 @@ maa_protocol/
 
 ## Current maturity
 
-Maa Protocol is now structured as a focused governance package, but it remains pre-1.0 while the following areas continue to harden:
-- deeper LangGraph-native interrupt patterns
-- richer persistence backends beyond SQLite defaults
-- broader integration test coverage against real LangGraph apps
-- benchmark publication and broader real-world validation
+Recent reliability work in `v0.3.1` focused on four things:
 
-That is a healthier place to be than pretending to be a complete agent platform.
+- governance-only scope alignment
+- validated tenant and approval inputs via Pydantic
+- CLI stabilization with import-safe governance commands
+- broader wrapper, persistence, and CLI test coverage with enforced 80% coverage
+
+The package is now internally consistent with its public positioning: governance first, experiments separated.
 
 ---
 
@@ -144,11 +122,8 @@ That is a healthier place to be than pretending to be a complete agent platform.
 - [SECURITY.md](SECURITY.md)
 - [ROADMAP.md](ROADMAP.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
-- [docs/WHAT_MAA_IS_NOT.md](docs/WHAT_MAA_IS_NOT.md)
-- [docs/USE_CASES.md](docs/USE_CASES.md)
-- [docs/COMPARISONS.md](docs/COMPARISONS.md)
-
----
+- [QUICKSTART.md](QUICKSTART.md)
+- [INSTALL.md](INSTALL.md)
 
 ## License
 

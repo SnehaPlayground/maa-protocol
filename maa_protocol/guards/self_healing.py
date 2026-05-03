@@ -1,31 +1,31 @@
+"""Retry and circuit-breaker guard."""
+
 from __future__ import annotations
 
 import asyncio
 import threading
 import time
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Callable
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from ..exceptions import CircuitOpenError
 
 
-@dataclass(slots=True)
-class SelfHealingConfig:
-    max_attempts: int = 3
-    initial_interval: float = 0.1
-    max_interval: float = 1.0
-    circuit_fail_threshold: int = 5
-    circuit_reset_seconds: float = 30.0
+class SelfHealingConfig(BaseModel):
+    model_config = ConfigDict(frozen=True)
 
-    def __post_init__(self) -> None:
-        if self.max_attempts <= 0:
-            raise ValueError(f"max_attempts must be greater than 0, got {self.max_attempts}")
-        if self.initial_interval <= 0:
-            raise ValueError(f"initial_interval must be greater than 0, got {self.initial_interval}")
+    max_attempts: int = Field(default=3, gt=0)
+    initial_interval: float = Field(default=0.1, gt=0.0)
+    max_interval: float = Field(default=1.0, gt=0.0)
+    circuit_fail_threshold: int = Field(default=5, gt=0)
+    circuit_reset_seconds: float = Field(default=30.0, gt=0.0)
+
+    def model_post_init(self, __context: Any) -> None:
         if self.max_interval < self.initial_interval:
-            raise ValueError(f"max_interval must be >= initial_interval, got max_interval={self.max_interval} < initial_interval={self.initial_interval}")
-        if self.circuit_reset_seconds <= 0:
-            raise ValueError(f"circuit_reset_seconds must be greater than 0, got {self.circuit_reset_seconds}")
+            raise ValueError("max_interval must be >= initial_interval")
 
 
 @dataclass(slots=True)
@@ -35,14 +35,18 @@ class SelfHealing:
     circuit_opened_at: float | None = None
     _lock: threading.RLock = field(default_factory=threading.RLock, init=False)
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.config, SelfHealingConfig):
+            try:
+                self.config = SelfHealingConfig.model_validate(self.config)
+            except ValidationError as exc:
+                raise ValueError(str(exc)) from exc
+
     def invoke_with_healing(
         self,
         operation: Callable[[], Any],
         fallback: Callable[[Exception], Any] | None = None,
     ) -> Any:
-        """Invoke *operation* with retries.  Falls back to *fallback* once
-        when all attempts are exhausted.  The fallback is never called more
-        than once."""
         if self._circuit_open():
             raise CircuitOpenError("Circuit breaker is open")
         delay = self.config.initial_interval
@@ -50,17 +54,11 @@ class SelfHealing:
         for attempt in range(1, self.config.max_attempts + 1):
             try:
                 result = operation()
-                with self._lock:
-                    self.failure_count = 0
-                    self.circuit_opened_at = None
+                self._reset()
                 return result
             except Exception as exc:
-                # Exception excludes KeyboardInterrupt and SystemExit by design.
                 last_error = exc
-                with self._lock:
-                    self.failure_count += 1
-                    if self.failure_count >= self.config.circuit_fail_threshold:
-                        self.circuit_opened_at = time.time()
+                self._record_failure()
                 if attempt == self.config.max_attempts:
                     break
                 time.sleep(delay)
@@ -76,8 +74,6 @@ class SelfHealing:
         operation: Callable[[], Awaitable[Any]],
         fallback: Callable[[Exception], Any] | None = None,
     ) -> Any:
-        """Async variant of :meth:`invoke_with_healing` — use when *operation*
-        is an async callable."""
         if self._circuit_open():
             raise CircuitOpenError("Circuit breaker is open")
         delay = self.config.initial_interval
@@ -85,35 +81,38 @@ class SelfHealing:
         for attempt in range(1, self.config.max_attempts + 1):
             try:
                 result = await operation()
-                with self._lock:
-                    self.failure_count = 0
-                    self.circuit_opened_at = None
+                self._reset()
                 return result
             except Exception as exc:
-                # Exception excludes KeyboardInterrupt and SystemExit by design.
                 last_error = exc
-                with self._lock:
-                    self.failure_count += 1
-                    if self.failure_count >= self.config.circuit_fail_threshold:
-                        self.circuit_opened_at = time.time()
+                self._record_failure()
                 if attempt == self.config.max_attempts:
                     break
                 await asyncio.sleep(delay)
                 delay = min(self.config.max_interval, delay * 2)
         if fallback and last_error:
-            if asyncio.iscoroutinefunction(fallback):
-                return await fallback(last_error)
             return fallback(last_error)
         if last_error:
             raise last_error
         raise RuntimeError("Self-healing failed without a terminal exception")
+
+    def _record_failure(self) -> None:
+        with self._lock:
+            self.failure_count += 1
+            if self.failure_count >= self.config.circuit_fail_threshold:
+                self.circuit_opened_at = time.time()
+
+    def _reset(self) -> None:
+        with self._lock:
+            self.failure_count = 0
+            self.circuit_opened_at = None
 
     def _circuit_open(self) -> bool:
         with self._lock:
             if self.circuit_opened_at is None:
                 return False
             if (time.time() - self.circuit_opened_at) >= self.config.circuit_reset_seconds:
-                self.circuit_opened_at = None
                 self.failure_count = 0
+                self.circuit_opened_at = None
                 return False
             return True

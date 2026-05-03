@@ -1,23 +1,37 @@
-"""Approval guard — raises ApprovalRequiredError when risk threshold is exceeded."""
+"""Approval guard for risk-gated governance actions."""
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from hashlib import sha256
-from typing import Any, Mapping
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ..exceptions import ApprovalPersistenceError, ApprovalRequiredError
 from ..persistence.base import ApprovalRecord, PersistenceBackend
 
 
-@dataclass(slots=True)
-class ApprovalRequest:
+class ApprovalRequest(BaseModel):
+    """Validated approval request payload."""
+
+    model_config = ConfigDict(frozen=True)
+
     tenant_id: str
     action: str
-    risk_score: float
+    risk_score: float = Field(ge=0.0, le=1.0)
     reason: str
-    requested_by: str = "unknown"
+    requested_by: str
     action_hash: str | None = None
+
+    @field_validator("tenant_id", "action", "reason", "requested_by")
+    @classmethod
+    def _non_empty(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("must not be empty")
+        return value
 
     def resolved_hash(self) -> str:
         if self.action_hash:
@@ -33,51 +47,64 @@ class ApprovalGate:
     require_approval_for: set[str] = field(default_factory=set)
     allow_interrupt_handoff: bool = True
 
+    def __post_init__(self) -> None:
+        if not 0.0 <= float(self.risk_threshold) <= 1.0:
+            raise ValueError("risk_threshold must be in [0.0, 1.0]")
+
     def assess(
         self,
         state: Mapping[str, Any] | None,
         config: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
-        state = dict(state or {})
-        config = dict(config or {})
-        flags = self._flags(state, config)
+        current_state = dict(state or {})
+        payload = dict(config or {})
+        flags = self._flags(current_state, payload)
         risk_score = float(
-            config.get("risk_score", state.get("risk_score", self._default_risk(flags)))
+            payload.get(
+                "risk_score",
+                current_state.get("risk_score", self._default_risk(flags)),
+            )
         )
-        action = str(config.get("action", state.get("action", "governed_invoke")))
-        tenant_id = str(config.get("tenant_id", state.get("tenant_id", "default")))
-        governance = state.get("governance")
-        if isinstance(governance, dict):
-            tenant = governance.get("tenant")
-            if isinstance(tenant, dict):
-                requested_by = str(tenant.get("operator_id", "unknown"))
-            else:
-                requested_by = str(config.get("operator_id", state.get("operator_id", "unknown")))
-        else:
-            requested_by = str(config.get("operator_id", state.get("operator_id", "unknown")))
-        reason = str(config.get("approval_reason", f"Approval required for {action}"))
-        request = ApprovalRequest(
-            tenant_id=tenant_id,
-            action=action,
-            risk_score=risk_score,
-            reason=reason,
-            requested_by=requested_by,
-            action_hash=config.get("action_hash") or state.get("action_hash") or self._derive_action_hash(tenant_id, action, requested_by),
+        action = str(payload.get("action", current_state.get("action", "governed_invoke")))
+        tenant_id = str(payload.get("tenant_id", current_state.get("tenant_id", ""))).strip()
+        requested_by = str(payload.get("operator_id", current_state.get("operator_id", "unknown")))
+        reason = str(payload.get("approval_reason", f"Approval required for {action}"))
+        if not tenant_id:
+            raise ValueError("Approval assessment requires tenant_id")
+
+        request = ApprovalRequest.model_validate(
+            {
+                "tenant_id": tenant_id,
+                "action": action,
+                "risk_score": risk_score,
+                "reason": reason,
+                "requested_by": requested_by,
+                "action_hash": payload.get("action_hash") or current_state.get("action_hash"),
+            }
         )
-        needs_approval = risk_score >= self.risk_threshold or bool(flags & self.require_approval_for)
+        approval_id = payload.get("approval_id") or current_state.get("approval_id")
         approved = False
-        approval_id = config.get("approval_id") or state.get("approval_id")
         if approval_id and self.persistence:
             record = self.persistence.get_approval(
-                str(approval_id), caller_tenant_id=tenant_id
+                str(approval_id),
+                caller_tenant_id=request.tenant_id,
             )
-            approved = bool(record and record.approved and record.action_hash == request.resolved_hash())
+            approved = bool(
+                record
+                and record.approved
+                and record.action_hash == request.resolved_hash()
+            )
+
+        needs_approval = (
+            request.risk_score >= self.risk_threshold
+            or bool(flags & self.require_approval_for)
+        )
         return {
             "needs_approval": needs_approval,
             "approved": approved,
-            "risk_score": risk_score,
+            "risk_score": request.risk_score,
             "flags": sorted(flags),
-            "approval_id": approval_id if approved else None,
+            "approval_id": str(approval_id) if approved and approval_id else None,
             "interrupt_supported": self.allow_interrupt_handoff,
             "request": request,
         }
@@ -87,8 +114,10 @@ class ApprovalGate:
         state: Mapping[str, Any] | None,
         config: Mapping[str, Any] | None = None,
     ) -> ApprovalRecord:
-        if not self.persistence:
-            raise ApprovalPersistenceError("Approval persistence backend is required to create approval requests")
+        if self.persistence is None:
+            raise ApprovalPersistenceError(
+                "Approval persistence backend is required to create approval requests"
+            )
         result = self.assess(state, config)
         request: ApprovalRequest = result["request"]
         return self.persistence.create_approval(
@@ -98,6 +127,7 @@ class ApprovalGate:
             requested_by=request.requested_by,
             reason=request.reason,
             risk_score=request.risk_score,
+            caller_tenant_id=request.tenant_id,
         )
 
     def enforce(
@@ -108,10 +138,8 @@ class ApprovalGate:
         result = self.assess(state, config)
         if result["needs_approval"] and not result["approved"]:
             approval_record = self.create_request(state, config) if self.persistence else None
-            raise ApprovalRequiredError(
-                "Approval required before governed invoke"
-                + (f". approval_id={approval_record.approval_id}" if approval_record else "")
-            )
+            suffix = f". approval_id={approval_record.approval_id}" if approval_record else ""
+            raise ApprovalRequiredError(f"Approval required before governed invoke{suffix}")
         return {
             "needs_approval": result["needs_approval"],
             "approved": result["approved"],
@@ -132,11 +160,6 @@ class ApprovalGate:
                 else:
                     values.update(str(item) for item in source)
         return values
-
-    @staticmethod
-    def _derive_action_hash(tenant_id: str, action: str, requested_by: str) -> str:
-        raw = f"{tenant_id}:{action}:{requested_by}".encode()
-        return sha256(raw).hexdigest()
 
     @staticmethod
     def _default_risk(flags: set[str]) -> float:

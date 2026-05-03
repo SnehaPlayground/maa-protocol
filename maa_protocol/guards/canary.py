@@ -1,10 +1,11 @@
-"""Canary routing guard — splits traffic between stable and canary versions."""
+"""Canary routing guard."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Mapping
 import random
+from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(slots=True)
@@ -13,16 +14,27 @@ class CanaryRouter:
     canary_version: str = "v2"
     traffic_split: float = 0.1
 
+    def __post_init__(self) -> None:
+        if not 0.0 <= float(self.traffic_split) <= 1.0:
+            raise ValueError("traffic_split must be in [0.0, 1.0]")
+
     def route_metadata(
         self,
         state: Mapping[str, Any] | None,
         tenant: Any,
         config: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
+        current_state = dict(state or {})
         selected = self.stable_version
         if self.traffic_split > 0:
-            seed = hash(str(state)) % 10000
-            rng = random.Random(seed)
+            seed_basis = "::".join(
+                [
+                    getattr(tenant, "tenant_id", "tenant"),
+                    str(current_state.get("action", "")),
+                    str(current_state.get("operator_id", "")),
+                ]
+            )
+            rng = random.Random(seed_basis)
             if rng.random() < self.traffic_split:
                 selected = self.canary_version
         return {

@@ -109,3 +109,4 @@ knowledge/know_ruf_repo_index.txt
 maa_protocol/marketplace/listings/
 ops/email/
 pre_deploy_gate.sh
+.venv/

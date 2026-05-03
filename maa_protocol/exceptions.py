@@ -25,7 +25,6 @@ class CircuitOpenError(MaaProtocolError):
     """Raised when self-healing circuit breaker is open."""
 
 
-
 class PersistenceError(MaaProtocolError):
     """Raised when a persistence backend cannot complete an operation."""
 
@@ -34,6 +33,5 @@ class TenantIsolationError(PersistenceError):
     """Raised when cross-tenant data access is attempted."""
 
 
-
 class CostValidationError(ValueError):
-    """Raised when a CostGuard parameter or input value is invalid."""
+    """Raised when cost guard configuration or inputs are invalid."""

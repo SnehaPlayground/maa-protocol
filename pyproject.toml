@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maa-protocol"
-version = "0.3.0"
-description = "Enterprise AI orchestration platform — governance, swarm orchestration, self-learning, and advanced capabilities"
+version = "0.3.1"
+description = "Governance layer for LangGraph workflows with RBAC, tenant isolation, cost controls, canary releases, circuit breakers, and self-healing"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -15,7 +15,7 @@ authors = [
 dependencies = [
   "pydantic>=2.7",
 ]
-keywords = ["langgraph", "governance", "rbac", "approval", "canary", "tenancy", "swarm", "multi-agent", "rl", "reinforcement-learning"]
+keywords = ["langgraph", "governance", "rbac", "approval", "canary", "tenancy", "observability"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
@@ -28,57 +28,46 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-langgraph = [
-  "langgraph>=0.2"
-]
-swarm = []
-memory = []
-learning = []
-security = []
-plugins = []
-mcp = []
-cli = ["click>=8.0", "rich>=13.0"]
-sparc = []
-workers = []
-routing = []
-all = [
-  "numpy>=1.24",
-  "scipy>=1.10",
-  "click>=8.0",
-  "rich>=13.0",
-  "langgraph>=0.2",
-]
+langgraph = ["langgraph>=0.2"]
+cli = []
 dev = [
-  "black>=24.0",
   "mypy>=1.10",
   "pytest>=8.0",
+  "pytest-cov>=5.0",
   "ruff>=0.5",
 ]
 
 [project.scripts]
 maa-x = "maa_protocol.cli:main"
 
-[tool.setuptools]
-packages = [
-  "maa_protocol",
-  "maa_protocol.guards",
-  "maa_protocol.persistence",
-  "maa_protocol.observability",
-  "maa_protocol.utils",
-  "maa_protocol.swarm",
-  "maa_protocol.learning",
-  "maa_protocol.security",
-  "maa_protocol.plugins",
-  "maa_protocol.mcp",
-  "maa_protocol.cli",
-  "maa_protocol.sparc",
-  "maa_protocol.workers",
-  "maa_protocol.routing",
+[tool.setuptools.packages.find]
+include = ["maa_protocol*"]
+exclude = [
+  "maa_protocol.learning*",
+  "maa_protocol.mcp*",
+  "maa_protocol.plugins*",
+  "maa_protocol.routing*",
+  "maa_protocol.security*",
+  "maa_protocol.sparc*",
+  "maa_protocol.swarm*",
+  "maa_protocol.workers*",
+  "tests*",
 ]
 
 [tool.ruff]
 line-length = 100
+target-version = "py310"
+extend-exclude = ["maa-x", "runtime", "docs/archive-runtime"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
 
 [tool.mypy]
 python_version = "3.10"
+strict = true
+warn_unused_ignores = true
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=maa_protocol --cov-report=term-missing --cov-fail-under=80"
+testpaths = ["tests"]
